@@ -8,18 +8,18 @@ file.edit(".Renviron") # Add RAW_DEATH_FILES_FOLDER (the filepath where all raw 
 # Install/Load R Packages
 pacman::p_load(
   arrow,
-  here,
+  dplyr,
   forcats,
-  janitor,
   fs,
   glue,
-  tidyverse,
-  dplyr,
+  here,
+  janitor,
   lubridate,
-  stringr,
   readr,
   rio,
-  digest # for stable row_id hashing
+  stringr,
+  tictoc,
+  tidyverse
 )
 
 # Load All Custom functions
@@ -74,4 +74,4 @@ params$date_vars <- c(
   }
 }
 
-rm(code_sets)
+rm(code_sets, set)
