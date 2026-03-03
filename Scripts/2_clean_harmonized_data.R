@@ -43,7 +43,12 @@ harmonized_data_v2 <- harmonized_data %>%
   ) %>%
   # Parse Date Variables
   mutate(ingestion_ts = as_datetime(ingestion_ts)) %>%
-  clean_date_vars(df = ., vars = params$date_vars) %>%
+  clean_date_vars(df = ., vars = params$date_vars)
+
+
+# Peform Joins (4_Code_Set_Expansion) -----
+
+harmonized_data_v3 <- harmonized_data_v2 %>%
   # Expand Coded Variables
   ## Country Codes -----
   left_join(
@@ -151,9 +156,9 @@ harmonized_data_v2 <- harmonized_data %>%
   rename(occupation_milham_label = label)
 
 
-# Subset & Organize Harmonized Data -----
+# Subset & Organize Cleaned Harmonized Data -----
 
-harmonized_data_v3 <- harmonized_data_v2 %>%
+harmonized_data_v4 <- harmonized_data_v3 %>%
   # Subset & Reorder Columns
   select(
     # Data Vintage Variables
