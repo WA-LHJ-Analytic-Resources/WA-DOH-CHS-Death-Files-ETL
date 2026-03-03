@@ -6,7 +6,7 @@ WA DOH CHS provides two sets of death certificate data vintages: 1) **2010-2015*
 
 ## Author(s) & Contributor(s)
 - [Tyler Bonnell](mailto:Tyler.Bonnell@co.snohomish.wa.us) (Snohomish County Health Department - Informatics & Data Management Epidemiologist)
-- [Jacob Armitage](mailto:jacob.armitage@co.thurston.wa.us) (Thurston County Public Health & Social Services Deparmtent - Assessment & Evaluation Epidemiologist(
+- [Jacob Armitage](mailto:jacob.armitage@co.thurston.wa.us) (Thurston County Public Health & Social Services Deparmtent - Assessment & Evaluation Epidemiologist)
 
 # Data Processing / ETL
 
@@ -22,13 +22,11 @@ WA DOH CHS provides two sets of death certificate data vintages: 1) **2010-2015*
 - NAMES - This data contains full names, SSNs, and full address of the decedent.
 - LITERAL - This data contains full text descriptions for causes of death.
 
-## Data Avalabiity
+## Data Availability
 
 Multiple versions of the data sets are sent throughout the year. There are preliminary and final versions of the data. Preliminary data will come in the form of quarterly (Q1, Q2, Q3, Q4) and then several less descriptive versions (Q5, Q6, P). Q5 and Q6 are typically not adding new rows but filling in or updating columns in already existing rows. P is usually the last preliminary and most complete file before the final file (F) is released.
 
 ## Data Inputs
-
-## Data inputs
 
 | **Data** | **Location** | **Last Update** | **Notes** |
 |----------|--------------|-----------------|-----------|
@@ -39,3 +37,9 @@ Multiple versions of the data sets are sent throughout the year. There are preli
 | WA DOH Death Statistical Dictionary & Crosswalks.xlsx | **Download from Secure Access Washington** | 2026-03-02 | Documents variable name and variable code crosswalks between BEDROCK and WHALES as well as provides standarized code sets. Not all variable code crosswalks are explictly mentioned in this document (some additional crosswalks are mentioned in the WA DOH provided STATA .do file). |
 | DthStatFile_ConvertToOldVarNames_import.do | **Download from Secure Access Washington** | 2026-03-02 | This STATA (.do) script details how WHALES variable names and variable codes can be crosswalked backed to BEDROCK format (WHALES --> BEDROCK). It includes some crosswalks that are NOT explictly mentioned in the WA DOH Death Statstical Dictionary & Crosswalks.xlsx. This script provides some crosswalk information, albeit in the opposite direction intended for this project.|
 | [WA DOH Death Data User Guide](https://doh.wa.gov/sites/default/files/2024-10/422-155-WADeathFileDataUsersGuide2023_1.pdf) | Publicly Available (see link to the left) | 2026-03-02 | Provides description on how to use the WA DOH CHS death microdata |
+
+## Workflow
+1. Download all WA DOH CHS Death Certificate Statistical Files from Secure Access Washington.
+2. Run `Scripts/0_setup.R`. This script prompts users to edit `.Renviron` and specify where downloaded files from Step #1 are stored.
+3. Run `Scripts/1_crosswalk_death_files.R`. This script performs the 1_Schema Harmonization, 2_Data Type Harmonization, 3) Value Harmonization steps, and takes approximately 10 minutes to complete for all available death statistical files.
+4. Run `Scripts/2_clean_harmonized_data.R`. This script cleans the harmonized death data set (i.e. converts to proper data types, performs joins with code set descriptions, etc.)
