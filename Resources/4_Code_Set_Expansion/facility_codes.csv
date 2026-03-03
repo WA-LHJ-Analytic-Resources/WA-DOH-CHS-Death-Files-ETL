@@ -1,0 +1,162 @@
+start_year,end_year,code,label,city,county_new,date_opened,date_closed,notes,review_flag
+2000,2026,1,Swedish Medical Center - First Hill,Seattle,King,1/1/2000,,,FALSE
+2007,2026,3,Swedish Medical Center - Cherry Hill,Seattle,King,5/1/2007,,,FALSE
+,2026,8,Klickitat Valley Hospital,Goldendale,Klickitat,,,,FALSE
+1978,2026,10,Virginia Mason Hospital,Seattle,King,1/1/1978,,,FALSE
+1987,2026,14,Seattle Children's Hospital,Seattle,King,10/20/1987,,,FALSE
+,2026,20,Kaiser Permanente Central Hospital,Seattle,King,,,,FALSE
+2011,2026,21,Newport Hospital & Health Services,Newport,Pend Oreille,5/10/2011,,,FALSE
+2002,2026,22,Lourdes Medical Center,Pasco,Franklin,1/1/2002,,,FALSE
+2012,2026,23,Three Rivers Hospital,Brewster,Okanogan,1/12/2012,,,FALSE
+2006,2026,26,PeaceHealth St John Medical Center,Longview,Cowlitz,1/1/2006,,,FALSE
+2008,2026,27,Providence Regional Medical Center Everett - Pacific,Everett,Snohomish,9/1/2008,,,FALSE
+1978,2026,29,Harborview Medical Center,Seattle,King,1/1/1978,,,FALSE
+1978,2026,32,St Joseph Medical Center,Tacoma,Pierce,1/1/1978,,,FALSE
+2011,2026,35,St Elizabeth Hospital,Enumclaw,King,2/2/2011,,,FALSE
+2003,2026,36,Swedish Medical Center - Ballard,Seattle,King,1/1/2003,,,FALSE
+1978,2026,37,Deaconess Medical Center,Spokane,Spokane,1/1/1978,,,FALSE
+2000,2026,38,Olympic Medical Center,Port Angeles,Clallam,3/15/2000,,,FALSE
+2013,2026,39,Trios Health,Kennewick,Benton,10/10/2013,,,FALSE
+,2026,42,Shriner's Hospital For Children,Spokane,Spokane,,,,FALSE
+,2017,43,Walla Walla General Hospital,Walla Walla,Walla Walla,,7/26/2017,,FALSE
+1978,2026,45,Columbia Basin Hospital,Ephrata,Grant,1/1/1978,,,FALSE
+1978,2026,46,Prosser Memorial Hospital,Prosser,Benton,1/1/1978,,,FALSE
+2009,2026,50,Providence St Mary Medical Center,Walla Walla,Walla Walla,2/1/2009,,,FALSE
+1978,2026,54,Forks Community Hospital,Forks,Clallam,1/1/1978,,,FALSE
+1978,2026,56,Willapa Harbor Hospital,South Bend,Pacific,1/1/1978,,,FALSE
+2021,2026,58,Yakima Valley Memorial Hospital,Yakima,Yakima,1/4/2021,,,FALSE
+1978,2026,63,Grays Harbor Community Hospital,Aberdeen,Grays Harbor,1/1/1978,,,FALSE
+1989,2026,68,Providence Centralia Hospital - Chehalis Campus,Chehalis,Lewis,9/25/1989,,,FALSE
+1978,2026,78,Samaritan Hospital,Moses Lake,Grant,1/1/1978,,,FALSE
+1978,2026,79,Ocean Beach Hospital,Ilwaco,Pacific,1/1/1978,,,FALSE
+1988,2026,80,Odessa Memorial Hospital,Odessa,Lincoln,6/17/1988,,,FALSE
+1983,2026,81,Good Samaritan Hospital,Puyallup,Pierce,4/1/1983,,,FALSE
+1978,2026,82,Garfield County Memorial Hospital,Pomeroy,Garfield,1/1/1978,,,FALSE
+,2026,84,Providence Regional Medical Center,Everett,Snohomish,,,,FALSE
+2004,2026,85,Jefferson Healthcare,Port Townsend,Jefferson,9/13/2004,,,FALSE
+1990,2026,92,Community Hospital,Yakima,Yakima,1/1/1990,,,FALSE
+1978,2026,96,Skyline Hospital,White Salmon,Klickitat,1/1/1978,,,FALSE
+2003,2026,102,Yakima Regional Medical Center,Yakima,Yakima,8/22/2003,,,FALSE
+2015,2026,104,EvergreenHealth Monroe,Monroe,Snohomish,3/1/2015,,,FALSE
+1978,2026,106,Cascade Valley Hospital,Arlington,Snohomish,1/1/1978,,,FALSE
+1978,2026,107,North Valley Hospital,Tonasket,Okanogan,1/1/1978,,,FALSE
+1978,2026,108,Tri-State Memorial Hospital. Inc,Clarkston,Asotin,1/1/1978,,,FALSE
+1991,2026,111,East Adams County Rural Hospital,Ritzville,Adams,2/1/1991,,,FALSE
+1978,2026,125,Othello Community Hospital,Othello,Adams,1/1/1978,,,FALSE
+,2026,126,St Anne Hospital,Burien,King,,,,FALSE
+1989,2026,128,University Of Washington Medical Center -Montlake,Seattle,King,4/15/1989,,,FALSE
+1978,2026,129,Quincy Valley Hospital,Quincy,Grant,1/1/1978,,,FALSE
+,2026,130,University Of Washington Medical Center -Northwest,Seattle,King,,,,FALSE
+1987,2026,131,Overlake Hospital Medical Center,Bellevue,King,2/4/1987,,,FALSE
+1998,2026,132,St Clare Hospital,Lakewood,Pierce,1/1/1998,,,FALSE
+1978,2026,134,Island Hospital,Anacortes,Skagit,1/1/1978,,,FALSE
+1978,2026,137,Lincoln Hospital,Davenport,Lincoln,1/1/1978,,,FALSE
+2010,2026,138,Swedish Edmonds Hospital,Edmonds,Snohomish,9/1/2010,,,FALSE
+2009,2026,139,Providence Holy Family Hospital,Spokane,Spokane,2/1/2009,,,FALSE
+2013,2026,140,Kittitas Valley Healthcare,Ellensburg,Kittitas,2/12/2013,,,FALSE
+1978,2026,141,Dayton General Hospital,Dayton,Columbia,1/1/1978,,,FALSE
+,2026,142,St Michael Medical Center,Silverdale,Kitsap,,,,FALSE
+2008,2026,145,PeaceHealth St Joseph Hospital,Bellingham,Whatcom,7/1/2008,,,FALSE
+1990,2026,146,Allenmore Hospital And Medical Center,Tacoma,Pierce,1/1/1990,,,FALSE
+1978,2026,147,Mid-Valley Hospital,Omak,Okanogan,1/1/1978,,,FALSE
+2001,2026,148,Kindred Hospital,Seattle,King,4/1/2001,,,FALSE
+2009,2026,150,Coulee Medical Center,Grand Coulee,Grant,4/1/2009,,,FALSE
+,2026,151,St John's Medical Center - Broadway Campus,Longview,Cowlitz,,,,FALSE
+1978,2026,152,Mason General Hospital,Shelton,Mason,1/1/1978,,,FALSE
+2003,2026,153,Whitman Medical Center,Colfax,Whitman,1/1/2003,,,FALSE
+1985,2026,155,Valley Medical Center,Renton,King,1/1/1985,,,FALSE
+2000,2026,156,WhidbeyHealth Medical Center,Coupeville,Island,1/1/2000,,,FALSE
+1978,2026,157,St Luke's Memorial Hospital,Spokane,Spokane,1/1/1978,,,FALSE
+1989,2026,158,Cascade Medical Center,Leavenworth,Chelan,5/19/1989,,,FALSE
+1995,2026,159,Providence St Peter Hospital,Olympia,Thurston,5/1/1995,,,FALSE
+2009,2026,161,Kadlec Regional Medical Center,Richland,Benton,10/1/2009,,,FALSE
+2009,2026,162,Providence Sacred Heart Medical Center,Spokane,Spokane,2/1/2009,,,FALSE
+2012,2026,164,Evergreenhealth Medical Center,Kirkland,King,1/1/2012,,,FALSE
+1978,2026,165,Lake Chelan Community Hospital,Chelan,Chelan,1/1/1978,,,FALSE
+1978,2026,167,Ferry County Memorial Hospital,Republic,Ferry,1/1/1978,,,FALSE
+1978,2026,168,Central Washington Hospital,Wenatchee,Chelan,11/1/1978,,,FALSE
+2011,2026,170,PeaceHealth Southwest Medical Center,Vancouver,Clark,6/1/2011,,,FALSE
+2004,2026,172,Pullman Regional Hospital,Pullman,Whitman,12/16/2004,,,FALSE
+1979,2026,173,Morton General Hospital,Morton,Lewis,1/1/1979,,,FALSE
+1980,2026,175,Mary Bridge Children's Hospital,Tacoma,Pierce,1/1/1980,,,FALSE
+1980,2026,176,Tacoma General Hospital,Tacoma,Pierce,1/1/1980,,,FALSE
+1980,2026,178,Deer Park Health Center and Hospital,Deer Park,Spokane,5/1/1980,,,FALSE
+2003,2026,180,Valley Hospital and Medical Center,Spokane Valley,Spokane,4/1/2003,,,FALSE
+1983,2026,182,Puget Sound Hospital,Tacoma,Pierce,1/1/1983,,,FALSE
+2012,2026,183,Multicare Auburn Medical Center,Auburn,King,1/1/2012,,,FALSE
+1990,2026,185,Highline Community Hospital - Riverton Campus,Seattle,King,6/1/1990,,,FALSE
+2013,2026,186,Summit Pacific Medical Center,Elma,Grays Harbor,2/18/2013,,,FALSE
+,2026,190,Kittitas Valley Healthcare,Ellensburg,Grays Harbor,,,,FALSE
+1989,2026,191,Providence Centralia Hospital - Centralia Campus,Centralia,Lewis,9/25/1989,,,FALSE
+1988,2026,192,Grays Harbor Community Hospital - East Campus,Aberdeen,Grays Harbor,9/16/1988,,,FALSE
+2009,2026,193,Providence Mount Carmel Hospital,Colville,Stevens,2/1/2009,,,FALSE
+2009,2026,194,Providence St Joseph's Hospital,Chewelah,Stevens,2/1/2009,,,FALSE
+2001,2026,195,Snoqualmie Valley Hospital,Snoqualmie,King,3/1/2001,,,FALSE
+1997,2026,197,Capital Medical Center,Olympia,Thurston,12/1/1997,,,FALSE
+2019,2026,198,Sunnyside Community Hospital,Sunnyside,Yakima,4/22/2019,,,FALSE
+,2026,199,Astria Toppenish Hospital,Toppenish,Yakima,,,,FALSE
+1987,2026,201,St Francis Community Hospital,Federal Way,King,5/1/1987,,,FALSE
+1993,2026,202,Regional Hospital,Seattle,King,1/1/1993,,,FALSE
+1998,2026,203,Tri-Cities Chaplaincy Hospital,Kennewick,Benton,1/1/1998,,,FALSE
+2001,2026,205,Wenatchee Valley Hospital,Wenatchee,Chelan,8/1/2001,,,FALSE
+2014,2026,206,PeaceHealth United General Hospital,Sedro Woolley,Skagit,4/1/2014,,,FALSE
+2004,2026,207,Skagit Valley Hospital,Mount Vernon,Skagit,1/1/2004,,,FALSE
+2005,2026,208,Legacy At Salmon Creek,Vancouver,Clark,8/1/2005,,,FALSE
+2009,2026,209,St Anthony Hospital,Gig Harbor,Pierce,3/1/2009,,,FALSE
+2011,2026,210,Swedish Medical Center - Issaquah,Issaquah,King,11/1/2011,,,FALSE
+2012,2026,211,Peace Island Medical Center,Friday Harbor,San Juan,10/1/2012,,,FALSE
+,2026,212,Harrison Medical Center - Bremerton,Bremerton,Kitsap,,,,FALSE
+,2026,215,Swedish Mill Creek Campus,Everett,Snohomish,,,,FALSE
+2021,2026,216,Kaiser Permanente Bellevue Medical Center,Bellevue,King,3/1/2021,,,FALSE
+2014,2026,401,Birthroot Midwives and Birth Center,Bellingham,Whatcom,7/31/2014,,,FALSE
+1998,2026,402,Cascade Midwives and Birth Center,Everett,Snohomish,1/1/1998,,,FALSE
+2010,2026,403,Mount Vernon Birth Center,Mount Vernon,Skagit,11/1/2010,,,FALSE
+1983,2026,404,Seattle Home Maternity Service,Seattle,King,1/1/1983,,,FALSE
+2019,2026,405,Empowered Pregnancy Birth Center,Kirkland,King,10/16/2019,,,FALSE
+2000,2026,406,The Birthing Inn,Tacoma,Pierce,1/1/2000,,,FALSE
+1983,2026,410,Seattle Naturopathy - Acupuncture And Birth Center,Seattle,King,1/1/1983,,,FALSE
+2004,2026,411,Bellingham Birth Center,Bellingham,Whatcom,1/1/2004,,,FALSE
+2011,2026,412,Center for Birth,Seattle,King,1/1/2011,,,FALSE
+1996,2026,424,Lakeside Birth Center,Lake Tapps,Pierce,1/1/1996,,,FALSE
+1999,2026,426,Spokane Midwives and Birth Center,Spokane,Spokane,1/1/1999,,,FALSE
+1993,2026,429,Wenatchee Midwifery Service,Wenatchee,Chelan,1/1/1993,,,FALSE
+2019,2026,439,Greenbank Birth Center,Greenbank,Island,4/17/2019,,,FALSE
+2012,2026,447,Rainy City Midwifery,Seattle,King,1/1/2012,,,FALSE
+,2026,475,Eastside Birth Center,Bellevue,King,,11/3/2015,,FALSE
+1996,2026,484,Puget Sound Birth Center - Kirkland,Kirkland,King,1/1/1996,,,FALSE
+2014,2026,485,Puget Sound Birth Center - Renton,Renton,King,1/1/2014,,,FALSE
+,2026,500,Care Unit Hospital of Kirkland,Kirkland,King,,,,FALSE
+,2026,501,Woodside Hospital,Vancouver,Clark,,,,FALSE
+,2026,502,Fairfax Hospital,Kirkland,King,,,,FALSE
+,2026,503,Mid-Columbia Mental Health Center,Richland,Benton,,,,FALSE
+,2026,504,Raleigh Hills Hospital,Spokane,Spokane,,,,FALSE
+,2026,505,Shick-Shadel Hospital,Seattle,King,,,,FALSE
+,2026,506,Western State Hospital,Lakewood,Pierce,,,,FALSE
+,2026,507,Eastern State Hospital,Medical Lake,Spokane,,,,FALSE
+,2026,508,Oldham House,Yakima,Yakima,,,,FALSE
+,2026,509,St Peter Chemical Dependancy Program,Lacey,Thurston,,,,FALSE
+1978,2026,600,Fircrest School,Shoreline,King,1/1/1978,,,FALSE
+1978,2026,601,Interlake School,Medical Lake,Spokane,1/1/1978,,,FALSE
+1978,2026,602,Rainier School,Buckley,Pierce,1/1/1978,,,FALSE
+1978,2026,603,Lakeland Village,Medical Lake,Spokane,1/1/1978,,,FALSE
+1978,2026,604,Yakima Valley School,Selah,Yakima,1/1/1978,,,FALSE
+,2026,605,Cerebral Palsy Center,Seattle,King,,,,FALSE
+,2026,606,Frances Haddon Morgan,Bremerton,Kitsap,,,,FALSE
+1978,2026,607,School for the Blind,Vancouver,Clark,1/1/1978,,,FALSE
+1978,2026,608,School for the Deaf,Vancouver,Clark,1/1/1978,,,FALSE
+,2026,609,Maple Lane School for Girls,Centralia,Thurston,,,,FALSE
+1978,2026,610,Green Hill School for Boys,Chehalis,Lewis,1/1/1978,,,FALSE
+1978,2026,611,Washington State Reformatory Infirmary,Monroe,Snohomish,1/1/1978,,,FALSE
+1978,2026,612,Washington Corrections Center Infirmary,Shelton,Mason,1/1/1978,,,FALSE
+1978,2026,613,Purdy Correction Center For Women Clinic,Gig Harbor,Pierce,1/1/1978,,,FALSE
+1978,2026,614,Washington State Penitentiary Hospital,Walla Walla,Walla Walla,1/1/1978,,,FALSE
+1993,2026,615,Mc Neil Island Corrections Center Hospital,Mcneil Island,Pierce,1/1/1993,,,FALSE
+,2026,700,Veterans Administration Hospital (Barnes),Vancouver,Clark,,,,FALSE
+2003,2026,701,Naval Health Clinic Oak Harbor,Oak Harbor,Island,1/1/2003,,,FALSE
+1900,2026,703,Veterans Administration Puget Sound HCS,Seattle,King,,,,FALSE
+1983,2026,704,Naval Hospital Bremerton,Bremerton,Kitsap,7/2/1983,,,FALSE
+2010,2026,705,Madigan Army Medical Center,Joint Base Lewis Mcchord,Pierce,2/1/2010,,,FALSE
+1978,2026,706,Veterans Administration Puget Sound HCS - American Lake,Tacoma,Pierce,1/1/1978,,,FALSE
+1987,2026,707,92nd Strategic Hospital,Spokane,Spokane,12/1/1987,,,FALSE
+,2026,708,Veterans Administration Medical Center,Spokane,Spokane,,,,FALSE
+,2026,709,Veterans Administration Medical Center,Walla Walla,Walla Walla,,,,FALSE

@@ -1,0 +1,438 @@
+start_year,end_year,code,label,notes,review_flag
+1980,2019,0,"Accountants, auditors, and assessors",,FALSE
+1980,2019,7,Atomic energy accountants,,FALSE
+1980,2019,9,"Airline flight attendant, steward/stewardess",,FALSE
+1980,2019,10,"Actor, actress, radio dj/announcer/producer",,FALSE
+1980,2019,11,"Air traffic controller, radar/sonar operator",,FALSE
+1980,2019,12,Airplane pilots and navigators,,FALSE
+1980,2019,13,Architects,,FALSE
+1980,2019,14,Artists and art teachers,,FALSE
+1980,2019,15,"Athlete, athletic coach",,FALSE
+1980,2019,16,"Chiropodist, podiatrist",,FALSE
+1980,2019,20,Authors,,FALSE
+1980,2019,21,Chemists  (if nuclear - 558/559),,FALSE
+1980,2019,22,Chiropractors,,FALSE
+1980,2019,23,Clergy,,FALSE
+1980,2019,30,"Dean/president/administrator, college/university",,FALSE
+1980,2019,31,"Professors and instructors, agricultural sciences",,FALSE
+1980,2019,32,"Professors and instructors, biological",,FALSE
+1980,2019,34,"Professors and instructors, chemistry",,FALSE
+1980,2019,35,"Professors and instructors, economics",,FALSE
+1980,2019,40,"Professors and instructors, engineering",,FALSE
+1980,2019,41,"Professors and instructors, geology and geophysics",,FALSE
+1980,2019,42,"Professors and instructors, mathematics",,FALSE
+1980,2019,43,"Professors and instructors, medical sciences",,FALSE
+1980,2019,45,"Professors and instructors, physics",,FALSE
+1980,2019,46,"Professors and instructors, psychology",,FALSE
+1980,2019,51,"Professors and instructors, statistics",,FALSE
+1980,2019,52,"Professors and instructors, natural sciences NEC",,FALSE
+1980,2019,53,"Professors and instructors, social sciences NEC",,FALSE
+1980,2019,54,"Professors and instructors, non-scientific subjects",,FALSE
+1980,2019,55,"Professors and instructors, forestry",,FALSE
+1980,2019,60,Professors and instructors,,FALSE
+1980,2019,70,"Dancer, dance/aerobics teacher",,FALSE
+1980,2019,71,Dentists,,FALSE
+1980,2019,72,Designer/planner/exterior designer,,FALSE
+1980,2019,73,Dietitians and nutritionists,,FALSE
+1980,2019,74,"Draftsmen (nuclear - 088, boeing - 089)",,FALSE
+1980,2019,75,Editors and reporters,,FALSE
+1980,2019,76,"Newspaper owners, publishers, and managers",,FALSE
+1980,2019,80,Aeronautical engineers,,FALSE
+1980,2019,81,Chemical engineers,,FALSE
+1980,2019,82,Civil engineers,,FALSE
+1980,2019,83,Electrical engineers,,FALSE
+1980,2019,84,Industrial engineers,,FALSE
+1980,2019,85,Mechanical engineers,,FALSE
+1980,2019,86,Marine engineers,,FALSE
+1980,2019,87,"Engineers, nuclear",,FALSE
+1980,2019,88,"Draftsmen, atomic energy",,FALSE
+1980,2019,89,"Draftsmen, boeing",,FALSE
+1980,2019,90,Metallurgical engineers,,FALSE
+1980,2019,91,Mining engineers,,FALSE
+1980,2019,92,Sales engineers,,FALSE
+1980,2019,93,Engineers NEC,,FALSE
+1980,2019,94,Construction engineers,,FALSE
+1980,2019,95,Refrigeration engineers,,FALSE
+1980,2019,96,"Operating engineers (power, hydroelectric)",,FALSE
+1980,2019,97,Boeing engineers,,FALSE
+1980,2019,99,Steam engineers,,FALSE
+1980,2019,101,Entertainer NEC,,FALSE
+1980,2019,102,"Farm/home management adviser, county extension agent",,FALSE
+1980,2019,103,Foresters and conservationists,,FALSE
+1980,2019,104,Funeral directors and embalmers,,FALSE
+1980,2019,105,Lawyers and judges,,FALSE
+1980,2019,106,Court reporter,,FALSE
+1980,2019,111,Librarians,,FALSE
+1980,2019,120,Musicians and music teachers,,FALSE
+1980,2019,130,Agricultural sciemtist,,FALSE
+1980,2019,131,Biological scientist,,FALSE
+1980,2019,134,"Geologist, geophysicist",,FALSE
+1980,2019,135,Mathematicians,,FALSE
+1980,2019,140,Physicist,,FALSE
+1980,2019,141,Meterologist,,FALSE
+1980,2019,145,"Geographer, hydrologist, natural scientist NEC",,FALSE
+1980,2019,150,"Nurses, registered (rn)",,FALSE
+1980,2019,151,"Nurses, student professional (lpn-842, nurse's aide-810, midwife-840)",,FALSE
+1980,2019,152,Optometrists,,FALSE
+1980,2019,153,Osteopaths,,FALSE
+1980,2019,154,Personnel and labor relations workers,,FALSE
+1980,2019,159,"Tv cameraman, broadcast tech, audio/video engineer",,FALSE
+1980,2019,160,Pharmacists and druggists,,FALSE
+1980,2019,161,Photographers,,FALSE
+1980,2019,162,"Physicians, physician's assistants",,FALSE
+1980,2019,163,"Publicity/public relations writer, lobbyist",,FALSE
+1980,2019,164,Radio operators (including military),,FALSE
+1980,2019,165,"Recreation/group worker, housemother",,FALSE
+1980,2019,170,Religious workers,,FALSE
+1980,2019,171,Social and welfare workers,,FALSE
+1980,2019,172,"Economist, internat'l trade specialist, energy analyst, market research",,FALSE
+1980,2019,173,"Psychiatrist, psychologist",,FALSE
+1980,2019,174,"Statisticians, actuaries, and analysts",,FALSE
+1980,2019,175,"Social scientist NEC, linguist",,FALSE
+1980,2019,176,"Sanitarian, environmental health specialist",,FALSE
+1980,2019,177,Computer programmers,,FALSE
+1980,2019,180,"Sports instructor/official, lifeguard, river/hunting guide",,FALSE
+1980,2019,181,Surveyors,,FALSE
+1980,2019,182,"Teachers, elementary and secondary schools",,FALSE
+1980,2019,183,"Teachers, high school, NEC",,FALSE
+1980,2019,184,School teachers,,FALSE
+1980,2019,185,Medical and dental technicians,,FALSE
+1980,2019,186,X-ray technician,,FALSE
+1980,2019,190,Electrical and electronic technicians,,FALSE
+1980,2019,191,"Technician, engineering/physical science NEC, inventor",,FALSE
+1980,2019,192,"Technician, laboratory, health technologist",,FALSE
+1980,2019,193,"Therapist, physical/speech, audiologist, masseur/masseuse",,FALSE
+1980,2019,194,"Veterinarian, veterinarian's assistant",,FALSE
+1980,2019,195,Professional and technical workers NEC,,FALSE
+1980,2019,196,Student 18 and older,,FALSE
+1980,2019,200,Farmers NEC,,FALSE
+1980,2019,201,Orchardists,,FALSE
+1980,2019,202,Nursery owners/workers,,FALSE
+1980,2019,203,"Ranchers (cattle, sheep, etc.)",,FALSE
+1980,2019,204,Dairy farmers,,FALSE
+1980,2019,205,Wheat and grain farmers,,FALSE
+1980,2019,206,Egg/poultry farmers and distributors,,FALSE
+1980,2019,207,Beekeeper,,FALSE
+1980,2019,208,"Fish farmer, shellfish farmer, hatchery worker",,FALSE
+1980,2019,222,Farm managers,,FALSE
+1980,2019,249,Florists,,FALSE
+1980,2019,250,Store buyers and department heads,,FALSE
+1980,2019,251,Buyers and shippers of farm products and produce brokers,,FALSE
+1980,2019,252,Railroad conductors,,FALSE
+1980,2019,253,Credit manager,,FALSE
+1980,2019,254,"floor man/manager, retail store manager",,FALSE
+1980,2019,255,City and civil service employees,,FALSE
+1980,2019,260,Public administration inspectors,,FALSE
+1980,2019,262,Building managers and superintendents,,FALSE
+1980,2019,265,"Ship's officers, pilots, pursers, and engineers",,FALSE
+1980,2019,270,Public administrators and officials NEC,,FALSE
+1980,2019,275,Lodge/society/union officials,,FALSE
+1980,2019,280,Postmasters,,FALSE
+1980,2019,285,"Purchasing agents and buyers NEC, sales managers",,FALSE
+1980,2019,289,Aircraft manager,,FALSE
+1980,2019,290,"Managers, officials, and proprietors NEC",,FALSE
+1980,2019,291,Gas station/garage owners and attendants,,FALSE
+1980,2019,292,"Lumber company managers, owners, and workers",,FALSE
+1980,2019,294,"Boeing officials, managers, and supervisors",,FALSE
+1980,2019,295,Fuel oil dealers and workers,,FALSE
+1980,2019,296,Pet shop owner/worker,,FALSE
+1980,2019,297,"Furniture store owners, managers, and clerks",,FALSE
+1980,2019,298,Grocers and grocery clerks,,FALSE
+1980,2019,301,"Agent NEC, sports/modeling/entertainment agent",,FALSE
+1980,2019,302,Library assistants,,FALSE
+1980,2019,303,"Attendants, physicians and dentists offices",,FALSE
+1980,2019,304,Transportation baggagemen,,FALSE
+1980,2019,305,"Bankers, bank clerks, and managers",,FALSE
+1980,2019,310,Bookkeepers and payroll clerks,,FALSE
+1980,2019,312,Cashiers,,FALSE
+1980,2019,313,"Bill/account collector, billing clerk",,FALSE
+1980,2019,314,"Vehicle dispatchers and starters, and traffic managers",,FALSE
+1980,2019,315,"Express messenger, mail clerk",,FALSE
+1980,2019,320,File/records clerk (medical records clerk-303),,FALSE
+1980,2019,321,Adjusters and examiners,,FALSE
+1980,2019,323,Mail carriers,,FALSE
+1980,2019,324,"Messenger, courier, office boy",,FALSE
+1980,2019,325,Office machine/computer/bank proof operator,,FALSE
+1980,2019,333,Personnel/payroll/timekeeping clerk,,FALSE
+1980,2019,340,Postal clerks,,FALSE
+1980,2019,341,Receptionist,,FALSE
+1980,2019,342,Secretaries,,FALSE
+1980,2019,343,Shipping and receiving clerks,,FALSE
+1980,2019,345,Stenographers,,FALSE
+1980,2019,350,Stock clerks and storekeepers,,FALSE
+1980,2019,351,Telegraph messenger,,FALSE
+1980,2019,352,Telegraph operators,,FALSE
+1980,2019,353,Telephone operators,,FALSE
+1980,2019,354,"Ticket, station, express, and travel agents",,FALSE
+1980,2019,360,"Typist/word processor, data entry/keypunch operator",,FALSE
+1980,2019,361,Railroad clerks,,FALSE
+1980,2019,362,Boeing clerks,,FALSE
+1980,2019,363,Public utility workers,,FALSE
+1980,2019,364,Public utility supervisors and officials,,FALSE
+1980,2019,365,"Customer service clerk, NEC",,FALSE
+1980,2019,370,Clerks NEC,,FALSE
+1980,2019,380,"Sales representatives, travelling sales reps",,FALSE
+1980,2019,381,Auctioneer,,FALSE
+1980,2019,382,Demonstrators,,FALSE
+1980,2019,383,"Hucksters, peddlers, promoters",,FALSE
+1980,2019,384,Lumber sales reps,,FALSE
+1980,2019,385,"Insurance agents, brokers, underwriters, and appraisers",,FALSE
+1980,2019,386,Car sales reps,,FALSE
+1980,2019,387,"Mink rancher/trapper, fur trader, furrier",,FALSE
+1980,2019,388,Chemical/paint salesman,,FALSE
+1980,2019,390,Newsboys,,FALSE
+1980,2019,393,"Real estate agents, brokers, developers, and appraisers",,FALSE
+1980,2019,395,Stocks and bonds sales,,FALSE
+1980,2019,396,Sales clerks NEC,,FALSE
+1980,2019,400,Carpet makers and layers,,FALSE
+1980,2019,401,Bakers,,FALSE
+1980,2019,402,Blacksmiths,,FALSE
+1980,2019,403,Boilermakers,,FALSE
+1980,2019,404,"Bookbinder, bookbindery worker",,FALSE
+1980,2019,405,"Brickmasons, stonemasons, and tile setters",,FALSE
+1980,2019,406,Building and construction contractors,,FALSE
+1980,2019,407,Boatbuilders,,FALSE
+1980,2019,408,Railroad contractors,,FALSE
+1980,2019,409,Shipwrights,,FALSE
+1980,2019,410,Cabinetmakers,,FALSE
+1980,2019,411,Carpenters,,FALSE
+1980,2019,412,Fabric workers,,FALSE
+1980,2019,413,Cement and concrete finishers,,FALSE
+1980,2019,414,Compositors and typesetters,,FALSE
+1980,2019,415,"Cranemen, derrickmen, and hoistmen",,FALSE
+1980,2019,416,Oil well drillers,,FALSE
+1980,2019,417,Oil refinery workers,,FALSE
+1980,2019,418,"Electricians, atomic energy",,FALSE
+1980,2019,419,"Electricians, boeing or airplane",,FALSE
+1980,2019,420,Decorators and window dressers,,FALSE
+1980,2019,421,Electricians,,FALSE
+1980,2019,422,"Electricians, shipyard",,FALSE
+1980,2019,423,Electrotypers and sterotypers,,FALSE
+1980,2019,424,Engraver (photoengraver-695),,FALSE
+1980,2019,425,"Road graders, pavers, machine operators, and excavators",,FALSE
+1980,2019,426,Water well drillers,,FALSE
+1980,2019,427,Railroad foremen,,FALSE
+1980,2019,429,"Construction foremen, etc. NEC",,FALSE
+1980,2019,430,Foremen NEC,,FALSE
+1980,2019,431,Forgemen and hammermen,,FALSE
+1980,2019,434,Glaziers,,FALSE
+1980,2019,435,Smelter workers,,FALSE
+1980,2019,436,Fiberglass worker,,FALSE
+1980,2019,437,"Plastics laminator, worker",,FALSE
+1980,2019,444,"Log/lumber inspectors, scalers, graders, and timber cruisers",,FALSE
+1980,2019,445,"Inspectors, machinery",,FALSE
+1980,2019,446,"Inspectors, boeing",,FALSE
+1980,2019,447,Railroad inspectors,,FALSE
+1980,2019,448,"Inspectors, construction",,FALSE
+1980,2019,450,Inspectors NEC,,FALSE
+1980,2019,451,"Jewelers, watchmakers, gold and silversmiths, locksmiths",,FALSE
+1980,2019,452,"Jobsetters, metal",,FALSE
+1980,2019,453,Telegraph/telephone/power line workers,,FALSE
+1980,2019,454,Locomotive engineers,,FALSE
+1980,2019,455,Logging engineers,,FALSE
+1980,2019,459,Telephone installers and repairers,,FALSE
+1980,2019,460,Locomotive firemen,,FALSE
+1980,2019,461,Military machinist,,FALSE
+1980,2019,462,Manufacturing workers,,FALSE
+1980,2019,464,Logging machinists and mechanics,,FALSE
+1980,2019,465,Machinists NEC,,FALSE
+1980,2019,466,"Machinists, boeing",,FALSE
+1980,2019,467,"Machinists, shipyard",,FALSE
+1980,2019,468,"Maintenance workers, boeing",,FALSE
+1980,2019,469,Railroad workers NEC,,FALSE
+1980,2019,470,Air conditioning/heating/refrigeration mechanics & repair workers,,FALSE
+1980,2019,471,Airplane mechanics and repair workers,,FALSE
+1980,2019,472,Automobile mechanics and repair workers,,FALSE
+1980,2019,473,Office machine mechanics and repair workers,,FALSE
+1980,2019,474,Radio/television mechanics and repair workers,,FALSE
+1980,2019,475,Railroad/car shop mechanics and repair workers,,FALSE
+1980,2019,476,"Maintenance--lumber, plywood, veneer, etc.",,FALSE
+1980,2019,477,"Tire recappers and repairers, and rubber welders",,FALSE
+1980,2019,479,Body and fender repair workers and auto painters,,FALSE
+1980,2019,480,Mechanics and repair workers NEC,,FALSE
+1980,2019,490,Grain and feed mill workers,,FALSE
+1980,2019,491,Millwrights,,FALSE
+1980,2019,492,Metal molders,,FALSE
+1980,2019,493,Motion picture projectionists,,FALSE
+1980,2019,494,"Optician, lens grinder/polisher",,FALSE
+1980,2019,495,"Painters, construction and maintenance",,FALSE
+1980,2019,496,County and city road construction and maintenance workers,,FALSE
+1980,2019,500,Paper/pulp mill workers,,FALSE
+1980,2019,501,Paper hangers and decorators (painters),,FALSE
+1980,2019,502,"Pattern and model makers, except paper",,FALSE
+1980,2019,504,"Piano/organ tuner, repairman",,FALSE
+1980,2019,505,Plasterers and lathers,,FALSE
+1980,2019,507,Shipyard workers and shipfitters,,FALSE
+1980,2019,508,Steamfitters,,FALSE
+1980,2019,509,"Atomic steamfitters, pipefitters, etc.",,FALSE
+1980,2019,510,Plumbers and pipefitters,,FALSE
+1980,2019,511,Newspaper worker NEC,,FALSE
+1980,2019,512,Printing pressmen and plate printers,,FALSE
+1980,2019,513,"Rollers and roll hands, metal",,FALSE
+1980,2019,514,Roofers and slaters,,FALSE
+1980,2019,515,"Shoemakers, shoe repairers, and leather workers",,FALSE
+1980,2019,520,Stationary engineers,,FALSE
+1980,2019,521,Stonecutters and stonecarvers,,FALSE
+1980,2019,523,Structural metal workers,,FALSE
+1980,2019,524,Tailors,,FALSE
+1980,2019,525,"Tinsmiths, coppersmiths, and sheet metal workers",,FALSE
+1980,2019,526,Aluminum workers,,FALSE
+1980,2019,527,Cannery and food processing workers,,FALSE
+1980,2019,528,"Floor workers (covering, hardwood, linoleum, etc.)",,FALSE
+1980,2019,530,Tool and die makers and setters,,FALSE
+1980,2019,535,Upholsterers,,FALSE
+1980,2019,545,Craftsmen and kindred workers NEC,,FALSE
+1980,2019,548,"Officers and enlisted personnel, Coast Guard",,FALSE
+1980,2019,549,"Officers and enlisted personnel, Marine Corps",,FALSE
+1980,2019,550,"Officers and enlisted personnel, Airforce",,FALSE
+1980,2019,551,Armed forces,,FALSE
+1980,2019,552,"Officers and enlisted personnel, Army",,FALSE
+1980,2019,553,Merchant marine,,FALSE
+1980,2019,554,Civilian employee of armed forces,,FALSE
+1980,2019,555,Army/Air Force/Marine Corps officers and enlisted personnel,,FALSE
+1980,2019,557,Boeing workers NEC,,FALSE
+1980,2019,558,Atomic energy workers NEC (Hanford),,FALSE
+1980,2019,559,"Nuclear workers, not Hanford",,FALSE
+1980,2019,601,Apprentice auto mechanics,,FALSE
+1980,2019,602,Apprentice bricklayers and masons,,FALSE
+1980,2019,604,Apprentice electricians,,FALSE
+1980,2019,605,Apprentice machinists and toolmakers,,FALSE
+1980,2019,610,"Apprentice mechanics, except automobile",,FALSE
+1980,2019,612,Apprentice plumbers and pipefitters,,FALSE
+1980,2019,613,Apprentice building trades NEC,,FALSE
+1980,2019,614,Apprentice metalworking trades NEC,,FALSE
+1980,2019,615,Apprentice printing trades,,FALSE
+1980,2019,620,"Apprentice, other specified trades",,FALSE
+1980,2019,621,"Apprentice, trade not specified",,FALSE
+1980,2019,630,Asbestos and insulation workers,,FALSE
+1980,2019,631,Assemblers and factory workers,,FALSE
+1980,2019,634,Blasters and powdermen,,FALSE
+1980,2019,635,"Boatman, canalman, lockkeeper, irrigation worker",,FALSE
+1980,2019,640,Railroad brakemen,,FALSE
+1980,2019,641,Bus drivers,,FALSE
+1980,2019,642,"Chainmen, rodmen, axmen, surveying",,FALSE
+1980,2019,643,"Checkers, examiners and inspectors, manufacturing",,FALSE
+1980,2019,645,bus/street railway conductor (railroad conductor-252),,FALSE
+1980,2019,650,Delivery and route workers,,FALSE
+1980,2019,651,"Dressmakers, seamstresses, and tailors",,FALSE
+1980,2019,652,Dyers,,FALSE
+1980,2019,653,"Filers, grinders and polishers, metal",,FALSE
+1980,2019,654,Fruit/nut/vegetable graders and packers,,FALSE
+1980,2019,655,"Dairy workers, ice cream and cheesemakers",,FALSE
+1980,2019,656,Milk route delivery workers,,FALSE
+1980,2019,657,"Parts finishers, Boeing",,FALSE
+1980,2019,670,"Furnacemen, smeltermen and pourers",,FALSE
+1980,2019,671,"Heaters, metal",,FALSE
+1980,2019,672,Other smelter workers,,FALSE
+1980,2019,673,"Knitters, loopers, toppers",,FALSE
+1980,2019,674,Laundry/dry cleaning operatives,,FALSE
+1980,2019,675,Meatcutters and butchers,,FALSE
+1980,2019,676,Heavy equipment operators,,FALSE
+1980,2019,677,Slaughter house butchers,,FALSE
+1980,2019,678,Seafood cannery sawyer/processor/worker,,FALSE
+1980,2019,680,Milliner,,FALSE
+1980,2019,685,Mine operatives and laborers,,FALSE
+1980,2019,690,"Motorman, mine/factory",,FALSE
+1980,2019,691,"Street, subway, elevated railway motormen",,FALSE
+1980,2019,692,"Oilers and greasers, except auto",,FALSE
+1980,2019,693,Packers and wrappers NEC,,FALSE
+1980,2019,694,Painters,,FALSE
+1980,2019,695,Photographic process workers,,FALSE
+1980,2019,701,Power station operators,,FALSE
+1980,2019,702,Diver,,FALSE
+1980,2019,703,"Sailors, deckhands, and seamen NEC",,FALSE
+1980,2019,704,"Sawyers, sawmill workers and saw filers",,FALSE
+1980,2019,705,"Sewers, stitchers, cutters",,FALSE
+1980,2019,706,Plywood workers,,FALSE
+1980,2019,710,Spinners,,FALSE
+1980,2019,711,Rope makers,,FALSE
+1980,2019,712,Stationary firemen,,FALSE
+1980,2019,713,Railroad switchmen,,FALSE
+1980,2019,714,Taxicab drivers and chauffeurs,,FALSE
+1980,2019,715,Truck and tractor drivers,,FALSE
+1980,2019,716,Fuel oil truck drivers,,FALSE
+1980,2019,717,Sawmill truck drivers,,FALSE
+1980,2019,718,Lumber and logging truck drivers,,FALSE
+1980,2019,719,"Moving, transfer and storage workers and truck drivers",,FALSE
+1980,2019,720,Weavers,,FALSE
+1980,2019,721,Welders and flame cutters,,FALSE
+1980,2019,722,"Operative and kindred worker NEC, dowser",,FALSE
+1980,2019,723,"Parks/game/fisheries dept ranger, warden, worker",,FALSE
+1980,2019,724,"Tree farmers, forest service and parks department workers",,FALSE
+1980,2019,725,Sandblasters,,FALSE
+1980,2019,726,Ordnance plant workers,,FALSE
+1980,2019,810,Hospital/institution attendants,,FALSE
+1980,2019,811,Hospital/nursing home/convalescent center/clinic manager/admin/owner,,FALSE
+1980,2019,812,"Recreation/amusement attendants (cardroom, poolhall, carnival)",,FALSE
+1980,2019,814,Barbers,,FALSE
+1980,2019,815,Bartenders,,FALSE
+1980,2019,816,"Cocktail bar/tavern owner, operators, and workers",,FALSE
+1980,2019,817,"Restaurant owners, managers, and workers",,FALSE
+1980,2019,818,Brewery workers,,FALSE
+1980,2019,819,Hotel/motel owners and managers,,FALSE
+1980,2019,820,"Bootblack, shoeshine operator",,FALSE
+1980,2019,821,Hotel/motel maids and housekeepers,,FALSE
+1980,2019,822,"Day care provider, babysitter, preschool teacher, foster parent",,FALSE
+1980,2019,824,Charwomen and cleaners,,FALSE
+1980,2019,825,"Cooks, candymakers, and chefs",,FALSE
+1980,2019,826,Dishwashers,,FALSE
+1980,2019,827,Lumber camp cooks,,FALSE
+1980,2019,830,Counter/fountain/concession worker,,FALSE
+1980,2019,831,Elevator operator,,FALSE
+1980,2019,832,Housekeepers and stewards (in private household),,FALSE
+1980,2019,833,Window cleaners and wall washers,,FALSE
+1980,2019,834,"Janitors, maintenance workers, and sextons",,FALSE
+1980,2019,835,Kitchen workers (not private household),Code 835 had 2 near-duplicate options. Deduplicating and only keeping this row,TRUE
+1980,2019,836,School custodians,,FALSE
+1980,2019,840,Midwife,,FALSE
+1980,2019,841,Porters,,FALSE
+1980,2019,842,Licensed practical nurse (LPN),,FALSE
+1980,2019,843,Hairdressers and cosmetologists,,FALSE
+1980,2019,849,Fumigation worker (indoors),,FALSE
+1980,2019,850,Firefighters and fire protection workers,,FALSE
+1980,2019,851,"Guards, watchmen, and doorkeepers",,FALSE
+1980,2019,852,Marshals and constables,,FALSE
+1980,2019,853,Police officers,,FALSE
+1980,2019,854,Sheriffs and bailiffs,,FALSE
+1980,2019,855,"Maintenance and watchmen, lumber and logging",,FALSE
+1980,2019,856,Atomic energy plants watchmen and guards,,FALSE
+1980,2019,860,Bridge tenders and crossing watchmen,,FALSE
+1980,2019,874,"Usher, recreation/amusment",,FALSE
+1980,2019,875,Waiters/waitresses,,FALSE
+1980,2019,890,Service worker NEC (except private household),,FALSE
+1980,2019,891,Garbage collectors,,FALSE
+1980,2019,892,"Junk dealers, secondhand store and salvage workers",,FALSE
+1980,2019,901,Farm foremen,,FALSE
+1980,2019,902,"Farm laborers, wage workers",,FALSE
+1980,2019,903,Unpaid family farm workers,,FALSE
+1980,2019,904,Farm caretakers,,FALSE
+1980,2019,905,Self-employed farm service,,FALSE
+1980,2019,906,Itinerant laborers,,FALSE
+1980,2019,907,Sheepherders and wool workers,,FALSE
+1980,2019,908,Housewives and househusbands,,FALSE
+1980,2019,909,Nuns,,FALSE
+1980,2019,960,"Carpenter's helpers, except logging and mining",,FALSE
+1980,2019,962,Fishermen and oysterers,,FALSE
+1980,2019,964,"Landscape gardeners, groundskeepers, and greenskeepers",,FALSE
+1980,2019,965,Longshoremen and stevedores,,FALSE
+1980,2019,966,Produce/seed/feed/grain company workers,,FALSE
+1980,2019,967,Flour mill employees,,FALSE
+1980,2019,970,Loggers,,FALSE
+1980,2019,971,Teamsters,,FALSE
+1980,2019,972,Truck driver helpers,,FALSE
+1980,2019,973,Warehouse workers,,FALSE
+1980,2019,974,"Woodworker, lumberyard worker",,FALSE
+1980,2019,975,Fruit/vegetable warehouse workers,,FALSE
+1980,2019,976,Fruit/vegetable inspectors,,FALSE
+1980,2019,980,Laborers NEC,,FALSE
+1980,2019,981,Railroad laborers,,FALSE
+1980,2019,982,Construction laborers NEC,,FALSE
+1980,2019,983,Orchard laborers,,FALSE
+1980,2019,984,Hod carriers,,FALSE
+1980,2019,985,Chemical company workers,,FALSE
+1980,2019,986,Pest control worker (outdoors),,FALSE
+1980,2019,995,Father not stated (single mother),,FALSE
+1980,2019,996,Child under 18 (not applicable),,FALSE
+1980,2019,997,"Disabled, institutionalized, unemployable persons",,FALSE
+1980,2019,998,Unemployed,,FALSE
+1980,2019,999,"Not stated or unknown, welfare recipient",,FALSE
