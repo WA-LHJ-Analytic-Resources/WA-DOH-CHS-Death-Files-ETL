@@ -50,3 +50,6 @@ rsconnect/
 
 
 # Define Project-Specific .gitignore here ----
+
+## Data Outputs
+Data/*
