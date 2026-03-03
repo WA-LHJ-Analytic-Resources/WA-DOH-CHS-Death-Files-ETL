@@ -46,3 +46,12 @@ collect_unmapped <- function(df_values, file_row) {
 load_crosswalk <- function(filepath) {
   cw <- readr::read_csv(file = filepath, show_col_types = FALSE)
 }
+
+# zero_pad_2() -----
+
+zero_pad_2 <- function(x) {
+  x %>%
+    str_trim() %>% # remove incidental whitespace
+    na_if("") %>% # treat empty strings as NA
+    str_pad(width = 2, pad = "0", side = "left") # left-pad to 2 characters
+}
