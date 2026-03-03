@@ -39,3 +39,10 @@ collect_unmapped <- function(df_values, file_row) {
     tibble()
   }
 }
+
+
+# load_crosswalk() -----
+
+load_crosswalk <- function(filepath) {
+  cw <- readr::read_csv(file = filepath, show_col_types = FALSE)
+}
