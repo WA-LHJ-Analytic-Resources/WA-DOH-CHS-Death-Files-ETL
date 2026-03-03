@@ -6,11 +6,12 @@ files <- identify_death_files(folder = params$root_folder)
 
 death_stat_files <- files %>%
   filter(
-    file_type == "stat",
+    file_type == "Stat",
     file_status == "F",
     file_year %in% c(params$years_bedrock, params$years_whales)
   ) %>%
-  mutate(vintage_label = glue("{system}_{file_year}"))
+  mutate(vintage_label = glue("{system}_{file_year}")) %>%
+  relocate(vintage_label, .before = everything())
 
 # Harmonize Data Vintages -----
 
