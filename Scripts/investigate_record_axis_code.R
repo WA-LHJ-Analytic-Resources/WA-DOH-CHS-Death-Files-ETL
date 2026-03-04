@@ -84,5 +84,6 @@ br15 <- readxl::read_excel(
 
 # Combine All ----
 
-br <- bind_rows(br10, br11, br12, br13, br14, br15)
+br <- bind_rows(br10, br11, br12, br13, br14, br15) %>%
+  relocate(file_year, .before = everything())
 rm(br10, br11, br12, br13, br14, br15)
