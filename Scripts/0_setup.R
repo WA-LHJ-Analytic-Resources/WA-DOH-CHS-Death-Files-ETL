@@ -8,7 +8,9 @@ file.edit(".Renviron") # Add RAW_DEATH_FILES_FOLDER (the filepath where all raw 
 # Install/Load R Packages
 pacman::p_load(
   arrow,
+  DBI,
   dplyr,
+  duckdb,
   forcats,
   fs,
   glue,
@@ -37,6 +39,11 @@ params$code_sets <- list() # to store 4_Code_Set_Expansion lookup tables
 params$root_folder <- Sys.getenv("RAW_DEATH_FILES_FOLDER")
 params$output_folder <- Sys.getenv("HARMONIZED_DEATH_FILE_FOLDER")
 
+## Define DuckDB Filepath
+params$duckdb_filepath <- here(
+  params$output_folder,
+  "Harmonized_Death_Data.duckdb"
+)
 
 ## Define Crosswalk Filepaths
 params$cw_filepath <- here::here("Resources", "Crosswalks")
