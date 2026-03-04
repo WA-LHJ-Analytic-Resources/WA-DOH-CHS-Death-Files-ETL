@@ -35,6 +35,8 @@ list.files(
 params <- list()
 params$code_sets <- list() # to store 4_Code_Set_Expansion lookup tables
 params$root_folder <- Sys.getenv("RAW_DEATH_FILES_FOLDER")
+params$output_folder <- Sys.getenv("HARMONIZED_DEATH_FILE_FOLDER")
+
 
 ## Define Crosswalk Filepaths
 params$cw_filepath <- here::here("Resources", "Crosswalks")
