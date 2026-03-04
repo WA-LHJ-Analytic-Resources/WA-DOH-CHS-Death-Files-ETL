@@ -240,7 +240,7 @@ dbWriteTable(
 # dbRemoveTable(con, "harmonized_data_raw")
 
 ## Disconnect from DuckDB
-# dbDisconnect(con) # Close database connection after finishing run all of R script
+dbDisconnect(con) # Close database connection after finishing run all of R script
 
 # Clean Up -----
 # rm(harmonized_data_clean, harmonized_data_final)
