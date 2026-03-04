@@ -36,10 +36,6 @@ params <- list()
 params$code_sets <- list() # to store 4_Code_Set_Expansion lookup tables
 params$root_folder <- Sys.getenv("RAW_DEATH_FILES_FOLDER")
 
-## Data Vintages (to process)
-params$years_bedrock <- 2010:2015
-params$years_whales <- 2016:2024 # EDIT BASED ON AVAILABLE WHALES DATA IN SECURE ACCESS WASHINGTON
-
 ## Define Crosswalk Filepaths
 params$cw_filepath <- here::here("Resources", "Crosswalks")
 params$codes_filepath <- here::here(params$cw_filepath, "4_Code_Set_Expansion")
