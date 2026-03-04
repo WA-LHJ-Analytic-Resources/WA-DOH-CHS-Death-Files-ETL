@@ -30,7 +30,9 @@ harmonized_output_list <- harmonize_all_vintages(
 
 
 ## Extract Harmomized Data & QA Report
-harmonized_data <- purrr::map_dfr(harmonized_output_list, "data") # Pull out and append all harmonized data vintages
+harmonized_data <- purrr::map_dfr(harmonized_output_list, "data") %>% # Pull out and append all harmonized data vintages
+  mutate(across(where(is.character), ~ stringi::stri_encode(., to = "UTF-8"))) # Ensure all character variables are UTF-8 encoded
+
 qa_unmapped_codes_report <- purrr::map_dfr(harmonized_output_list, "qa") # Pull out and append all QA reports for each data vintage
 
 # Save Raw Harmonized Data -----
@@ -38,8 +40,11 @@ qa_unmapped_codes_report <- purrr::map_dfr(harmonized_output_list, "qa") # Pull 
 ## Connect to DuckDB database
 con <- dbConnect(duckdb::duckdb(), dbdir = params$duckdb_filepath)
 
-## Save Harmonized Data to Table
+## Save Raw Harmonized Data to Table
 dbWriteTable(con, "harmonized_data_raw", harmonized_data)
 
 ## Disconnect from DuckDB
 dbDisconnect(con) # Close database connection after finishing run all of R script
+
+# Clean Up -----
+rm(harmonized_data, harmonized_output_list)
