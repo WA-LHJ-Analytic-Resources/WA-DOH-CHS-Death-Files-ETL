@@ -2,15 +2,19 @@
 
 # Identify All Death Statistical File Vintages -----
 
-files <- identify_death_files(folder = params$root_folder)
+files <- identify_death_files(folder = params$raw_data_folder)
 
 death_stat_files <- files %>%
+  # Filter to Finalized Death Statistical Files
   filter(
-    file_type == "stat",
-    file_status == "F",
-    file_year %in% c(params$years_bedrock, params$years_whales)
+    file_type == "Stat",
+    file_ext %in% c("csv", "xlsx"), # avoid including documentation/PDFs
+    file_status == "F" # Filter data vintages only (for now)
   ) %>%
-  mutate(vintage_label = glue("{system}_{file_year}"))
+  # Add Vintage Label tag
+  mutate(vintage_label = glue("{system}_{file_year}")) %>%
+  # Move Vintage Label to 1st position
+  relocate(vintage_label, .before = everything())
 
 # Harmonize Data Vintages -----
 
@@ -26,33 +30,21 @@ harmonized_output_list <- harmonize_all_vintages(
 
 
 ## Extract Harmomized Data & QA Report
-harmonized_data <- purrr::map_dfr(harmonized_output_list, "data") # Pull out and append all harmonized data vintages
+harmonized_data <- purrr::map_dfr(harmonized_output_list, "data") %>% # Pull out and append all harmonized data vintages
+  mutate(across(where(is.character), ~ stringi::stri_encode(., to = "UTF-8"))) # Ensure all character variables are UTF-8 encoded
+
 qa_unmapped_codes_report <- purrr::map_dfr(harmonized_output_list, "qa") # Pull out and append all QA reports for each data vintage
 
 # Save Raw Harmonized Data -----
 
-## TBD - Still being developed
+## Connect to DuckDB database
+con <- dbConnect(duckdb::duckdb(), dbdir = params$duckdb_filepath)
 
-## CSV
-# Pros: Familiar file format
-# Cons: Excel opening limit is ~1 million rows, not optimized for large data
-# harmonized_data %>% write_csv(x = ., file = "Data/harmonized_data.csv")
+## Save Raw Harmonized Data to Table
+dbWriteTable(con, "harmonized_data_raw", harmonized_data)
 
-## Parquet
-# Pros: Optimized for large data, coding language agnostic, can easily join/paritition data by year
-# Cons: A new file format, saves to whole directories, optimized for large data = lazy evaluation (maybe a new paradigm for folks)
-# Source: https://r4ds.hadley.nz/arrow.html
+## Disconnect from DuckDB
+dbDisconnect(con) # Close database connection after finishing run all of R script
 
-# arrow::write_dataset(
-#   dataset = harmonized_data,
-#   path = here::here("Data/Harmonized_Data"),
-#   format = "parquet",
-#   partitioning = c("system", "file_year"), # c("system", "file_year")
-#   basename_template = "death_statistical_{i}.parquet", # filename pattern
-#   hive_style = TRUE, # key=value/ subdirs (year=2020/…)
-#   existing_data_behavior = "overwrite" # "error" or "delete_matching"
-# )
-
-## DuckDB
-# Pros: 1 file...
-# Cons: Database connections may be new for folks...
+# Clean Up -----
+rm(harmonized_data, harmonized_output_list)

@@ -1,30 +1,30 @@
 # combine_code_columns.R
 
-#' Combine multiple columns into a single delimited string column
-#'
-#' @param df A data frame (or tibble).
-#' @param new_var Name of the output column to create (a string).
-#' @param input_cols Tidyselect specifying the input columns to combine.
-#'   e.g., c(col1, matches("^pattern_\\d+$"))
-#' @param sep Delimiter to use between values. Default ";"
-#' @param keep_source Logical: keep the source columns? Default TRUE.
-#' @param na_rm Logical: drop NA values before concatenation? Default TRUE.
-#'
-#' @return A data frame with the new combined column.
+combine_code_columns <- function(data, input_vars, output_var) {
+  # Capture tidyselect expression
+  input_vars_quo <- enquo(input_vars)
 
-combine_code_columns <- function(data, input_cols, new_var, sep = ";") {
+  # Resolve selected column names
+  selected_cols <- names(
+    tidyselect::eval_select(
+      expr = input_vars_quo,
+      data = data
+    )
+  )
+
+  # Build SQL concat_ws expression (DuckDB skips NULL automatically)
+  sql_expr <- paste0(
+    "regexp_replace(",
+    "concat_ws(';', ",
+    paste(selected_cols, collapse = ", "),
+    "), ",
+    "'(^;+|;+$)', ''",
+    ")"
+  )
+
+  # Create the output_var
   data %>%
     mutate(
-      across(
-        {{ input_cols }},
-        ~ na_if(str_trim(.), "")
-      )
-    ) %>%
-    tidyr::unite(
-      {{ new_var }},
-      {{ input_cols }},
-      sep = sep,
-      na.rm = TRUE,
-      remove = FALSE
+      !!output_var := sql(sql_expr)
     )
 }

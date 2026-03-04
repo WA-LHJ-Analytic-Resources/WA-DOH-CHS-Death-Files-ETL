@@ -1,8 +1,13 @@
 # 2_clean_harmonized_data.R
 
+# Load Raw Harmonized Data -----
+
+## Connect to DuckDB database
+con <- dbConnect(duckdb::duckdb(), dbdir = params$duckdb_filepath)
+
 # Clean Data -----
 
-harmonized_data_v2 <- harmonized_data %>%
+harmonized_data_clean <- tbl(con, "harmonized_data_raw") %>%
   ## Demographics
   mutate(
     age = as.numeric(age),
@@ -10,23 +15,23 @@ harmonized_data_v2 <- harmonized_data %>%
   ) %>%
   # Combine Cause of Death variables
   combine_code_columns(
-    input_cols = c(
+    input_vars = c(
       underlying_cod_code,
       matches("^record_axis_code_(?:[2-9]|1[0-9]|20)$")
     ),
-    new_var = all_cod_code
+    output_var = "all_cod_code"
   ) %>%
   # Combine ACME Nature of Injury flags variables
   combine_code_columns(
-    input_cols = matches("^acme_nature_of_injury_flag_(?:[1-9]|1[0-9]|20)$"),
-    new_var = all_acme_nature_of_injury_flag
+    input_vars = matches("^acme_nature_of_injury_flag_(?:[1-9]|1[0-9]|20)$"),
+    output_var = "all_acme_nature_of_injury_flag"
   ) %>%
   ## Format Code Variable Data Types (for joins)
   mutate(
     birthplace_country = as.numeric(birthplace_country),
     death_facility = as.numeric(death_facility),
     funeral_home_code = as.numeric(funeral_home_code),
-    occupation_milham = as.numeric(occupation_milham),
+    occupation_milham = as.numeric(occupation_milham)
   ) %>%
   mutate(
     across(
@@ -38,9 +43,11 @@ harmonized_data_v2 <- harmonized_data %>%
         death_county_wa_code,
         injury_county_wa_code
       ),
-      zero_pad_2 # Adds a "0" for single digit codes
+      zero_pad_2_across()
     )
   ) %>%
+  # Pull the data into RAM to allow for additional cleaning (not SQL compatible) & joins
+  collect() %>%
   # Parse Date Variables
   mutate(ingestion_ts = as_datetime(ingestion_ts)) %>%
   clean_date_vars(df = ., vars = params$date_vars)
@@ -48,7 +55,7 @@ harmonized_data_v2 <- harmonized_data %>%
 
 # Peform Joins (4_Code_Set_Expansion) -----
 
-harmonized_data_v3 <- harmonized_data_v2 %>%
+harmonized_data_clean <- harmonized_data_clean %>%
   # Expand Coded Variables
   ## Country Codes -----
   left_join(
@@ -158,7 +165,7 @@ harmonized_data_v3 <- harmonized_data_v2 %>%
 
 # Subset & Organize Cleaned Harmonized Data -----
 
-harmonized_data_v4 <- harmonized_data_v3 %>%
+harmonized_data_final <- harmonized_data_clean %>%
   # Subset & Reorder Columns
   select(
     # Data Vintage Variables
@@ -219,31 +226,21 @@ harmonized_data_v4 <- harmonized_data_v3 %>%
     certifier_designation,
     me_coroner_referred
   )
+# Save Clean Harmonized Data -----
 
-# Save Cleaned Harmonized Data -----
+## Save Cleaned Harmonized Data to Table
+dbWriteTable(
+  con,
+  "harmonized_data_clean",
+  harmonized_data_final,
+  overwrite = TRUE
+)
 
-## TBD - Still being developed
+## Remove Raw Harmonized Table
+# dbRemoveTable(con, "harmonized_data_raw")
 
-## CSV
-# Pros: Familiar file format
-# Cons: Excel opening limit is ~1 million rows, not optimized for large data
-# harmonized_data %>% write_csv(x = ., file = "Data/harmonized_data.csv")
+## Disconnect from DuckDB
+dbDisconnect(con) # Close database connection after finishing run all of R script
 
-## Parquet
-# Pros: Optimized for large data, coding language agnostic, can easily join/paritition data by year
-# Cons: A new file format, saves to whole directories, optimized for large data = lazy evaluation (maybe a new paradigm for folks)
-# Source: https://r4ds.hadley.nz/arrow.html
-
-# arrow::write_dataset(
-#   dataset = harmonized_data,
-#   path = here::here("Data/Harmonized_Data"),
-#   format = "parquet",
-#   partitioning = c("system", "file_year"), # c("system", "file_year")
-#   basename_template = "death_statistical_{i}.parquet", # filename pattern
-#   hive_style = TRUE, # key=value/ subdirs (year=2020/…)
-#   existing_data_behavior = "overwrite" # "error" or "delete_matching"
-# )
-
-## DuckDB
-# Pros: 1 file...
-# Cons: Database connections may be new for folks...
+# Clean Up -----
+# rm(harmonized_data_clean, harmonized_data_final)

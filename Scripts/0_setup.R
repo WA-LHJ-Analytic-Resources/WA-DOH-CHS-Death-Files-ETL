@@ -8,18 +8,21 @@ file.edit(".Renviron") # Add RAW_DEATH_FILES_FOLDER (the filepath where all raw 
 # Install/Load R Packages
 pacman::p_load(
   arrow,
-  here,
+  DBI,
+  dplyr,
+  duckdb,
   forcats,
-  janitor,
   fs,
   glue,
-  tidyverse,
-  dplyr,
+  here,
+  janitor,
   lubridate,
-  stringr,
   readr,
   rio,
-  digest # for stable row_id hashing
+  stringi,
+  stringr,
+  tictoc,
+  tidyverse
 )
 
 # Load All Custom functions
@@ -34,11 +37,14 @@ list.files(
 # Define Parameters -----
 params <- list()
 params$code_sets <- list() # to store 4_Code_Set_Expansion lookup tables
-params$root_folder <- Sys.getenv("RAW_DEATH_FILES_FOLDER")
+params$raw_data_folder <- Sys.getenv("RAW_DEATH_FILES_FOLDER")
+params$output_folder <- Sys.getenv("HARMONIZED_DEATH_FILE_FOLDER")
 
-## Data Vintages (to process)
-params$years_bedrock <- 2010:2015
-params$years_whales <- 2016:2024 # EDIT BASED ON AVAILABLE WHALES DATA IN SECURE ACCESS WASHINGTON
+## Define DuckDB Filepath
+params$duckdb_filepath <- here(
+  params$output_folder,
+  "Harmonized_Death_Data.duckdb"
+)
 
 ## Define Crosswalk Filepaths
 params$cw_filepath <- here::here("Resources", "Crosswalks")
@@ -74,4 +80,4 @@ params$date_vars <- c(
   }
 }
 
-rm(code_sets)
+rm(code_sets, set)

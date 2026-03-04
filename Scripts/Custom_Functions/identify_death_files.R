@@ -1,11 +1,11 @@
 # identify_death_files.R
 
-identify_death_files <- function(folder) {
+identify_death_files <- function(folder, data_only = TRUE) {
   # Step 0: Fix 2012 Death Statistical File Naming Convention
-  if (file_exists(here::here(folder, "raw", "stat", "DeathStat2012.csv"))) {
+  if (file_exists(here::here(folder, "DeathStat2012.csv"))) {
     fs::file_move(
-      path = here::here(folder, "raw", "stat", "DeathStat2012.csv"), # WA DOH Forgot the "F" in the file name for Finalized
-      new_path = here::here(folder, "raw", "stat", "DeathStatF2012.csv") # Add the "F" to the file name for Finalized
+      path = here::here(folder, "DeathStat2012.csv"), # WA DOH Forgot the "F" in the file name for Finalized
+      new_path = here::here(folder, "DeathStatF2012.csv") # Add the "F" to the file name for Finalized
     )
   }
 
@@ -15,7 +15,7 @@ identify_death_files <- function(folder) {
   # Step 2: Build the 'files' tibble
   files <- tibble(
     file_name = path_file(paths), # just the file name
-    file_type = str_to_lower(path_file(path_dir(paths))), # name of the parent subfolder
+    file_type = str_extract(file_name, pattern = "Lit|Names|Stat|Geo"), # Extract the Death Certificate File Type from the file_name (options: Lit, Names, Stat, Geo)
     file_location = paths, # full path
     stringsAsFactors = FALSE
   ) %>%
@@ -25,12 +25,21 @@ identify_death_files <- function(folder) {
       file_ext = path_ext(file_name)
     )
 
-  # Step 3: Add File Year & File Status to "files" tibble
+  # (Optional) Step 3: Remove Documentation-related files
+  if (data_only == TRUE) {
+    files <- files %>%
+      filter(file_ext %in% c("csv", "xlsx")) %>% # Add more death data file formats here (if there are more in the future)
+      filter(
+        !str_detect(file_name, "Death Statistical Dictionary and Crosswalk")
+      )
+  }
+
+  # Step 4: Add File Year & File Status to "files" tibble
   files <- files %>%
     mutate(
       ## Create file_year via detecting 4 digit strings within the file_name, convert it to numeric
       file_year = str_extract(file_name, pattern = "[:digit:]{4}"),
-      file_year = as.numeric(file_year),
+      file_year = as.integer(file_year),
       ## Extract Last Few Characters from file_name_no_ext
       second_last_char = str_sub(file_name_no_ext, -2, -2),
       third_last_char = str_sub(file_name_no_ext, -3, -3),
