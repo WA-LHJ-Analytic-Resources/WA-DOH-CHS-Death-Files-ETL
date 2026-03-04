@@ -1,9 +1,12 @@
 # investigate_record_axis_code.R
 ## Note: Investigates any discrepancies between record_axis_code_1 and underlying_cod_code
 
-# harmonized_data -----
+# Raw Harmonized Data -----
 
-TEST <- harmonized_data %>%
+## Connect to DuckDB database
+con <- dbConnect(duckdb::duckdb(), dbdir = params$duckdb_filepath)
+
+TEST <- tbl(con, "harmonized_data_raw") %>% # Drawing from harmonized_data_raw to avoid having any discrepancies due to 2_clean_harmonized_data.R
   select(
     vintage_label,
     state_file_number,
@@ -11,7 +14,8 @@ TEST <- harmonized_data %>%
     underlying_cod_code,
     record_axis_code_1
   ) %>%
-  filter(underlying_cod_code != record_axis_code_1)
+  filter(underlying_cod_code != record_axis_code_1) %>%
+  collect()
 
 # Raw BEDROCK FILES ----
 
@@ -86,4 +90,9 @@ br15 <- readxl::read_excel(
 
 br <- bind_rows(br10, br11, br12, br13, br14, br15) %>%
   relocate(file_year, .before = everything())
-rm(br10, br11, br12, br13, br14, br15)
+
+# Clean Up -----
+# rm(br10, br11, br12, br13, br14, br15)
+
+## Disconnect from DuckDB
+dbDisconnect(con) # Close database connection after finishing run all of R script
