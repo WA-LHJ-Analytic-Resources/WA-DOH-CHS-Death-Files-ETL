@@ -19,6 +19,7 @@ pacman::p_load(
   lubridate,
   readr,
   rio,
+  stringi,
   stringr,
   tictoc,
   tidyverse
