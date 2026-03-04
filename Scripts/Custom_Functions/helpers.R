@@ -49,9 +49,12 @@ load_crosswalk <- function(filepath) {
 
 # zero_pad_2() -----
 
-zero_pad_2 <- function(x) {
-  x %>%
-    str_trim() %>% # remove incidental whitespace
-    na_if("") %>% # treat empty strings as NA
-    str_pad(width = 2, pad = "0", side = "left") # left-pad to 2 characters
+zero_pad_2_across <- function() {
+  ~ sql(
+    paste0(
+      "lpad(NULLIF(trim(",
+      cur_column(),
+      "), ''), 2, '0')"
+    )
+  )
 }
