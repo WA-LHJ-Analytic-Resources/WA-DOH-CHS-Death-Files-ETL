@@ -1,6 +1,6 @@
 # identify_death_files.R
 
-identify_death_files <- function(folder) {
+identify_death_files <- function(folder, data_only = TRUE) {
   # Step 0: Fix 2012 Death Statistical File Naming Convention
   if (file_exists(here::here(folder, "DeathStat2012.csv"))) {
     fs::file_move(
@@ -25,7 +25,16 @@ identify_death_files <- function(folder) {
       file_ext = path_ext(file_name)
     )
 
-  # Step 3: Add File Year & File Status to "files" tibble
+  # (Optional) Step 3: Remove Documentation-related files
+  if (data_only == TRUE) {
+    files <- files %>%
+      filter(file_ext %in% c("csv", "xlsx")) %>% # Add more death data file formats here (if there are more in the future)
+      filter(
+        !str_detect(file_name, "Death Statistical Dictionary and Crosswalk")
+      )
+  }
+
+  # Step 4: Add File Year & File Status to "files" tibble
   files <- files %>%
     mutate(
       ## Create file_year via detecting 4 digit strings within the file_name, convert it to numeric
