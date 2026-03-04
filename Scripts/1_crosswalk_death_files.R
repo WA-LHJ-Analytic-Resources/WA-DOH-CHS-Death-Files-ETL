@@ -7,8 +7,8 @@ files <- identify_death_files(folder = params$root_folder)
 death_stat_files <- files %>%
   filter(
     file_type == "Stat",
-    file_status == "F",
-    file_year %in% c(params$years_bedrock, params$years_whales)
+    file_ext %in% c("csv", "xlsx"), # avoid including documentation/PDFs
+    file_status == "F" # Filter data vintages only (for now)
   ) %>%
   mutate(vintage_label = glue("{system}_{file_year}")) %>%
   relocate(vintage_label, .before = everything())
