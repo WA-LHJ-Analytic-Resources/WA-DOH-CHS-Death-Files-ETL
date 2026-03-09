@@ -1,7 +1,7 @@
 # 0_setup.R
 
 # Define Filepaths (.REnviron file) -----
-file.edit(".Renviron") # Add RAW_DEATH_FILES_FOLDER (the filepath where all raw WA DOH CHS Death files are stored after being downloaded from Secure Access Washington)
+file.edit(".Renviron") # Add RAW_DEATH_FILES_FOLDER (the filepath where all raw WA DOH CHS Death files are stored after being downloaded from Secure Access Washington) and HARMONIZED_DEATH_FILE_FOLDER (The file path where DuckDB File will be stored). Restart R session after creating .Renviron file for the first time.
 
 # R Packages & Custom Functions -----
 
