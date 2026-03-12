@@ -4,11 +4,9 @@ bcountry,birthplace_country,2010,2015,code_sets,See WA Country Codes
 city_occ,death_county_city_wa_code,2010,2015,code_sets,See WA County City Codes
 cnty_occ,death_county_wa_code,2010,2015,code_sets,See WA County City Codes
 facility,death_facility,2010,2015,code_sets,See Facility Codes
-occ_sam,occupation_milham,2010,2015,code_sets,See Milham Codes
 city_res,residence_county_city_wa_code,2010,2015,code_sets,See WA County City Codes
 cnty_res,residence_county_wa_code,2010,2015,code_sets,See WA County City Codes
 st_res,residence_state_fips_code,2010,2015,code_sets,See NCHS State Codes
-res_trbc,res_tribal_reservation_code,2010,2015,no_crosswalk_needed,See Tribal Reservation Codes
 city_inj,injury_county_city_wa_code,2010,2015,code_sets,See WA County City Codes
 cnty_inj,injury_county_wa_code,2010,2015,code_sets,See WA County City Codes
 funeralc,funeral_home_code,2010,2015,code_sets,See Funeral Home Codes
@@ -42,7 +40,6 @@ race_gua,race_guamanian_or_chamorro,2010,2015,demographics,
 race_sam,race_samoan,2010,2015,demographics,
 race_opi|race_o_pi,race_other_pacific_islander,2010,2015,demographics,
 race_oth,race_other,2010,2015,demographics,
-brg_race,bridge_race,2010,2015,demographics,
 sum_race,race_summary_code,2010,2015,demographics,
 race,race_calculation,2010,2015,demographics,
 st_occ,death_state,2010,2015,code_sets,
@@ -55,7 +52,6 @@ disptype|disp_type,disposition,2010,2015,incident_information,
 attclass|att_class,certifier_designation,2010,2015,incident_information,
 referred,me_coroner_referred,2010,2015,incident_information,
 autopsy,autopsy,2010,2015,incident_information,
-autopava|autop_ava,autopsy_available,2010,2015,incident_information,
 rinj_caus|r_inj_caus,manner,2010,2015,injury,
 injpnchs|inj_p_nchs,injury_acme_place,2010,2015,injury,
 injatwrk|inj_at_wrk,injury_at_work,2010,2015,injury,
