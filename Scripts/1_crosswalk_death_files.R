@@ -20,8 +20,8 @@ death_stat_files <- files %>%
 
 harmonized_output_list <- harmonize_all_vintages(
   files = death_stat_files,
-  variable_name_cw = params$variable_name_cw,
-  variable_code_cw = params$variable_code_cw,
+  variable_name_cw = params$variable_name_cw, # for 2_Schema_Harmonization
+  variable_code_cw = params$variable_code_cw, # for 3_Value_Harmonization
   keep_labels = FALSE, # TRUE: adds a {var}_label that provides the coded value descriptions; FALSE: {var}_label not created.
   present = "crosswalked", # "crosswalked": only BEDROCK-->WHALES converted codes provided; "both" original BEDROCK and BEDROCK-->WHALES codes provided.
   verbose = TRUE,
