@@ -71,7 +71,7 @@ params$date_vars <- c(
   params$variable_code_cw <- load_crosswalk(filepath = here(params$cw_filepath,"3_Value_Harmonization","variable_code_crosswalk.csv"))
 
   ## Code Sets (4_Code_Set_Expansion)
-  code_sets <- c("cemetery", "country", "facility", "fips", "funeral_home", "nchs_county", "nchs_state", "occupation_milham", "wa_county", "wa_county_city")
+  code_sets <- c("cemetery", "country", "facility", "fips", "funeral_home", "nchs_county", "nchs_state", "wa_county", "wa_county_city")
 
   for(set in code_sets){
 
