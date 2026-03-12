@@ -13,11 +13,6 @@ TRUE,autopsy,BEDROCK,1,Yes,WHALES,Y,Yes,NA,FALSE,incident_information
 TRUE,autopsy,BEDROCK,2,No,WHALES,N,No,NA,FALSE,incident_information
 TRUE,autopsy,BEDROCK,9,Unknown/Not Reported,WHALES,U,Unknown,NA,FALSE,incident_information
 TRUE,autopsy,BEDROCK,0,NA,WHALES,U,Unknown,No mention of this code in the Data Dictionary…,TRUE,incident_information
-TRUE,autopsy_available,BEDROCK,1,Yes,WHALES,Y,Yes,NA,FALSE,incident_information
-TRUE,autopsy_available,BEDROCK,2,No,WHALES,N,No,NA,FALSE,incident_information
-TRUE,autopsy_available,BEDROCK,8,Not Reported,WHALES,X,Not Reported,Determined from STATA Script,TRUE,incident_information
-TRUE,autopsy_available,BEDROCK,9,Unknown,WHALES,U,Unknown,Determined from STATA Script,TRUE,incident_information
-TRUE,autopsy_available,BEDROCK,0,NA,WHALES,U,Unknown,No mention of this code in the Data Dictionary…,TRUE,incident_information
 FALSE,certifier_designation,BEDROCK,1,"Physician, MD",WHALES,1,Physician,"Some BEDROCK data years have the coded value of ""01"" as ""1""",FALSE,incident_information
 TRUE,certifier_designation,BEDROCK,01,"Physician, MD",WHALES,1,Physician,NA,FALSE,incident_information
 FALSE,certifier_designation,BEDROCK,2,Coroner/Pathologist,WHALES,2,Coroner/ME,"Some BEDROCK data years have the coded value of ""02"" as ""2""",FALSE,incident_information
