@@ -8,7 +8,7 @@ death_stat_files <- files %>%
   # Filter to Finalized Death Statistical Files
   filter(
     file_type == "Stat",
-    file_ext %in% c("csv", "xlsx"), # avoid including documentation/PDFs
+    file_ext %in% c("csv"), # avoid including .xlsx or other documents (PDFs)
     file_status == "F" # Filter data vintages only (for now)
   ) %>%
   # Add Vintage Label tag
