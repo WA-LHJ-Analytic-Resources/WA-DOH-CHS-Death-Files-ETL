@@ -7,7 +7,6 @@ file.edit(".Renviron") # Add RAW_DEATH_FILES_FOLDER (the filepath where all raw 
 
 # Install/Load R Packages
 pacman::p_load(
-  arrow,
   DBI,
   dplyr,
   duckdb,
@@ -18,7 +17,6 @@ pacman::p_load(
   janitor,
   lubridate,
   readr,
-  rio,
   stringi,
   stringr,
   tictoc,
