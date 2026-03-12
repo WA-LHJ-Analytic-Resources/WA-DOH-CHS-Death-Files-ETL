@@ -43,15 +43,25 @@ TRUE,disposition,BEDROCK,6,Entombment,WHALES,E,Entombment,NA,FALSE,incident_info
 TRUE,disposition,BEDROCK,7,Other,WHALES,O,Other,NA,FALSE,incident_information
 TRUE,disposition,BEDROCK,9,Unknown,WHALES,U,Unknown,NA,FALSE,incident_information
 FALSE,education,BEDROCK,1,8th Grade or Less,WHALES,1,8th Grade or Less,NA,FALSE,demographics
+TRUE,education,BEDROCK,001,8th Grade or Less,WHALES,1,8th Grade or Less,00 padding in BEDROCK 2012,FALSE,demographics
 FALSE,education,BEDROCK,2,"9th-12th Grade, No Diploma",WHALES,2,"No Diploma, 9th-12th Grade",NA,FALSE,demographics
+TRUE,education,BEDROCK,002,"9th-12th Grade, No Diploma",WHALES,2,"No Diploma, 9th-12th Grade",00 padding in BEDROCK 2012,FALSE,demographics
 FALSE,education,BEDROCK,3,High School Graduate or GED,WHALES,3,High School Graduate or GED Completed,NA,FALSE,demographics
+TRUE,education,BEDROCK,003,High School Graduate or GED,WHALES,3,High School Graduate or GED Completed,00 padding in BEDROCK 2012,FALSE,demographics
 FALSE,education,BEDROCK,4,"Some College, No Degree",WHALES,4,Some College Credit but No Degree,NA,FALSE,demographics
+TRUE,education,BEDROCK,004,"Some College, No Degree",WHALES,4,Some College Credit but No Degree,00 padding in BEDROCK 2012,FALSE,demographics
 FALSE,education,BEDROCK,5,Associate Degree,WHALES,5,Associate Degree,NA,FALSE,demographics
+TRUE,education,BEDROCK,005,Associate Degree,WHALES,5,Associate Degree,00 padding in BEDROCK 2012,FALSE,demographics
 FALSE,education,BEDROCK,6,Bachelor's Degree,WHALES,6,Bachelors Degree,NA,FALSE,demographics
+TRUE,education,BEDROCK,006,Bachelor's Degree,WHALES,6,Bachelors Degree,00 padding in BEDROCK 2012,FALSE,demographics
 FALSE,education,BEDROCK,7,Master's Degree,WHALES,7,Masters Degree,NA,FALSE,demographics
+TRUE,education,BEDROCK,007,Master's Degree,WHALES,7,Masters Degree,00 padding in BEDROCK 2012,FALSE,demographics
 FALSE,education,BEDROCK,8,Doctorate or Professional Degree,WHALES,8,Doctorate or Professional Degree,NA,FALSE,demographics
+TRUE,education,BEDROCK,008,Doctorate or Professional Degree,WHALES,8,Doctorate or Professional Degree,00 padding in BEDROCK 2012,FALSE,demographics
 FALSE,education,BEDROCK,9,Unknown,WHALES,9,Unknown,NA,FALSE,demographics
+TRUE,education,BEDROCK,009,Unknown,WHALES,9,Unknown,00 padding in BEDROCK 2012,FALSE,demographics
 TRUE,education,BEDROCK,99,Unknown,WHALES,9,Unknown,Not mentioned in Data Dictionary…,TRUE,demographics
+TRUE,education,BEDROCK,099,Unknown,WHALES,9,Unknown,0 padding in BEDROCK 2012,TRUE,demographics
 FALSE,education_8_or_less,BEDROCK,0,No Education,WHALES,0,No Education or less than 1st grade,NA,FALSE,demographics
 FALSE,education_8_or_less,BEDROCK,1,Completed 1st Grade,WHALES,1,Completed 1st Grade,NA,FALSE,demographics
 FALSE,education_8_or_less,BEDROCK,2,Completed 2nd Grade,WHALES,2,Completed 2nd Grade,NA,FALSE,demographics
