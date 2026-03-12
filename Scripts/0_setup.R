@@ -63,7 +63,7 @@ params$date_vars <- c(
 {
 
   ## Variable Name Crosswalk (1_Schema_Harmonization)
-  params$variable_name_cw <- load_crosswalk(filepath = here(params$cw_filepath,"1_Schema_Harmonization","variable_name_crosswalk.csv"))
+  params$variable_name_cw <- load_crosswalk(filepath = here(params$cw_filepath,"2_Schema_Harmonization","variable_name_crosswalk.csv"))
 
   ## Variable Code Crosswalk (3_Value_Harmonization)
   params$variable_code_cw <- load_crosswalk(filepath = here(params$cw_filepath,"3_Value_Harmonization","variable_code_crosswalk.csv"))
