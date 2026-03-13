@@ -19,12 +19,7 @@ harmonized_data_clean <- tbl(con, "harmonized_data_raw") %>%
       underlying_cod_code,
       matches("^record_axis_code_(?:[2-9]|1[0-9]|20)$")
     ),
-    output_var = "all_cod_code"
-  ) %>%
-  # Combine ACME Nature of Injury flags variables
-  combine_code_columns(
-    input_vars = matches("^acme_nature_of_injury_flag_(?:[1-9]|1[0-9]|20)$"),
-    output_var = "all_acme_nature_of_injury_flag"
+    output_var = "all_cod_code" # underyling_cod_code;record_axis_code_2;...;record_axis_code_20
   ) %>%
   ## Format Code Variable Data Types (for joins)
   mutate(
