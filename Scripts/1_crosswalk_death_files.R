@@ -23,7 +23,7 @@ harmonized_output_list <- harmonize_all_vintages(
   variable_name_cw = params$variable_name_cw, # for 2_Schema_Harmonization
   variable_code_cw = params$variable_code_cw, # for 3_Value_Harmonization
   keep_labels = FALSE, # TRUE: adds a {var}_label that provides the coded value descriptions; FALSE: {var}_label not created.
-  present = "crosswalked", # "crosswalked": only BEDROCK-->WHALES converted codes provided; "both" original BEDROCK and BEDROCK-->WHALES codes provided.
+  present = "crosswalked", # "crosswalked": only BEDROCK --> WHALES converted codes provided; "both" original BEDROCK and BEDROCK-->WHALES codes provided.
   verbose = TRUE,
   timed = TRUE
 )
@@ -47,4 +47,4 @@ dbWriteTable(con, "harmonized_data_raw", harmonized_data)
 dbDisconnect(con) # Close database connection after finishing run all of R script
 
 # Clean Up -----
-rm(harmonized_data, harmonized_output_list)
+# rm(harmonized_data, harmonized_output_list)
