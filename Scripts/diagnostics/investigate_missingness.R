@@ -54,7 +54,7 @@ complete_by_year_filtered <- complete_by_year %>%
   filter(!str_detect(variable, "record_axis_code"))
 
 
-# Step 4: Generate a heatmap of percent completeness
+# Step 4: Heatmap Visualization -----
 
 heatmap <- ggplot(
   complete_by_year_filtered %>%
@@ -92,3 +92,5 @@ heatmap <- ggplot(
   theme_minimal()
 
 plotly::ggplotly(heatmap, tooltip = "text")
+
+# Step 4: Heatmap Visualization -----
