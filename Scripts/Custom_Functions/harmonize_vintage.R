@@ -98,7 +98,7 @@ harmonize_vintage <- function(
 
   if (file_row$system == "BEDROCK") {
     message(glue(
-      "Crosswalking BEDROCK variable names to WHALES variable names for the following data vintage: {file_row$vintage_label}"
+      "2-Scehma Harmonization ({file_row$vintage_label}): BEDROCK --> WHALES variable names..."
     ))
 
     var_rename_map <- build_variable_name_crosswalk(
@@ -135,7 +135,7 @@ harmonize_vintage <- function(
 
   if (file_row$system == "BEDROCK") {
     message(glue(
-      "Crosswalking BEDROCK variable codes to WHALES variable codes for the following data vintage: {file_row$vintage_label}"
+      "3-Value Harmonization ({file_row$vintage_label}): BEDROCK --> WHALES code values..."
     ))
 
     df_harmonized <- apply_crosswalk(
