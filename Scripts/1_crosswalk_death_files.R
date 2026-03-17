@@ -36,6 +36,7 @@ harmonized_data <- purrr::map_dfr(harmonized_output_list, "data") %>% # Pull out
 qa_unmapped_codes_report <- purrr::map_dfr(harmonized_output_list, "qa") # Pull out and append all QA reports for each data vintage
 
 # Save Raw Harmonized Data -----
+save(harmonized_data, file = "harmonized_data.RData")
 
 ## Connect to DuckDB database
 con <- dbConnect(duckdb::duckdb(), dbdir = params$duckdb_filepath)
