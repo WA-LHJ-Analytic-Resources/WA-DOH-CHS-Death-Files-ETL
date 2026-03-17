@@ -41,7 +41,6 @@
 2010,zipinjoc,injury_zip_code,FALSE,
 2010,cntyfile,local_file_number,FALSE,
 2010,rinj_caus ,manner,FALSE,
-2010,rinj_caus ,manner,FALSE,
 2010,married,marital_status,FALSE,
 2010,referred,me_coroner_referred,FALSE,
 2010,occ_lit,occupation,FALSE,

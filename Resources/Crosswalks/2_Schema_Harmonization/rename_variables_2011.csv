@@ -40,7 +40,6 @@
 2011,ZipInjOc,injury_zip_code,FALSE,
 2011,CntyFile,local_file_number,FALSE,
 2011,RInj_Caus,manner,FALSE,
-2011,RInj_Caus,manner,FALSE,
 2011,Married,marital_status,FALSE,
 2011,Referred,me_coroner_referred,FALSE,
 2011,Occ_Lit,occupation,FALSE,
