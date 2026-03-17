@@ -92,20 +92,3 @@ heatmap <- ggplot(
   theme_minimal()
 
 plotly::ggplotly(heatmap, tooltip = "text")
-
-# 2016 -----
-
-ref_2016 <- readr::read_csv(
-  file = here(params$raw_data_folder, "DeathStatF2016.csv")
-) %>%
-  # janitor::clean_names() %>%
-  select(`State File Number`, starts_with("Age"))
-
-ref_2016 %>% names() %>% sort()
-
-TEST_2016 <- harmonized_data %>%
-  filter(file_year == 2016) %>%
-  select(state_file_number, starts_with("age"))
-
-table(ref_2016$age_unit)
-table(TEST_2016$age_type)
