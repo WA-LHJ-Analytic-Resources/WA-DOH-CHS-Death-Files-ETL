@@ -1,7 +1,7 @@
 ﻿file_year,from_name,to_name,missing,notes
 2011,AgeUNum,age,FALSE,
 2011,AgeUnit,age_type,FALSE,
-2011,Age,age_years,FALSE,
+2011,AGE,age_years,FALSE,
 2011,ArmForce,armed_forces,FALSE,
 2011,Autopsy,autopsy,FALSE,
 2011,BCountry,birthplace_country,FALSE,
