@@ -5,9 +5,12 @@
 ## Connect to DuckDB database
 con <- dbConnect(duckdb::duckdb(), dbdir = params$duckdb_filepath)
 
+## Connect to Harmonized Death Data Raw Table
+raw_tbl <- tbl(con, "harmonized_data_raw")
+
 # Clean Data -----
 
-harmonized_data_clean <- tbl(con, "harmonized_data_raw") %>%
+harmonized_data_clean <- raw_tbl %>%
   ## Demographics
   mutate(
     age = as.numeric(age),
@@ -19,19 +22,13 @@ harmonized_data_clean <- tbl(con, "harmonized_data_raw") %>%
       underlying_cod_code,
       matches("^record_axis_code_(?:[2-9]|1[0-9]|20)$")
     ),
-    output_var = "all_cod_code"
-  ) %>%
-  # Combine ACME Nature of Injury flags variables
-  combine_code_columns(
-    input_vars = matches("^acme_nature_of_injury_flag_(?:[1-9]|1[0-9]|20)$"),
-    output_var = "all_acme_nature_of_injury_flag"
+    output_var = "all_cod_code" # underyling_cod_code;record_axis_code_2;...;record_axis_code_20
   ) %>%
   ## Format Code Variable Data Types (for joins)
   mutate(
-    birthplace_country = as.numeric(birthplace_country),
-    death_facility = as.numeric(death_facility),
-    funeral_home_code = as.numeric(funeral_home_code),
-    occupation_milham = as.numeric(occupation_milham)
+    # birthplace_country = as.numeric(birthplace_country), # EDIT: These includes codes and literals...
+    death_facility = as.numeric(death_facility)
+    # funeral_home_code = as.numeric(funeral_home_code) # EDIT: These includes codes and literals...
   ) %>%
   mutate(
     across(

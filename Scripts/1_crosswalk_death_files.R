@@ -8,7 +8,7 @@ death_stat_files <- files %>%
   # Filter to Finalized Death Statistical Files
   filter(
     file_type == "Stat",
-    file_ext %in% c("csv", "xlsx"), # avoid including documentation/PDFs
+    file_ext == "csv", # avoid including .xlsx or other documents (PDFs)
     file_status == "F" # Filter data vintages only (for now)
   ) %>%
   # Add Vintage Label tag
@@ -20,10 +20,10 @@ death_stat_files <- files %>%
 
 harmonized_output_list <- harmonize_all_vintages(
   files = death_stat_files,
-  variable_name_cw = params$variable_name_cw,
-  variable_code_cw = params$variable_code_cw,
+  variable_name_cw = params$variable_name_cw, # for 2_Schema_Harmonization
+  variable_code_cw = params$variable_code_cw, # for 3_Value_Harmonization
   keep_labels = FALSE, # TRUE: adds a {var}_label that provides the coded value descriptions; FALSE: {var}_label not created.
-  present = "crosswalked", # "crosswalked": only BEDROCK-->WHALES converted codes provided; "both" original BEDROCK and BEDROCK-->WHALES codes provided.
+  present = "crosswalked", # "crosswalked": only BEDROCK --> WHALES converted codes provided; "both" original BEDROCK and BEDROCK-->WHALES codes provided.
   verbose = TRUE,
   timed = TRUE
 )
@@ -41,7 +41,7 @@ qa_unmapped_codes_report <- purrr::map_dfr(harmonized_output_list, "qa") # Pull 
 con <- dbConnect(duckdb::duckdb(), dbdir = params$duckdb_filepath)
 
 ## Save Raw Harmonized Data to Table
-dbWriteTable(con, "harmonized_data_raw", harmonized_data)
+dbWriteTable(con, "harmonized_data_raw", harmonized_data, overwrite = TRUE)
 
 ## Disconnect from DuckDB
 dbDisconnect(con) # Close database connection after finishing run all of R script

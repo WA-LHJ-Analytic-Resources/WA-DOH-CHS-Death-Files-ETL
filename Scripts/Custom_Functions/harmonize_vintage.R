@@ -65,8 +65,6 @@
 #' - Standardized **schema** (column names),
 #' - All variables coerced to **character**,
 #' - **Provenance** columns at the front,
-#' - For BEDROCK vintages, **crosswalked** variable codes; for WHALES, codes are retained as-is.
-#'
 
 harmonize_vintage <- function(
   file_row,
@@ -76,15 +74,16 @@ harmonize_vintage <- function(
   present = "crosswalked",
   verbose
 ) {
-  # Read & basic cleaning -----
-  df_raw <- rio::import(
+  # Read in data, variable name cleaning, & 1-Data Harmonization -----
+  df_raw <- readr::read_csv(
     file = file_row$file_location,
-    na.strings = c("", "NA"),
-    strip.white = TRUE
+    col_types = cols(.default = col_character()), # Data type harmonization: Reading in all variables as character data types. Prevents unintended data type coercions (useful for ID variables with leading zeros)
+    na = c("", "NA"), # Treat "",  and "NA" as missing
+    trim_ws = TRUE, # Trim leading/trailing whitespace in character fields
+    show_col_types = FALSE # Optional: suppress column type message
   ) %>%
     janitor::clean_names() %>%
-    mutate(across(where(is.character), ~ dplyr::na_if(.x, " "))) %>%
-    mutate(file_year = file_row$file_year)
+    mutate(file_year = as.character(file_row$file_year))
 
   # Provenance (Information on the Data Vintage) Keep these through all steps -----
   provenance <- tibble(
@@ -94,35 +93,97 @@ harmonize_vintage <- function(
     system = file_row$system
   )
 
-  # Schema harmonization (match variable names) -----
-  var_rename_map <- build_variable_name_crosswalk(
-    df = df_raw,
-    variable_name_cw = variable_name_cw,
-    year_col = "file_year"
-  )
+  # 2-Schema harmonization (match variable names) -----
 
-  df_schema <- df_raw %>%
-    select(any_of(c("file_year", unname(var_rename_map)))) %>% # Subset down to only original variables listed in var_rename_map
-    dplyr::rename(!!!var_rename_map)
+  if (file_row$system == "BEDROCK") {
+    ## Implement Annual BEDROCK Data Vintage Tweaks
+
+    ### BEDROCK 2011-2012
+    if (file_row$file_year %in% 2011:2012) {
+      df_raw <- df_raw %>%
+        ## Convert dth_time and inj_time to NA if they don't have 4 digits (HHMM)
+        mutate(across(
+          .cols = c(dth_time, inj_time),
+          .fns = ~ ifelse(str_length(.x) < 4, NA, .x)
+        )) %>%
+        ## Split dth_time and inj_time into hour and minute columns (to prepare for variable renaming step)
+        tidyr::separate_wider_position(
+          data = .,
+          cols = dth_time,
+          widths = c(dth_hour = 2, dth_min = 2),
+          cols_remove = FALSE
+        ) %>%
+        tidyr::separate_wider_position(
+          data = .,
+          cols = inj_time,
+          widths = c(inj_hour = 2, inj_min = 2),
+          cols_remove = FALSE
+        )
+    }
+
+    var_rename_map <- build_variable_name_crosswalk(
+      df = df_raw,
+      variable_name_cw = variable_name_cw,
+      year_col = "file_year"
+    )
+
+    ## Subset to only Harmonized Data Set Variables & Rename (BEDROCK --> WHALES)
+    df_schema <- df_raw %>%
+      select(any_of(c("file_year", unname(var_rename_map)))) %>% # Subset to harmonized data set variables
+      dplyr::rename(!!!var_rename_map) # Implement renaming of BEDROCK --> WHALES variable names
+  } else if (file_row$system == "WHALES") {
+    harmonized_vars <- variable_name_cw$to_name
+
+    ## Implement Annual WHALES Data Vintage Tweaks
+
+    ### WHALES 2016
+    if (file_row$file_year == 2016) {
+      df_raw <- df_raw %>%
+        # Fix Name Variations
+        rename(
+          age_type = age_unit, # age_unit --> age_type
+          residence_length_type = residence_length_units # residence_length_units --> residence_length_type
+        ) %>%
+        # Align 2016 Pregnancy data with 2017 & Onwards
+        mutate(
+          pregnancy = case_when(
+            age_years < 10 | age_years > 55 ~ '8',
+            age_years %in% 10:55 & sex == "F" & is.na(pregnancy) ~ '8',
+            TRUE ~ pregnancy
+          )
+        )
+    }
+
+    ### WHALES 2019
+    if (file_row$file_year == 2019) {
+      df_raw <- df_raw %>%
+        rename(
+          residence_length_type = residence_length_units # residence_length_units --> residence_length_type
+        )
+    }
+
+    ## Subset to only Harmonized Data Set Variables
+    df_schema <- df_raw %>%
+      select(any_of(c("file_year", harmonized_vars))) # Subset down to only original variables listed in var_rename_map
+  }
 
   # Attach provenance columns back in (ensure they’re kept during select) -----
   df_schema <- df_schema %>%
     bind_cols(provenance) %>%
-    dplyr::relocate(vintage_label, source_file, ingestion_ts, system, file_year) # Move these variables to the front.
+    dplyr::relocate(
+      vintage_label,
+      source_file,
+      ingestion_ts,
+      system,
+      file_year,
+      .before = everything()
+    ) # Move these variables to the front.
 
-  # Data type harmonization (ensure all variables are character data type) -----
-  df_types <- df_schema %>%
-    mutate(across(everything(), ~ as.character(.x)))
-
-  # Value harmonization (crosswalk all variable codes) -----
+  # 3-Value harmonization (crosswalk all variable codes) -----
 
   if (file_row$system == "BEDROCK") {
-    message(glue(
-      "Crosswalking BEDROCK variable codes to WHALES variable codes for the following data vintage: {file_row$vintage_label}"
-    ))
-
-    df_values <- apply_crosswalk(
-      df = df_types,
+    df_harmonized <- apply_crosswalk(
+      df = df_schema,
       crosswalk = variable_code_cw,
       year_col = "file_year",
       keep_labels = keep_labels, # overwrites original columns with crosswalked codes
@@ -131,10 +192,10 @@ harmonize_vintage <- function(
     )
   } else if (file_row$system == "WHALES") {
     message(glue(
-      "The provided data vintage ({file_row$vintage_label}) is from the WHALES system and does not need its variable codes crosswalked."
+      "The provided data vintage ({file_row$vintage_label}) is from the WHALES system and does not need its variable codes crosswalked to align with WHALES data vintages."
     ))
-    df_values <- df_types
+    df_harmonized <- df_schema
   }
   # Return harmonized data for this vintage
-  df_values
+  df_harmonized
 }
