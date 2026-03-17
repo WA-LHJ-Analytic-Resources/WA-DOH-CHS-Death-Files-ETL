@@ -92,9 +92,9 @@
 2012,CertNo,state_file_number,FALSE,
 2012,Dth_Time,time_of_death,FALSE,
 2012,dth_hour,time_of_death_hour,TRUE,This data set only has Dth_Time
-2012,dth_minutes,time_of_death_minutes,TRUE,This data set only has Dth_Time
+2012,dth_min,time_of_death_minutes,TRUE,This data set only has Dth_Time
 2012,Inj_Time,time_of_injury,FALSE,
 2012,inj_hour,time_of_injury_hour,TRUE,This data set only has Inj_Time
-2012,inj_minutes,time_of_injury_minutes,TRUE,This data set only has Inj_Time
+2012,inj_min,time_of_injury_minutes,TRUE,This data set only has Inj_Time
 2012,TbContri,tobacco,FALSE,
 2012,Underly,underlying_cod_code,FALSE,
