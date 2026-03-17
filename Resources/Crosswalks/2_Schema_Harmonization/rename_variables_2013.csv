@@ -46,7 +46,7 @@
 2013,fac_type,place_of_death_type,FALSE,
 2013,pregstat,pregnancy,FALSE,
 2013,race_AMI,race_amer_indian_alaskan,FALSE,
-2013,race_AMI,race_asian_indian,FALSE,
+2013,race_ASI,race_asian_indian,FALSE,
 2013,race_blk,race_black,FALSE,
 2013,race_chi,race_chinese,FALSE,
 2013,race_fil,race_filipino,FALSE,
