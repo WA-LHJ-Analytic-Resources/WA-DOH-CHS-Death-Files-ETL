@@ -41,10 +41,10 @@ qa_unmapped_codes_report <- purrr::map_dfr(harmonized_output_list, "qa") # Pull 
 con <- dbConnect(duckdb::duckdb(), dbdir = params$duckdb_filepath)
 
 ## Save Raw Harmonized Data to Table
-dbWriteTable(con, "harmonized_data_raw", harmonized_data)
+dbWriteTable(con, "harmonized_data_raw", harmonized_data, overwrite = TRUE)
 
 ## Disconnect from DuckDB
 dbDisconnect(con) # Close database connection after finishing run all of R script
 
 # Clean Up -----
-# rm(harmonized_data, harmonized_output_list)
+rm(harmonized_data, harmonized_output_list)
