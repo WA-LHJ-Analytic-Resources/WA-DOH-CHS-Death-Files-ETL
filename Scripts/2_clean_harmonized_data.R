@@ -5,9 +5,12 @@
 ## Connect to DuckDB database
 con <- dbConnect(duckdb::duckdb(), dbdir = params$duckdb_filepath)
 
+## Connect to Harmonized Death Data Raw Table
+raw_tbl <- tbl(con, "harmonized_data_raw")
+
 # Clean Data -----
 
-harmonized_data_clean <- tbl(con, "harmonized_data_raw") %>%
+harmonized_data_clean <- raw_tbl %>%
   ## Demographics
   mutate(
     age = as.numeric(age),
@@ -23,10 +26,9 @@ harmonized_data_clean <- tbl(con, "harmonized_data_raw") %>%
   ) %>%
   ## Format Code Variable Data Types (for joins)
   mutate(
-    birthplace_country = as.numeric(birthplace_country),
-    death_facility = as.numeric(death_facility),
-    funeral_home_code = as.numeric(funeral_home_code),
-    occupation_milham = as.numeric(occupation_milham)
+    # birthplace_country = as.numeric(birthplace_country), # EDIT: These includes codes and literals...
+    death_facility = as.numeric(death_facility)
+    # funeral_home_code = as.numeric(funeral_home_code) # EDIT: These includes codes and literals...
   ) %>%
   mutate(
     across(
