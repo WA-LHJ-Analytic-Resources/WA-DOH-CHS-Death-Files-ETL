@@ -12,8 +12,8 @@
 ,,date_of_death_modifier,FALSE,
 ,,date_of_injury,FALSE,
 ,,date_received,FALSE,
-,,death_county_city_wa_code,FALSE,
-,,death_county_wa_code,FALSE,
+,,death_county_city_wa_code,,WA codes only utilized from 2010-2021 and they do not exist for 2022 and later data sets.
+,,death_county_wa_code,,WA codes only utilized from 2010-2021 and they do not exist for 2022 and later data sets.
 ,,death_facility,FALSE,
 ,,death_state,FALSE,
 ,,death_zip_code,FALSE,
@@ -35,8 +35,8 @@
 ,,informant_relationship,FALSE,
 ,,injury_acme_place,FALSE,
 ,,injury_at_work,FALSE,
-,,injury_county_city_wa_code,FALSE,
-,,injury_county_wa_code,FALSE,
+,,injury_county_city_wa_code,,WA codes only utilized from 2010-2021 and they do not exist for 2022 and later data sets.
+,,injury_county_wa_code,,WA codes only utilized from 2010-2021 and they do not exist for 2022 and later data sets.
 ,,injury_place,FALSE,
 ,,injury_state,FALSE,
 ,,injury_zip_code,FALSE,
@@ -84,8 +84,8 @@
 ,,record_axis_code_8,FALSE,
 ,,record_axis_code_9,FALSE,
 ,,residence_city_limits,FALSE,
-,,residence_county_city_wa_code,FALSE,
-,,residence_county_wa_code,FALSE,
+,,residence_county_city_wa_code,,WA codes only utilized from 2010-2021 and they do not exist for 2022 and later data sets.
+,,residence_county_wa_code,,WA codes only utilized from 2010-2021 and they do not exist for 2022 and later data sets.
 ,,residence_length,FALSE,
 ,,residence_length_type,FALSE,
 ,,residence_state_fips_code,FALSE,
