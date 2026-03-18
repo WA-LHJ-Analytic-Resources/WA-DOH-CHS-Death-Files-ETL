@@ -3,7 +3,7 @@ rm(list = ls())
 # load("harmonized_data.RData")
 
 # Setup -----
-pacman::p_load(here, tidyverse)
+pacman::p_load(fs, glue, here, tidyverse)
 
 # Load All Custom functions
 list.files(
@@ -35,15 +35,18 @@ death_stat_files <- files %>%
   # Move Vintage Label to 1st position
   relocate(vintage_label, .before = everything())
 
-file_row = death_stat_files %>% filter(file_year == 2010)
+# Select File Year ------
+file_yr <- 2010
 
-# TEST (Load Crosswalk) ----
+# Load Crosswalks ----
+
+## Var Rename Crosswalk
 var_rename_crosswalk <- readr::read_csv(
   file = here(
     "Resources",
     "Crosswalks",
-    "2_Schema_Harmonization",
-    "rename_variables_2010.csv"
+    file_yr,
+    paste0("rename_variables_", file_yr, ".csv")
   )
 )
 
@@ -54,8 +57,20 @@ missing_vars <- var_rename_crosswalk %>%
   filter(missing == TRUE) %>%
   pull(from_name)
 
-# TEST (Load Data)----
+## Var Recode Crosswalk
+var_recode_crosswalk <- readr::read_csv(
+  file = here(
+    "Resources",
+    "Crosswalks",
+    file_yr,
+    paste0("recode_variables_", file_yr, ".csv")
+  )
+)
 
+# TEST (Load Data)----
+file_row = death_stat_files %>% filter(file_year == file_yr)
+
+# Load Data
 df_raw <- readr::read_csv(
   file = file_row$file_location,
   col_select = all_of(available_vars), # Pull all variables listed in variable_rename_YYYY.csv listed as missing == FALSE in the data set
@@ -71,7 +86,18 @@ df_raw <- readr::read_csv(
   ## 2-Schema-Harmonization: Variable Renaming
   rename(
     !!!setNames(var_rename_crosswalk$from_name, var_rename_crosswalk$to_name)
+  ) %>%
+  ## Reorder Variables (State_File_Number then Alphabetical Order)
+  select(all_of(c("state_file_number", sort(names(.)))))
+
+# Recode Data
+df_recoded <- df_raw %>%
+  recode_variables(
+    df = .,
+    var_recode_cw = var_recode_crosswalk,
+    verbose = TRUE,
+    timed = FALSE
   )
 
-
-names(df_raw)
+table(df_raw$tobacco)
+table(df_recoded$tobacco)
