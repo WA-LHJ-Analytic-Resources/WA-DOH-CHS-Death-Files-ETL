@@ -1,0 +1,237 @@
+variable,code,label,notes
+age_type,1,Years,NA
+age_type,2,Months,NA
+age_type,3,Days,NA
+age_type,4,Hours,NA
+age_type,5,Minutes,NA
+age_type,9,Unknown,NA
+armed_forces,Y,Yes,NA
+armed_forces,N,No,NA
+armed_forces,U,Unknown,NA
+autopsy,Y,Yes,NA
+autopsy,N,No,NA
+autopsy,U,Unknown,NA
+certifier_designation,1,Physician,NA
+certifier_designation,2,Coroner/ME,NA
+certifier_designation,3,DO,NA
+certifier_designation,4,Chiropractor,NA
+certifier_designation,5,Sanipractor,NA
+certifier_designation,6,Physician Assistant,NA
+certifier_designation,7,ARNP,NA
+certifier_designation,9,Unknown,NA
+date_of_death_modifier,A,Actual,NA
+date_of_death_modifier,P,Presumed,NA
+date_of_death_modifier,C,Court Determined,NA
+date_of_death_modifier,F,Found,NA
+disposition,B,Burial,NA
+disposition,C,Cremation,NA
+disposition,R,Removal from State,NA
+disposition,D,Donation/Medical Research,NA
+disposition,N,Body Not Recovered,NA
+disposition,E,Entombment,NA
+disposition,O,Other,NA
+disposition,U,Unknown,NA
+education,1,8th Grade or Less,NA
+education,2,"No Diploma, 9th-12th Grade",NA
+education,3,High School Graduate or GED Completed,NA
+education,4,Some College Credit but No Degree,NA
+education,5,Associate Degree,NA
+education,6,Bachelors Degree,NA
+education,7,Masters Degree,NA
+education,8,Doctorate or Professional Degree,NA
+education,9,Unknown,NA
+education_8_or_less,0,No Education or less than 1st grade,NA
+education_8_or_less,1,Completed 1st Grade,NA
+education_8_or_less,2,Completed 2nd Grade,NA
+education_8_or_less,3,Completed 3rd Grade,NA
+education_8_or_less,4,Completed 4th Grade,NA
+education_8_or_less,5,Completed 5th Grade,NA
+education_8_or_less,6,Completed 6th Grade,NA
+education_8_or_less,7,Completed 7th Grade,NA
+education_8_or_less,8,Completed 8th Grade,NA
+education_8_or_less,9,Unknown,NA
+hispanic_cuban,Y,Yes,NA
+hispanic_cuban,N,No,NA
+hispanic_cuban,U,Unknown,NA
+hispanic_mexican,Y,Yes,NA
+hispanic_mexican,N,No,NA
+hispanic_mexican,U,Unknown,NA
+hispanic_nchs_bridge,0,Non-Hispanic,NA
+hispanic_nchs_bridge,1,Mexican,NA
+hispanic_nchs_bridge,2,Puerto Rican,NA
+hispanic_nchs_bridge,3,Cuban,NA
+hispanic_nchs_bridge,4,Central or South American,NA
+hispanic_nchs_bridge,5,Other and Unknown Hispanic,NA
+hispanic_nchs_bridge,9,Unknown/Not Stated,NA
+hispanic_no,Y,Yes,NA
+hispanic_no,N,No,NA
+hispanic_no,U,Unknown,NA
+hispanic_other,Y,Yes,NA
+hispanic_other,N,No,NA
+hispanic_other,U,Unknown,NA
+hispanic_puerto_rican,Y,Yes,NA
+hispanic_puerto_rican,N,No,NA
+hispanic_puerto_rican,U,Unknown,NA
+injury_acme_place,0,Home,NA
+injury_acme_place,1,Residential Institution,NA
+injury_acme_place,2,"School, Other Institution and Public Administrative Area",NA
+injury_acme_place,3,Sports and Athletics Area,NA
+injury_acme_place,4,Street and Highway,NA
+injury_acme_place,5,Trade and Service Area,NA
+injury_acme_place,6,Industrial and Construction Areas,NA
+injury_acme_place,7,Farm,NA
+injury_acme_place,8,Other Specified Places,NA
+injury_acme_place,9,Unspecified Place,NA
+injury_at_work,U,Unknown,NA
+injury_at_work,Y,Yes,NA
+injury_at_work,N,No,NA
+injury_transportation,Unknown,Unknown,NA
+injury_transportation,DRIVER/OPERATOR,NA,NA
+injury_transportation,PASSENGER,NA,NA
+injury_transportation,PEDESTRIAN,NA,NA
+injury_transportation,OTHER,NA,NA
+injury_transportation,NOT APPLICABLE,NA,NA
+injury_transportation,UNKNOWN,NA,NA
+manner,U,Unknown,NA
+manner,N,Natural,NA
+manner,A,Accident,NA
+manner,S,Suicide,NA
+manner,H,Homicide,NA
+manner,C,Undetermined,NA
+manner,P,Pending,NA
+marital_status,S,Never Married,NA
+marital_status,M,Married,NA
+marital_status,D,Divorced,NA
+marital_status,W,Widowed,NA
+marital_status,A,Married but Separated,NA
+marital_status,P,Domestic Partner,NA
+marital_status,U,Unknown,NA
+me_coroner_referred,Y,Yes,NA
+me_coroner_referred,N,No,NA
+me_coroner_referred,U,Unknown,NA
+place_of_death_type,0,Home,NA
+place_of_death_type,1,Other Place,NA
+place_of_death_type,2,In Transport,NA
+place_of_death_type,3,Emergency Room,NA
+place_of_death_type,4,Hospital (Inpatient),NA
+place_of_death_type,5,Nursing Home/Long Term Care,NA
+place_of_death_type,6,Hospital,NA
+place_of_death_type,7,Hospice Facility,NA
+place_of_death_type,9,Unknown,NA
+pregnancy,9,Unknown,NA
+pregnancy,1,Not Pregnant Within the Past Year,NA
+pregnancy,2,Pregnant at the Time of Death,NA
+pregnancy,3,"Not Pregnant, but Pregnant Within 42 Days of Death",NA
+pregnancy,4,"Not Pregnant, but Pregnant Within 43 Days to 1 Year Before Death",NA
+pregnancy,8,No Response,NA
+race_amer_indian_alaskan,Y,Yes,NA
+race_amer_indian_alaskan,N,No,NA
+race_amer_indian_alaskan,U,Unknown,NA
+race_asian_indian,Y,Yes,NA
+race_asian_indian,N,No,NA
+race_asian_indian,U,Unknown,NA
+race_black,Y,Yes,NA
+race_black,N,No,NA
+race_black,U,Unknown,NA
+race_calculation,1,White,NA
+race_calculation,2,Black,NA
+race_calculation,3,Native American,NA
+race_calculation,4,Chinese,NA
+race_calculation,5,Japanese,NA
+race_calculation,6,Other Non-White,NA
+race_calculation,7,Filipino,NA
+race_calculation,8,Refused to State,NA
+race_calculation,9,Unknown/Not Stated,NA
+race_calculation,A,Hawaiian,NA
+race_calculation,B,Other Asian/Pacific Islander,NA
+race_calculation,C,Mexican/Chicano/Hispanic,NA
+race_calculation,D,Asian Indian,NA
+race_calculation,E,Korean,NA
+race_calculation,F,Samoan,NA
+race_calculation,G,Vietnamese,NA
+race_calculation,H,Guamanian,NA
+race_chinese,Y,Yes,NA
+race_chinese,N,No,NA
+race_chinese,U,Unknown,NA
+race_filipino,Y,Yes,NA
+race_filipino,N,No,NA
+race_filipino,U,Unknown,NA
+race_guamanian_or_chamorro,Y,Yes,NA
+race_guamanian_or_chamorro,N,No,NA
+race_guamanian_or_chamorro,U,Unknown,NA
+race_hawaiian,Y,Yes,NA
+race_hawaiian,N,No,NA
+race_hawaiian,U,Unknown,NA
+race_japanese,Y,Yes,NA
+race_japanese,N,No,NA
+race_japanese,U,Unknown,NA
+race_korean,Y,Yes,NA
+race_korean,N,No,NA
+race_korean,U,Unknown,NA
+race_other,Y,Yes,NA
+race_other,N,No,NA
+race_other,U,Unknown,NA
+race_other_asian,Y,Yes,NA
+race_other_asian,N,No,NA
+race_other_asian,U,Unknown,NA
+race_other_pacific_islander,Y,Yes,NA
+race_other_pacific_islander,N,No,NA
+race_other_pacific_islander,U,Unknown,NA
+race_samoan,Y,Yes,NA
+race_samoan,N,No,NA
+race_samoan,U,Unknown,NA
+race_summary_code,10,White,NA
+race_summary_code,11,Black,NA
+race_summary_code,12,American Indian/Alaska Native,NA
+race_summary_code,13,Asian,NA
+race_summary_code,14,Native Hawaiian or Pacific Islander,NA
+race_summary_code,20,White and Black,NA
+race_summary_code,21,White and American Indian/Alaska Native,NA
+race_summary_code,22,White and Asian,NA
+race_summary_code,23,White and Native Hawaiian or Pacific Islander,NA
+race_summary_code,24,Black and American Indian/Alaska Native,NA
+race_summary_code,25,Black and Asian,NA
+race_summary_code,26,Black and Native Hawaiian or Pacific Islander,NA
+race_summary_code,27,American Indian/Alaska Native and Asian,NA
+race_summary_code,28,American Indian/Alaska Native and Native Hawaiian or Pacific Islander,NA
+race_summary_code,29,Asian and Native Hawaiian or Pacific Islander,NA
+race_summary_code,30,White and Black and American Indian/Alaska Native,NA
+race_summary_code,31,White and Black and Asian,NA
+race_summary_code,32,White and Black and Native Hawaiian or Pacific Islander,NA
+race_summary_code,33,White and American Indian/Alaska Native and Asian,NA
+race_summary_code,34,White and American Indian/Alaska Native and Native Hawaiian or Pacific Islander,NA
+race_summary_code,35,White and Asian and Native Hawaiian or Pacific Islander,NA
+race_summary_code,36,Black and American Indian/Alaska Native and Asian,NA
+race_summary_code,37,Black and American Indian/Alaska Native and Native Hawaiian or Pacific Islander,NA
+race_summary_code,38,Black and Asian and Native Hawaiian or Pacific Islander,NA
+race_summary_code,39,American Indian/Alaska Native and Asian and Native Hawaiian or Pacific Islander,NA
+race_summary_code,40,White and Black and American Indian/Alaska Native and Asian,NA
+race_summary_code,41,White and Black and American Indian/Alaska Native and Native Hawaiian or Pacific Islander,NA
+race_summary_code,42,White and Black and Asian and Native Hawaiian or Pacific Islander,NA
+race_summary_code,43,White and American Indian/Alaska Native and Asian and Native Hawaiian or Pacific Islander,NA
+race_summary_code,44,Black and American Indian/Alaska Native and Asian and Native Hawaiian or Pacific Islander,NA
+race_summary_code,50,White and Black and American Indian/Alaska Native and Asian and Native Hawaiian or Pacific Islander,NA
+race_summary_code,99,Unknown,NA
+race_vietnamese,Y,Yes,NA
+race_vietnamese,N,No,NA
+race_vietnamese,U,Unknown,NA
+race_white,Y,Yes,NA
+race_white,N,No,NA
+race_white,U,Unknown,NA
+residence_city_limits,Y,Yes,NA
+residence_city_limits,N,No,NA
+residence_city_limits,U,Unknown,NA
+residence_length_type,Y,Years,NA
+residence_length_type,M,Months,NA
+residence_length_type,W,Weeks,NA
+residence_length_type,D,Days,NA
+residence_length_type,H,Hours,NA
+residence_length_type,N,Minutes,NA
+residence_length_type,U,Unknown,NA
+sex,M,Male,NA
+sex,F,Female,NA
+sex,U,Undetermined,NA
+tobacco,Y,Yes,NA
+tobacco,N,No,NA
+tobacco,P,Probably,NA
+tobacco,U,Unknown,NA
