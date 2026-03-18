@@ -22,6 +22,7 @@
 2013,disp_fac,disposition_facility_code,FALSE,
 2013,educ,education,FALSE,
 2013,edu_le8,education_8_or_less,FALSE,
+2013,funeral_home_name,funeral_home_name,TRUE,Only funeral home codes provided before 2016; funeral home names provided 2016 and later
 2013,funeralc,funeral_home_code,FALSE,
 2013,hisp_cub,hispanic_cuban,FALSE,
 2013,hisp_mex,hispanic_mexican,FALSE,
