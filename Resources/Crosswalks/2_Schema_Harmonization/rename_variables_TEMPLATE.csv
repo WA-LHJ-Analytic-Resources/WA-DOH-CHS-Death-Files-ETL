@@ -19,12 +19,12 @@
 ,,death_zip_code,FALSE,
 ,,disposition,FALSE,
 ,,disposition_date,FALSE,
-,,disposition_facility_name,,Only disposition facility codes provided before 2016; only disposition facility names provided 2016 and later
-,,disposition_facility_code,,Only disposition facility codes provided before 2016; only disposition facility names provided 2016 and later
+,,disposition_facility_name,,Only disposition facility codes provided before 2016; only disposition facility names provided in 2016; both disposition facility codes and disposition facility names provided 2017 and later
+,,disposition_facility_code,,Only disposition facility codes provided before 2016; only disposition facility names provided in 2016; both disposition facility codes and disposition facility names provided 2017 and later
 ,,education,FALSE,
 ,,education_8_or_less,FALSE,
-,,funeral_home_name,,Only funeral home codes provided before 2016; only funeral home names provided 2016 and later
-,,funeral_home_code,,Only funeral home codes provided before 2016; only funeral home names provided 2016 and later
+,,funeral_home_name,,Only funeral home codes provided before 2016; only funeral home names provided in 2016; both funeral home codes and funeral home names provided 2017 and later
+,,funeral_home_code,,Only funeral home codes provided before 2016; only funeral home names provided in 2016; both funeral home codes and funeral home names provided 2017 and later
 ,,hispanic_cuban,FALSE,
 ,,hispanic_mexican,FALSE,
 ,,hispanic_nchs_bridge,FALSE,
