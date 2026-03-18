@@ -53,5 +53,4 @@
 2011,tobacco,1,Yes,Y,Yes,NA,FALSE
 2011,tobacco,2,No,N,No,NA,FALSE
 2011,tobacco,7,Probably,P,Probably,NA,FALSE
-2011,tobacco,8,Not Reported,U,Unknown,In STATA code they keep as is… consider converting to Unknown,TRUE
 2011,tobacco,9,Unknown,U,Unknown,NA,FALSE
