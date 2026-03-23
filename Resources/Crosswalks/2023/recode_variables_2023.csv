@@ -1,0 +1,9 @@
+﻿file_year,variable,from_code,from_label,to_code,to_label,notes,review_flag
+2023,disposition,A,,U,Unknown,Not in data dictionary,TRUE
+2023,disposition,S,,U,Unknown,Not in data dictionary,TRUE
+2023,hispanic_cuban,H,Hispanic,Y,Yes,,FALSE
+2023,hispanic_mexican,H,Hispanic,Y,Yes,,FALSE
+2023,hispanic_other,H,Hispanic,Y,Yes,,FALSE
+2023,hispanic_puerto_rican,H,Hispanic,Y,Yes,,FALSE
+2023,injury_acme_place,B,,9,Unspecified Place,Not in data dictionary,TRUE
+2023,marital_status,B,,U,Unknown,Not in data dictionary,TRUE
