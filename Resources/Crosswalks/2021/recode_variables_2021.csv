@@ -1,0 +1,16 @@
+﻿file_year,variable,from_code,from_label,to_code,to_label,notes,review_flag
+2021,disposition,A,,U,Unknown,Not in data dictionary,TRUE
+2021,disposition,S,,U,Unknown,Not in data dictionary,TRUE
+2021,hispanic_cuban,H,Hispanic,Y,Yes,,FALSE
+2021,hispanic_mexican,H,Hispanic,Y,Yes,,FALSE
+2021,hispanic_other,H,Hispanic,Y,Yes,,FALSE
+2021,hispanic_puerto_rican,H,Hispanic,Y,Yes,,FALSE
+2021,injury_acme_place,A,,9,Unspecified Place,Not in data dictionary,TRUE
+2021,injury_acme_place,B,,9,Unspecified Place,Not in data dictionary,TRUE
+2021,injury_acme_place,E,,9,Unspecified Place,Not in data dictionary,TRUE
+2021,injury_acme_place,G,,9,Unspecified Place,Not in data dictionary,TRUE
+2021,injury_acme_place,K,,9,Unspecified Place,Not in data dictionary,TRUE
+2021,injury_acme_place,L,,9,Unspecified Place,Not in data dictionary,TRUE
+2021,injury_acme_place,O,,9,Unspecified Place,Not in data dictionary,TRUE
+2021,injury_acme_place,P,,9,Unspecified Place,Not in data dictionary,TRUE
+2021,tobacco,C,,U,Unknown,Not in data dictionary,TRUE
