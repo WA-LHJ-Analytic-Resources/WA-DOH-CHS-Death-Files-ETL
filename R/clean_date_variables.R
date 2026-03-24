@@ -1,6 +1,6 @@
-# clean_date_vars.R
+# clean_date_variables.R
 
-clean_date_vars <- function(
+clean_date_variables <- function(
   df,
   vars,
   orders = c("Ymd", "Y-m-d", "m/d/Y", "d%b%Y"), # lubridate token formats
