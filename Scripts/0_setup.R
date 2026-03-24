@@ -6,26 +6,12 @@ file.edit(".Renviron") # Add RAW_DEATH_FILES_FOLDER (the filepath where all raw 
 # R Packages & Custom Functions -----
 
 # Install/Load R Packages
-pacman::p_load(
-  DBI,
-  dplyr,
-  duckdb,
-  forcats,
-  fs,
-  glue,
-  here,
-  janitor,
-  lubridate,
-  readr,
-  stringi,
-  stringr,
-  tictoc,
-  tidyverse
-)
+pacman::p_load(fs, glue, here, readr, scales, tictoc, tidyverse)
+
 
 # Load All Custom functions
 list.files(
-  path = here::here("Scripts", "Custom_Functions"),
+  path = here::here("R"),
   pattern = "\\.R$",
   full.names = TRUE,
   recursive = TRUE
@@ -57,24 +43,17 @@ params$date_vars <- c(
   "disposition_date"
 )
 
-# Load Crosswalks -----
+# Load Code Sets -----
 
 # fmt: skip
 {
-
-  ## Variable Name Crosswalk (1_Schema_Harmonization)
-  params$variable_name_cw <- load_crosswalk(filepath = here(params$cw_filepath,"2_Schema_Harmonization","variable_name_crosswalk.csv"))
-
-  ## Variable Code Crosswalk (3_Value_Harmonization)
-  params$variable_code_cw <- load_crosswalk(filepath = here(params$cw_filepath,"3_Value_Harmonization","variable_code_crosswalk.csv"))
-
   ## Code Sets (4_Code_Set_Expansion)
   code_sets <- c("cemetery", "country", "facility", "fips", "funeral_home", "nchs_county", "nchs_state", "wa_county", "wa_county_city")
 
   for(set in code_sets){
 
     print(glue("Loading code sets for: {set}"))
-    params$code_sets[[set]] <- load_crosswalk(filepath = here(params$codes_filepath, paste0(set,"_codes.csv")))
+    params$code_sets[[set]] <- readr::read_csv(file = here(params$codes_filepath, paste0(set,"_codes.csv")), show_col_types = FALSE)
   }
 }
 
