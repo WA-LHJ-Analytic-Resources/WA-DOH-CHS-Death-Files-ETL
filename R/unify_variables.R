@@ -3,12 +3,12 @@
 unify_variables <- function(df, vars, code_set) {
   ## Format Code Set
   code_set_formatted <- code_set %>%
+    select(code, label) %>%
     mutate(
       code = as.integer(code),
       label = stringr::str_to_upper(label)
     ) %>%
-    distinct(code, .keep_all = TRUE) %>%
-    select(code, label)
+    distinct(code, .keep_all = TRUE)
 
   if (vars == "funeral home") {
     df_unified <- df %>%
@@ -31,7 +31,11 @@ unify_variables <- function(df, vars, code_set) {
         ) # A few codes were pieces of state names --> convert funeral_home_names for these pieces as "OUT OF STATE"
       ) %>%
       # Subset Unneeded Variables
-      select(-funeral_home_code, -funeral_home_code_new, -label)
+      select(
+        -funeral_home_code_new,
+        # -funeral_home_code,
+        -label
+      )
   }
 
   if (vars == "disposition facility") {
@@ -41,12 +45,14 @@ unify_variables <- function(df, vars, code_set) {
       ) %>%
       left_join(
         .,
-        code_set,
-        by = join_by(disposition_facility_code == code),
-        relationship = "many-to-many"
+        code_set_formatted,
+        by = join_by(disposition_facility_code == code)
       ) %>%
       mutate(disposition_facility_name = coalesce(label)) %>%
-      select(-disposition_facility_code, -label)
+      select(
+        -label
+        # -disposition_facility_code,
+      )
   }
 
   return(df_unified)
