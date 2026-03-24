@@ -4,7 +4,7 @@
 
 # Step 1: Identify all files (recursively)
 all_files <- fs::dir_ls(
-  path = params$cw_filepath,
+  path = params$cw_folder,
   recurse = TRUE,
   type = "file"
 )
@@ -60,13 +60,13 @@ all_recode_cw <- bind_rows(recode_cw_list, .id = "file_year")
 all_rename_cw %>%
   writexl::write_xlsx(
     .,
-    path = here(params$cw_filepath, "all_rename_variables.xlsx")
+    path = here(params$cw_folder, "all_rename_variables.xlsx")
   )
 
 all_recode_cw %>%
   writexl::write_xlsx(
     .,
-    path = here(params$cw_filepath, "all_recode_variables.xlsx")
+    path = here(params$cw_folder, "all_recode_variables.xlsx")
   )
 
 # Clean up -----
