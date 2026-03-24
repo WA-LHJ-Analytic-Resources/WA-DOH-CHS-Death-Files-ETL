@@ -1,9 +1,9 @@
 # 1_harmonize_death_files
 
 # Identify All Death Statistical File Vintages -----
-files <- identify_death_files(folder = params$raw_data_folder)
+death_files <- identify_death_files(folder = params$raw_data_folder)
 
-death_stat_files <- files %>%
+death_stat_files <- death_files %>%
   # Filter to Finalized Death Statistical Files
   filter(
     file_type == "Stat",
@@ -50,8 +50,8 @@ for (file_yr in death_stat_files$file_year) {
     vintage_label = data_vintage$vintage_label,
     file_year = data_vintage$file_year,
     source_file = data_vintage$file_location,
-    ingestion_ts = as.character(Sys.time()), # ISO timestamp string
-    system = data_vintage$system
+    source_system = data_vintage$system,
+    date_harmonized = as.character(lubridate::today())
   )
 
   ### Step 4: Load in Data Vintage (Perform 1-Data Type Harmonization
@@ -81,8 +81,8 @@ for (file_yr in death_stat_files$file_year) {
     dplyr::relocate(
       vintage_label,
       source_file,
-      ingestion_ts,
-      system,
+      date_harmonized,
+      source_system,
       file_year,
       .before = everything()
     ) # Move these variables to the front.
@@ -94,6 +94,32 @@ for (file_yr in death_stat_files$file_year) {
 harmonized_data <- bind_rows(clean_list, .id = "file_year")
 
 tictoc::toc()
+
+# Convert Date & Time Variables to Proper Data Types -----
+
+harmonized_data <- harmonized_data %>%
+  clean_date_variables(df = ., vars = params$date_vars) %>%
+  clean_time_variables(df = .)
+
+# Unify Disposition Facility Variables -----
+
+disposition_facility_codes <- params$code_sets$cemetery %>%
+  distinct(code, .keep_all = TRUE) %>%
+  mutate(
+    disposition_facility_code = as.integer(code),
+    label = str_to_upper(label)
+  ) %>%
+  select(disposition_facility_code, label)
+
+TEST <- harmonized_data %>%
+  mutate(disposition_facility_code = as.integer(disposition_facility_code)) %>%
+  left_join(
+    .,
+    disposition_facility_codes,
+    by = join_by(disposition_facility_code)
+  ) %>%
+  mutate(disposition_facility_name = coalesce(label)) %>%
+  select(-disposition_facility_code, -label)
 
 # Clean up -----
 rm(
