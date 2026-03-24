@@ -94,3 +94,13 @@ for (file_yr in death_stat_files$file_year) {
 harmonized_data <- bind_rows(clean_list, .id = "file_year")
 
 tictoc::toc()
+
+# Clean up -----
+rm(
+  available_vars,
+  missing_vars,
+  data_vintage,
+  provenance,
+  var_rename_crosswalk,
+  var_recode_crosswalk
+)
