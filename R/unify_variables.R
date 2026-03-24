@@ -22,7 +22,8 @@ unify_variables <- function(df, vars, code_set) {
       ) %>%
       # Fill in funeral_home_name with joined labels
       mutate(
-        funeral_home_name = coalesce(label),
+        funeral_home_name = coalesce(funeral_home_name, label), # Fill in Funeral Home Name in following order (1st: Funeral Home Name --> (if NA) --> 2nd: Funeral Home Code Labels)
+
         funeral_home_name = ifelse(
           is.na(funeral_home_name) &
             str_detect(funeral_home_code, "OR|EGON|DAHO"),
@@ -33,25 +34,33 @@ unify_variables <- function(df, vars, code_set) {
       # Subset Unneeded Variables
       select(
         -funeral_home_code_new,
-        # -funeral_home_code,
+        -funeral_home_code,
         -label
       )
   }
 
   if (vars == "disposition facility") {
     df_unified <- df %>%
+      # Convert Disposition Facility Code to Integer (for joining)
       mutate(
         disposition_facility_code = as.integer(disposition_facility_code)
       ) %>%
+      # Left Join Disposition Facility Code to Labels (Cemetery Code Set)
       left_join(
         .,
         code_set_formatted,
         by = join_by(disposition_facility_code == code)
       ) %>%
-      mutate(disposition_facility_name = coalesce(label)) %>%
+      # Fill in Disposition Facility Name in following order (1st: Disposition Facility Name --> (if NA) --> 2nd: Disposition Facility Code Labels)
+      mutate(
+        disposition_facility_name = coalesce(
+          disposition_facility_name,
+          label
+        )
+      ) %>%
       select(
-        -label
-        # -disposition_facility_code,
+        -label,
+        -disposition_facility_code
       )
   }
 
