@@ -36,7 +36,7 @@ death_stat_files <- files %>%
 
 # Harmonization Process ----
 
-tictoc::tic("Harmonize all death data vintages...")
+tictoc::tic("Harmonize all death data vintages")
 
 ## Step 0: Initiate Data Storage Lists
 raw_list <- list()
@@ -60,8 +60,17 @@ for (file_yr in death_stat_files$file_year) {
   ### Step 2: Load in Variable Recode Crosswalk
   var_recode_crosswalk <- load_crosswalk(file_year = file_yr, type = "recode")
 
-  ### Step 3: Identify death statistical file to be loaded
+  ### Step 3a: Identify death statistical file vintage to be loaded
   data_vintage <- death_stat_files %>% filter(file_year == file_yr)
+
+  ### Step 3b: Extact vintage metadata
+  provenance <- tibble(
+    vintage_label = data_vintage$vintage_label,
+    file_year = data_vintage$file_year,
+    source_file = data_vintage$file_location,
+    ingestion_ts = as.character(Sys.time()), # ISO timestamp string
+    system = data_vintage$system
+  )
 
   ### Step 4: Load in Data Vintage (Perform 1-Data Type Harmonization
   raw_list[[as.character(file_yr)]] <- load_data_vintage(
@@ -83,6 +92,19 @@ for (file_yr in death_stat_files$file_year) {
     verbose = FALSE,
     timed = FALSE
   )
+
+  ### Step 7: Add Vintage Metadata
+  clean_list[[as.character(file_yr)]] <- clean_list[[as.character(file_yr)]] %>%
+    bind_cols(provenance) %>%
+    dplyr::relocate(
+      vintage_label,
+      source_file,
+      ingestion_ts,
+      system,
+      file_year,
+      .before = everything()
+    ) # Move these variables to the front.
+
   tictoc::toc() # End data vintage-level timer
 }
 
