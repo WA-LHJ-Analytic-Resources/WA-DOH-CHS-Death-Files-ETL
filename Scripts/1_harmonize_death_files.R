@@ -1,23 +1,5 @@
 # 1_harmonize_death_files
 
-# Setup -----
-pacman::p_load(fs, glue, here, scales, tictoc, tidyverse)
-
-# Load All Custom functions
-list.files(
-  path = here::here("R"),
-  pattern = "\\.R$",
-  full.names = TRUE,
-  recursive = TRUE
-) %>%
-  lapply(source)
-
-# Define Parameters -----
-params <- list()
-params$code_sets <- list() # to store 4_Code_Set_Expansion lookup tables
-params$raw_data_folder <- Sys.getenv("RAW_DEATH_FILES_FOLDER")
-params$output_folder <- Sys.getenv("HARMONIZED_DEATH_FILE_FOLDER")
-
 # Identify All Death Statistical File Vintages -----
 files <- identify_death_files(folder = params$raw_data_folder)
 
