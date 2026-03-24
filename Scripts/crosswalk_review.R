@@ -70,4 +70,13 @@ all_recode_cw %>%
   )
 
 # Clean up -----
-rm(all_rename_cw, all_recode_cw)
+rm(
+  rename_cw_list,
+  recode_cw_list,
+  all_rename_cw,
+  all_recode_cw,
+  all_files,
+  cw_files,
+  cw_file,
+  file
+)
