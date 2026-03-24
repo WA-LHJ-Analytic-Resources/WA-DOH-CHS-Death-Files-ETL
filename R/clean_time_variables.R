@@ -44,9 +44,9 @@ clean_time_variables <- function(df) {
         NA_character_
       ),
 
-      # 3) Coalesce Time of Death & Time of Injury variables with alternates
-      time_of_death = coalesce(time_of_death_alt),
-      time_of_injury = coalesce(time_of_injury_alt),
+      # 3) Coalesce Time of Death & Time of Injury variables (1st using original time_of_death and time_of_injury variables --> (if NA) fill in using alternates)
+      time_of_death = coalesce(time_of_death, time_of_death_alt),
+      time_of_injury = coalesce(time_of_injury, time_of_injury_alt),
 
       # 4) Normalize inputs: treat "NANA", "9999" and blanks as NA
       across(
