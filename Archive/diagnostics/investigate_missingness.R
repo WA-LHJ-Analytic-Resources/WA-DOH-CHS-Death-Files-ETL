@@ -144,7 +144,7 @@ heatmap_filtered <- ggplot(
     name = "% complete"
   ) +
   labs(
-    title = "Percent Completeness by Year & Variable",
+    title = "Percent Completeness by Year & Variable (Filter to Variables w/ at least 1 Year <90% Completeness)",
     x = "Year",
     y = "Variable"
   ) +
