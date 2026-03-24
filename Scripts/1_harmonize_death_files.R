@@ -54,7 +54,7 @@ for (file_yr in death_stat_files$file_year) {
     date_harmonized = as.character(lubridate::today())
   )
 
-  ### Step 4: Load in Data Vintage (Perform 1-Data Type Harmonization
+  ### Step 4: Load in Data Vintage (Perform 1-Data Type Harmonization)
   raw_list[[as.character(file_yr)]] <- load_data_vintage(
     file_location = data_vintage$file_location,
     available_vars = available_vars,
@@ -96,7 +96,6 @@ harmonized_data <- bind_rows(clean_list, .id = "file_year")
 tictoc::toc()
 
 # Convert Date & Time Variables to Proper Data Types -----
-
 harmonized_data <- harmonized_data %>%
   clean_date_variables(df = ., vars = params$date_vars) %>%
   clean_time_variables(df = .)
