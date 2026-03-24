@@ -1,16 +1,7 @@
-# 2_clean_harmonized_data.R
-
-# Load Raw Harmonized Data -----
-
-## Connect to DuckDB database
-con <- dbConnect(duckdb::duckdb(), dbdir = params$duckdb_filepath)
-
-## Connect to Harmonized Death Data Raw Table
-raw_tbl <- tbl(con, "harmonized_data_raw")
+# TEST.R
 
 # Clean Data -----
-
-harmonized_data_clean <- raw_tbl %>%
+harmonized_data_clean <- harmonized_data %>%
   ## Demographics
   mutate(
     age = as.numeric(age),
@@ -43,11 +34,12 @@ harmonized_data_clean <- raw_tbl %>%
       zero_pad_2_across()
     )
   ) %>%
-  # Pull the data into RAM to allow for additional cleaning (not SQL compatible) & joins
-  collect() %>%
   # Parse Date Variables
   mutate(ingestion_ts = as_datetime(ingestion_ts)) %>%
-  clean_date_vars(df = ., vars = params$date_vars)
+  clean_date_variables(df = ., vars = params$date_vars) %>%
+  clean_time_variables(df = .) %>%
+  # Remove unneeded variables
+  select(-matches("^record_axis_code_(?:[1-9]|1[0-9]|20)$"))
 
 
 # Peform Joins (4_Code_Set_Expansion) -----
