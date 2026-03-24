@@ -101,25 +101,19 @@ harmonized_data <- harmonized_data %>%
   clean_date_variables(df = ., vars = params$date_vars) %>%
   clean_time_variables(df = .)
 
-# Unify Disposition Facility Variables -----
+# Unify Disposition Facility (Cemetery) Variables -----
+harmonized_data <- unify_variables(
+  df = harmonized_data,
+  vars = "disposition facility",
+  code_set = params$code_sets$cemetery
+)
 
-disposition_facility_codes <- params$code_sets$cemetery %>%
-  distinct(code, .keep_all = TRUE) %>%
-  mutate(
-    disposition_facility_code = as.integer(code),
-    label = str_to_upper(label)
-  ) %>%
-  select(disposition_facility_code, label)
-
-TEST <- harmonized_data %>%
-  mutate(disposition_facility_code = as.integer(disposition_facility_code)) %>%
-  left_join(
-    .,
-    disposition_facility_codes,
-    by = join_by(disposition_facility_code)
-  ) %>%
-  mutate(disposition_facility_name = coalesce(label)) %>%
-  select(-disposition_facility_code, -label)
+# Unify Funeral Home Variables -----
+harmonized_data <- unify_variables(
+  df = harmonized_data,
+  vars = "funeral home",
+  code_set = params$code_sets$funeral_home
+)
 
 # Clean up -----
 rm(
