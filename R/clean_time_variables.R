@@ -75,7 +75,11 @@ clean_time_variables <- function(df) {
       -time_of_death_alt,
       -time_of_injury_alt,
       -time_of_death,
-      -time_of_injury
+      -time_of_death_hour,
+      -time_of_death_minutes,
+      -time_of_injury,
+      -time_of_injury_hour,
+      -time_of_injury_minutes,
     ) %>%
     # 8) Rename variables
     rename(
