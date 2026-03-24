@@ -102,5 +102,6 @@ rm(
   data_vintage,
   provenance,
   var_rename_crosswalk,
-  var_recode_crosswalk
+  var_recode_crosswalk,
+  file_yr
 )
