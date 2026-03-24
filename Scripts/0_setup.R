@@ -31,8 +31,8 @@ params$duckdb_filepath <- here(
 )
 
 ## Define Crosswalk Filepaths
-params$cw_filepath <- here::here("Resources", "Crosswalks")
-params$codes_filepath <- here::here(params$cw_filepath, "4_Code_Set_Expansion")
+params$cw_folder <- here::here("Resources", "Crosswalks")
+params$code_sets_folder <- here::here(params$cw_folder, "4_Code_Set_Expansion")
 
 ## Define Data Variables
 params$date_vars <- c(
@@ -53,7 +53,7 @@ params$date_vars <- c(
   for(set in code_sets){
 
     print(glue("Loading code sets for: {set}"))
-    params$code_sets[[set]] <- readr::read_csv(file = here(params$codes_filepath, paste0(set,"_codes.csv")), show_col_types = FALSE)
+    params$code_sets[[set]] <- readr::read_csv(file = here(params$code_sets_folder, paste0(set,"_codes.csv")), show_col_types = FALSE)
   }
 }
 
