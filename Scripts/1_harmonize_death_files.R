@@ -96,46 +96,6 @@ harmonized_data <- bind_rows(harmonized_list, .id = "file_year")
 
 tictoc::toc()
 
-# Convert Date & Time Variables to Proper Data Types -----
-harmonized_data <- harmonized_data %>%
-  clean_date_variables(
-    df = .,
-    vars = c(
-      "date_of_birth",
-      "date_of_death",
-      "date_of_injury",
-      "date_received",
-      "disposition_date"
-    )
-  ) %>%
-  clean_time_variables(df = .)
-
-# Unify Disposition Facility (Cemetery) Variables -----
-harmonized_data <- unify_variables(
-  df = harmonized_data,
-  vars = "disposition facility",
-  code_set = params$code_sets$cemetery
-)
-
-# Unify Funeral Home Variables -----
-harmonized_data <- unify_variables(
-  df = harmonized_data,
-  vars = "funeral home",
-  code_set = params$code_sets$funeral_home
-)
-
-# Combine All COD Codes -----
-harmonized_data <- combine_code_columns(
-  df = harmonized_data,
-  input_vars = c(
-    underlying_cod_code,
-    matches("^record_axis_code_(?:[2-9]|1[0-9]|20)$") # Function also removes record_axis_code_1 (as it is redundant with underlying_cod_code)
-  ),
-  delimiter = ";",
-  output_var = "all_cod_code",
-  remove_inputs = TRUE
-)
-
 # Clean up -----
 rm(
   available_vars,
