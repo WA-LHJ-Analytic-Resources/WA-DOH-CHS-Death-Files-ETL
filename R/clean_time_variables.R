@@ -1,5 +1,9 @@
 # clean_time_variables.R
 
+# df = harmonized_data %>%
+#   filter(file_year %in% 2017:2024) %>%
+#   select(file_year, contains("time"))
+
 clean_time_variables <- function(df) {
   df_formatted <- df %>%
     mutate(
@@ -33,29 +37,32 @@ clean_time_variables <- function(df) {
       ),
 
       # 2) Create Alternative Time of Death & Time of Injury variables (time_of_death_alt, time_of_injury_alt), will be used as a replacement if time_of_death or time_of_injury respectively are NA
-      time_of_death_alt = ifelse(
-        !is.na(time_of_death_hour) & !is.na(time_of_death_minutes),
-        paste0(time_of_death_hour, time_of_death_minutes),
-        NA_character_
+      time_of_death_alt = case_when(
+        !is.na(time_of_death_hour) & !is.na(time_of_death_minutes) ~ paste0(
+          time_of_death_hour,
+          time_of_death_minutes
+        ),
+        !is.na(time_of_death_hour) & is.na(time_of_death_minutes) ~ paste0(
+          time_of_death_hour,
+          "00"
+        ), # If only _hour variable is available, set as start of the hour (paste on "00" for minutes)
+        TRUE ~ NA_character_
       ),
-      time_of_injury_alt = ifelse(
-        !is.na(time_of_injury_hour) & !is.na(time_of_injury_minutes),
-        paste0(time_of_injury_hour, time_of_injury_minutes),
-        NA_character_
+      time_of_injury_alt = case_when(
+        !is.na(time_of_injury_hour) & !is.na(time_of_injury_minutes) ~ paste0(
+          time_of_injury_hour,
+          time_of_injury_minutes
+        ),
+        !is.na(time_of_injury_hour) & is.na(time_of_injury_minutes) ~ paste0(
+          time_of_injury_hour,
+          "00"
+        ), # If only _hour variable is available, set as start of the hour (paste on "00" for minutes)
+        TRUE ~ NA_character_
       ),
 
       # 3) Coalesce Time of Death & Time of Injury variables (1st using original time_of_death and time_of_injury variables --> (if NA) fill in using alternates)
       time_of_death = coalesce(time_of_death, time_of_death_alt),
       time_of_injury = coalesce(time_of_injury, time_of_injury_alt),
-
-      # 4) Normalize inputs: treat "NANA", "9999" and blanks as NA
-      across(
-        c(
-          time_of_death,
-          time_of_injury
-        ),
-        ~ ifelse(.x %in% c("NANA", "9999", ""), NA_character_, .x)
-      ),
 
       # 5) Normalize "2400" timestamp to "0000"
       across(
