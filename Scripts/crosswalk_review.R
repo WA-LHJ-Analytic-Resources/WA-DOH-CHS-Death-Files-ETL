@@ -67,6 +67,48 @@ all_recode_cw %>%
     path = here(params$cw_folder, "all_recode_variables.xlsx")
   )
 
+# Create High-Level Summaries -----
+
+## Create a Summary Data Frame where each row details the file_years where they underlying variable is missing
+all_rename_missing_summary <- all_rename_cw %>%
+  filter(missing == TRUE) %>%
+  arrange(to_name, file_year) %>%
+  group_by(to_name) %>%
+  mutate(missing_years = paste0(file_year, collapse = ",")) %>%
+  ungroup() %>%
+  distinct(to_name, missing_years)
+
+all_rename_missing_summary %>%
+  writexl::write_xlsx(
+    .,
+    path = here(
+      "Resources",
+      "Review",
+      "Missing Variables Referenced in Rename Crosswalk.xlsx"
+    )
+  )
+
+## Create a Summary Data Frame where each row details a variable recoding (where review_flag == TRUE), and the file_years where it applies.
+
+all_recode_review_summary <- all_recode_cw %>%
+  filter(review_flag == TRUE) %>%
+  arrange(variable, file_year) %>%
+  group_by(variable, from_code, to_code) %>%
+  mutate(applicable_years = paste0(file_year, collapse = ",")) %>%
+  ungroup() %>%
+  distinct(variable, from_code, from_label, to_code, to_label, applicable_years)
+
+all_recode_review_summary %>%
+  writexl::write_xlsx(
+    .,
+    path = here(
+      "Resources",
+      "Review",
+      "Flagged Variable Recoding Operations.xlsx"
+    )
+  )
+
+
 # Clean up -----
 rm(
   rename_cw_list,
