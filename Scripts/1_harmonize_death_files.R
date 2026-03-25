@@ -21,8 +21,7 @@ death_stat_files <- death_files %>%
 tictoc::tic("Harmonize all death data vintages")
 
 ## Step 0: Initiate Data Storage Lists
-raw_list <- list()
-clean_list <- list()
+harmonized_list <- list()
 
 ## Load & Recode Each Data Vintage
 for (file_yr in death_stat_files$file_year) {
@@ -55,28 +54,30 @@ for (file_yr in death_stat_files$file_year) {
   )
 
   ### Step 4: Load in Data Vintage (Perform 1-Data Type Harmonization)
-  raw_list[[as.character(file_yr)]] <- load_data_vintage(
+  harmonized_list[[as.character(file_yr)]] <- load_data_vintage(
     file_location = data_vintage$file_location,
     available_vars = available_vars,
     missing_vars = missing_vars
   )
 
   ### Step 5: Rename Variables (Perform 2-Schema Harmonization)
-  raw_list[[as.character(file_yr)]] <- rename_variables(
-    df = raw_list[[as.character(file_yr)]],
+  harmonized_list[[as.character(file_yr)]] <- rename_variables(
+    df = harmonized_list[[as.character(file_yr)]],
     var_rename_cw = var_rename_crosswalk
   )
 
   ### Step 6: Recode Coded Values (Perform 3-Value Harmonization)
-  clean_list[[as.character(file_yr)]] <- recode_variables(
-    df = raw_list[[as.character(file_yr)]],
+  harmonized_list[[as.character(file_yr)]] <- recode_variables(
+    df = harmonized_list[[as.character(file_yr)]],
     var_recode_cw = var_recode_crosswalk,
     verbose = FALSE,
     timed = FALSE
   )
 
   ### Step 7: Add Vintage Metadata
-  clean_list[[as.character(file_yr)]] <- clean_list[[as.character(file_yr)]] %>%
+  harmonized_list[[as.character(file_yr)]] <- harmonized_list[[as.character(
+    file_yr
+  )]] %>%
     bind_cols(provenance) %>%
     dplyr::relocate(
       vintage_label,
@@ -91,7 +92,7 @@ for (file_yr in death_stat_files$file_year) {
 }
 
 ## Step 7: Append all data vintages together
-harmonized_data <- bind_rows(clean_list, .id = "file_year")
+harmonized_data <- bind_rows(harmonized_list, .id = "file_year")
 
 tictoc::toc()
 
