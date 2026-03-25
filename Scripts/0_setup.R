@@ -24,6 +24,9 @@ params$code_sets <- list() # to store 4_Code_Set_Expansion lookup tables
 params$raw_data_folder <- Sys.getenv("RAW_DEATH_FILES_FOLDER")
 params$output_folder <- Sys.getenv("HARMONIZED_DEATH_FILE_FOLDER")
 
+## Add Variable Labels (Convert Coded Variables to Factors)
+params$apply_variable_labels <- TRUE
+
 ## Define DuckDB Filepath
 params$duckdb_filepath <- here(
   params$output_folder,
