@@ -33,19 +33,6 @@ combine_code_columns <- function(
   df_combined
 }
 
-
-TEST <- harmonized_data %>%
-  combine_code_columns(
-    df = .,
-    input_vars = c(
-      underlying_cod_code,
-      matches("^record_axis_code_(?:[2-9]|1[0-9]|20)$")
-    ),
-    delimiter = ";",
-    output_var = "all_cod_code",
-    remove_inputs = TRUE
-  )
-
 # Parking Lot -------
 
 ## DuckDB Appropriate Version
