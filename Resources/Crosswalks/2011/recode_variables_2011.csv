@@ -1,5 +1,6 @@
 ﻿file_year,variable,from_code,from_label,to_code,to_label,notes,review_flag
 2011,age_type,0,Years 1 to 99,1,Years,NA,FALSE
+2011,age_type,6,,9,Unknown,NA,TRUE
 2011,armed_forces,1,Yes,Y,Yes,NA,FALSE
 2011,armed_forces,2,No,N,No,NA,FALSE
 2011,armed_forces,9,Unknown/Not Stated,U,Unknown,NA,FALSE
