@@ -37,15 +37,6 @@ params$duckdb_filepath <- here(
 params$cw_folder <- here::here("Resources", "Crosswalks")
 params$code_sets_folder <- here::here("Resources", "Code Sets")
 
-## Define Data Variables
-params$date_vars <- c(
-  "date_of_birth",
-  "date_of_death",
-  "date_of_injury",
-  "date_received",
-  "disposition_date"
-)
-
 # Load Code Sets -----
 
 # fmt: skip

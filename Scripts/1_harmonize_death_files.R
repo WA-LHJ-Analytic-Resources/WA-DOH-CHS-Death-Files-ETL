@@ -98,7 +98,16 @@ tictoc::toc()
 
 # Convert Date & Time Variables to Proper Data Types -----
 harmonized_data <- harmonized_data %>%
-  clean_date_variables(df = ., vars = params$date_vars) %>%
+  clean_date_variables(
+    df = .,
+    vars = c(
+      "date_of_birth",
+      "date_of_death",
+      "date_of_injury",
+      "date_received",
+      "disposition_date"
+    )
+  ) %>%
   clean_time_variables(df = .)
 
 # Unify Disposition Facility (Cemetery) Variables -----
