@@ -114,6 +114,18 @@ harmonized_data <- unify_variables(
   code_set = params$code_sets$funeral_home
 )
 
+# Combine All COD Codes -----
+harmonized_data <- combine_code_columns(
+  df = harmonized_data,
+  input_vars = c(
+    underlying_cod_code,
+    matches("^record_axis_code_(?:[2-9]|1[0-9]|20)$") # Function also removes record_axis_code_1 (as it is redundant with underlying_cod_code)
+  ),
+  delimiter = ";",
+  output_var = "all_cod_code",
+  remove_inputs = TRUE
+)
+
 # Clean up -----
 rm(
   available_vars,
