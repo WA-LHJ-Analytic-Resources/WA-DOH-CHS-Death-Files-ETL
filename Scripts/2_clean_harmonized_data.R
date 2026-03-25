@@ -3,7 +3,50 @@
 # Initialize Audit List -----
 audits <- list()
 
+# Unify Variable Versions -----
+
+## Disposition Facility Codes & Names
+harmonized_data <- unify_variables(
+  df = harmonized_data,
+  vars = "disposition facility",
+  code_set = params$code_sets$cemetery
+)
+
+## Funeral Home Codes & Names
+harmonized_data <- unify_variables(
+  df = harmonized_data,
+  vars = "funeral home",
+  code_set = params$code_sets$funeral_home
+)
+
+## Combine Underlying COD Code & All Record Axis Codes --> 1 Variable
+harmonized_data <- combine_code_columns(
+  df = harmonized_data,
+  input_vars = c(
+    underlying_cod_code,
+    matches("^record_axis_code_(?:[2-9]|1[0-9]|20)$") # Function also removes record_axis_code_1 (as it is redundant with underlying_cod_code)
+  ),
+  delimiter = ";",
+  output_var = "all_cod_code",
+  remove_inputs = TRUE
+)
+
 # Convert Harmonized Data to Final Data Types ------
+
+## Clean Date & Time Variables
+harmonized_data <- harmonized_data %>%
+  clean_date_variables(
+    df = .,
+    vars = c(
+      "date_of_birth",
+      "date_of_death",
+      "date_of_injury",
+      "date_received",
+      "disposition_date"
+    )
+  ) %>%
+  clean_time_variables(df = .)
+
 
 ## Load in Final Harmonized Data Schema
 schema_data_types <- readr::read_csv(
@@ -18,7 +61,7 @@ harmonized_data <- clean_data_types(
   df_schema = schema_data_types
 )
 
-## (Optional) Review how data types were converted
+## Audit how data types were converted
 audits$data_type_conversions <- attr(harmonized_data, "schema_audit")
 
 # (Optional) Apply Labels to Factor Variables ------
@@ -36,14 +79,14 @@ if (params$apply_variable_labels == TRUE) {
     dict_df = schema_factors
   )
 
-  ## (Optional) Review how the factor labels were applied
+  ## Audit how the factor labels were applied
   audits$factor_labels <- attr(harmonized_data, "factor_audit")
 }
 
 
-# Clean Data -----
-harmonized_data_clean <- harmonized_data %>%
+# Joining Code Sets -----
 
+harmonized_data_clean <- harmonized_data %>%
   mutate(
     across(
       c(
@@ -59,7 +102,7 @@ harmonized_data_clean <- harmonized_data %>%
   )
 
 
-# Peform Joins (4_Code_Set_Expansion) -----
+# Peform Joins (Code Sets) -----
 
 harmonized_data_clean <- harmonized_data_clean %>%
   # Expand Coded Variables
