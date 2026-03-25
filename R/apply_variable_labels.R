@@ -76,19 +76,3 @@ apply_variable_labels <- function(df, dict_df) {
   attr(df, "factor_audit") <- factor_audit
   df
 }
-
-# dict_df = readr::read_csv(
-#   file = here("Resources", "schema_factors.csv"),
-#   show_col_types = FALSE
-# ) %>%
-#   mutate(order = as.integer(order)) %>%
-#   select(variable, level, label, order, ordered, data_type)
-
-# TEST <- apply_variable_labels(df= harmonized_data, dict_df = dict_df)
-
-# for(variable in unique(dict_df$variable)){
-
-#   print(glue("Showing distributions for {variable}...."))
-#   print(table(harmonized_data[[variable]]))
-#   print(table(TEST[[variable]]))
-# }
