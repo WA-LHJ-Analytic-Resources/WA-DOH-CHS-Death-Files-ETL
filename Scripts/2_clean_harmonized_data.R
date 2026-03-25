@@ -21,8 +21,21 @@ harmonized_data <- clean_data_types(
 ## (Optional) Review how data types were converted
 # data_type_conversion_audit <- attr(harmonized_data, "schema_audit")
 
-## Specify the Levels & Labels of Factor Variables ------
-if (params$apply_variable_labels == TRUE) {}
+## Apply Labels to Factor Variables ------
+if (params$apply_variable_labels == TRUE) {
+  ## Load in DF Factor Schema
+  schema_factors = readr::read_csv(
+    file = here("Resources", "schema_factors.csv"),
+    show_col_types = FALSE
+  ) %>%
+    mutate(order = as.integer(order)) %>%
+    select(variable, level, label, order, ordered, data_type)
+
+  harmonized_data <- apply_variable_labels(
+    df = harmonized_data,
+    dict_df = schema_factors
+  )
+}
 
 
 # Clean Data -----
