@@ -127,6 +127,13 @@ harmonized_data <- combine_code_columns(
   remove_inputs = TRUE
 )
 
+# Save Harmonized Data ------
+save(harmonized_data, file = "harmonized_data.RData")
+
+rm(harmonized_data, harmonized_list)
+gc()
+
+
 # Clean up -----
 rm(
   available_vars,
