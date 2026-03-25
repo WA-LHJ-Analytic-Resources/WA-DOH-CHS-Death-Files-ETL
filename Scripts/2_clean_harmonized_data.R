@@ -1,7 +1,7 @@
 # 2_clean_harmonized_data.R
 
-# Load Harmonized Data -----
-load(file = "harmonized_data.RData")
+# Initialize Audit List -----
+audits <- list()
 
 # Convert Harmonized Data to Final Data Types ------
 
@@ -19,9 +19,9 @@ harmonized_data <- clean_data_types(
 )
 
 ## (Optional) Review how data types were converted
-# data_type_conversion_audit <- attr(harmonized_data, "schema_audit")
+audits$data_type_conversions <- attr(harmonized_data, "schema_audit")
 
-## Apply Labels to Factor Variables ------
+# (Optional) Apply Labels to Factor Variables ------
 if (params$apply_variable_labels == TRUE) {
   ## Load in DF Factor Schema
   schema_factors = readr::read_csv(
@@ -35,6 +35,9 @@ if (params$apply_variable_labels == TRUE) {
     df = harmonized_data,
     dict_df = schema_factors
   )
+
+  ## (Optional) Review how the factor labels were applied
+  audits$factor_labels <- attr(harmonized_data, "factor_audit")
 }
 
 
