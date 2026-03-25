@@ -22,8 +22,6 @@ cw_files <- tibble(
     recode_cw = ifelse(str_detect(file_name, "recode_variables"), TRUE, FALSE)
   )
 
-rm(all_files)
-
 ## Load All Crosswalk Files -----
 
 ## Step 3: Initiate Storage Lists
