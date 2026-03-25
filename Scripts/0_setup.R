@@ -35,7 +35,7 @@ params$duckdb_filepath <- here(
 
 ## Define Crosswalk Filepaths
 params$cw_folder <- here::here("Resources", "Crosswalks")
-params$code_sets_folder <- here::here("Resources", "Code_Set_Expansion")
+params$code_sets_folder <- here::here("Resources", "Code Sets")
 
 ## Define Data Variables
 params$date_vars <- c(
