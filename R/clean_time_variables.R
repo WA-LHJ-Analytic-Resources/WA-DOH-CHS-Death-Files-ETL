@@ -1,10 +1,15 @@
 # clean_time_variables.R
 
-# df = harmonized_data %>%
-#   filter(file_year %in% 2017:2024) %>%
-#   select(file_year, contains("time"))
+clean_time_variables <- function(df, verbose = FALSE) {
+  # Helper function to conditionally suppress warnings during time parsing
+  parse_time_wrap <- function(x, fmt = "%H%M") {
+    if (verbose == TRUE) {
+      readr::parse_time(x, format = fmt)
+    } else if (verbose == FALSE) {
+      suppressWarnings(readr::parse_time(x, format = fmt))
+    }
+  }
 
-clean_time_variables <- function(df) {
   df_formatted <- df %>%
     mutate(
       # 0) Normalize Hour/Minute Variables (ensure they are in proper ranges)
@@ -74,8 +79,8 @@ clean_time_variables <- function(df) {
       ),
 
       # 6) Parse Time of Death & Time of Injury variables to time data type
-      time_of_death_final = readr::parse_time(time_of_death, format = "%H%M"),
-      time_of_injury_final = readr::parse_time(time_of_injury, format = "%H%M")
+      time_of_death_final = parse_time_wrap(time_of_death, fmt = "%H%M"),
+      time_of_injury_final = parse_time_wrap(time_of_injury, fmt = "%H%M")
     ) %>%
     # 7) Remove unnecessary variables
     select(
