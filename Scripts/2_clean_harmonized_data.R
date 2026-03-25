@@ -1,26 +1,33 @@
-# TEST.R
+# 2_clean_harmonized_data.R
+
+# Load Harmonized Data -----
+load(file = "harmonized_data.RData")
+
+# Convert Harmonized Data to Final Data Types ------
+
+## Load in Final Harmonized Data Schema
+schema_data_types <- readr::read_csv(
+  file = here("Resources", "schema_data_types.csv"),
+  show_col_types = FALSE
+) %>%
+  select(-notes, -flag)
+
+## Implement Data Type Conversions
+harmonized_data <- clean_data_types(
+  df = harmonized_data,
+  df_schema = schema_data_types
+)
+
+## (Optional) Review how data types were converted
+# data_type_conversion_audit <- attr(harmonized_data, "schema_audit")
+
+## Specify the Levels & Labels of Factor Variables ------
+if (params$apply_variable_labels == TRUE) {}
+
 
 # Clean Data -----
 harmonized_data_clean <- harmonized_data %>%
-  ## Demographics
-  mutate(
-    age = as.numeric(age),
-    age_years = as.numeric(age_years)
-  ) %>%
-  # Combine Cause of Death variables
-  combine_code_columns(
-    input_vars = c(
-      underlying_cod_code,
-      matches("^record_axis_code_(?:[2-9]|1[0-9]|20)$")
-    ),
-    output_var = "all_cod_code" # underyling_cod_code;record_axis_code_2;...;record_axis_code_20
-  ) %>%
-  ## Format Code Variable Data Types (for joins)
-  mutate(
-    # birthplace_country = as.numeric(birthplace_country), # EDIT: These includes codes and literals...
-    death_facility = as.numeric(death_facility)
-    # funeral_home_code = as.numeric(funeral_home_code) # EDIT: These includes codes and literals...
-  ) %>%
+
   mutate(
     across(
       c(
@@ -33,13 +40,7 @@ harmonized_data_clean <- harmonized_data %>%
       ),
       zero_pad_2_across()
     )
-  ) %>%
-  # Parse Date Variables
-  mutate(ingestion_ts = as_datetime(ingestion_ts)) %>%
-  clean_date_variables(df = ., vars = params$date_vars) %>%
-  clean_time_variables(df = .) %>%
-  # Remove unneeded variables
-  select(-matches("^record_axis_code_(?:[1-9]|1[0-9]|20)$"))
+  )
 
 
 # Peform Joins (4_Code_Set_Expansion) -----
