@@ -39,7 +39,8 @@ apply_variable_labels <- function(df, dict_df) {
     x_raw <- as.character(df[[var]])
 
     # Optional safety: warn if any codes in df aren't in the dictionary
-    unknown <- setdiff(unique(x_raw), lvl_codes)
+    unknown <- setdiff(unique(x_raw[!is.na(x_raw)]), lvl_codes)
+
     if (length(unknown) > 0) {
       warning(sprintf(
         "Variable '%s': %d values not in dictionary (will become NA): %s",
