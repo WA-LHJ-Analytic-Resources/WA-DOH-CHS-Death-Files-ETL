@@ -7,7 +7,7 @@ load(file = "harmonized_data.RData")
 
 ## Load in Final Harmonized Data Schema
 schema_data_types <- readr::read_csv(
-  file = here("Resources", "schema_data_types.csv"),
+  file = here("Resources", "Schemas", "schema_data_types.csv"),
   show_col_types = FALSE
 ) %>%
   select(-notes, -flag)
@@ -25,7 +25,7 @@ harmonized_data <- clean_data_types(
 if (params$apply_variable_labels == TRUE) {
   ## Load in DF Factor Schema
   schema_factors = readr::read_csv(
-    file = here("Resources", "schema_factors.csv"),
+    file = here("Resources", "Schemas", "schema_factors.csv"),
     show_col_types = FALSE
   ) %>%
     mutate(order = as.integer(order)) %>%
