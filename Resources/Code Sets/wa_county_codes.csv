@@ -1,41 +1,41 @@
-start_year,end_year,code,label,notes,review_flag
-1980,2026,00,Non-Washington State or Unknown,,TRUE
-1980,2026,01,Adams County,,FALSE
-1980,2026,02,Asotin County,,FALSE
-1980,2026,03,Benton County,,FALSE
-1980,2026,04,Chelan County,,FALSE
-1980,2026,05,Clallam County,,FALSE
-1980,2026,06,Clark County,,FALSE
-1980,2026,07,Columbia County,,FALSE
-1980,2026,08,Cowlitz County,,FALSE
-1980,2026,09,Douglas County,,FALSE
-1980,2026,10,Ferry County,,FALSE
-1980,2026,11,Franklin County,,FALSE
-1980,2026,12,Garfield County,,FALSE
-1980,2026,13,Grant County,,FALSE
-1980,2026,14,Grays Harbor County,,FALSE
-1980,2026,15,Island County,,FALSE
-1980,2026,16,Jefferson County,,FALSE
-1980,2026,17,King County,,FALSE
-1980,2026,18,Kitsap County,,FALSE
-1980,2026,19,Kittitas County,,FALSE
-1980,2026,20,Klickitat County,,FALSE
-1980,2026,21,Lewis County,,FALSE
-1980,2026,22,Lincoln County,,FALSE
-1980,2026,23,Mason County,,FALSE
-1980,2026,24,Okanogan County,,FALSE
-1980,2026,25,Pacific County,,FALSE
-1980,2026,26,Pend Oreille County,,FALSE
-1980,2026,27,Pierce County,,FALSE
-1980,2026,28,San Juan County,,FALSE
-1980,2026,29,Skagit County,,FALSE
-1980,2026,30,Skamania County,,FALSE
-1980,2026,31,Snohomish County,,FALSE
-1980,2026,32,Spokane County,,FALSE
-1980,2026,33,Stevens County,,FALSE
-1980,2026,34,Thurston County,,FALSE
-1980,2026,35,Wahkiakum County,,FALSE
-1980,2026,36,Walla Walla County,,FALSE
-1980,2026,37,Whatcom County,,FALSE
-1980,2026,38,Whitman County,,FALSE
-1980,2026,39,Yakima County,,FALSE
+code,label,notes,review_flag
+00,Non-Washington State or Unknown,,TRUE
+01,Adams County,,FALSE
+02,Asotin County,,FALSE
+03,Benton County,,FALSE
+04,Chelan County,,FALSE
+05,Clallam County,,FALSE
+06,Clark County,,FALSE
+07,Columbia County,,FALSE
+08,Cowlitz County,,FALSE
+09,Douglas County,,FALSE
+10,Ferry County,,FALSE
+11,Franklin County,,FALSE
+12,Garfield County,,FALSE
+13,Grant County,,FALSE
+14,Grays Harbor County,,FALSE
+15,Island County,,FALSE
+16,Jefferson County,,FALSE
+17,King County,,FALSE
+18,Kitsap County,,FALSE
+19,Kittitas County,,FALSE
+20,Klickitat County,,FALSE
+21,Lewis County,,FALSE
+22,Lincoln County,,FALSE
+23,Mason County,,FALSE
+24,Okanogan County,,FALSE
+25,Pacific County,,FALSE
+26,Pend Oreille County,,FALSE
+27,Pierce County,,FALSE
+28,San Juan County,,FALSE
+29,Skagit County,,FALSE
+30,Skamania County,,FALSE
+31,Snohomish County,,FALSE
+32,Spokane County,,FALSE
+33,Stevens County,,FALSE
+34,Thurston County,,FALSE
+35,Wahkiakum County,,FALSE
+36,Walla Walla County,,FALSE
+37,Whatcom County,,FALSE
+38,Whitman County,,FALSE
+39,Yakima County,,FALSE
