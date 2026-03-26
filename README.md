@@ -28,9 +28,9 @@ Multiple versions of the data sets are sent throughout the year. There are preli
 
 ## How to Run the Code
 1. Download all WA DOH CHS Death Certificate Statistical Files from Secure Access Washington.
-2. Run `Scripts/0_setup.R`. This script prompts users to edit `.Renviron` and specify where downloaded files from Step #1 are stored.
-3. Run `Scripts/1_crosswalk_death_files.R`. This script performs the 1_Schema Harmonization, 2_Data Type Harmonization, 3) Value Harmonization steps, and takes approximately 10 minutes to complete for all available death statistical files.
-4. Run `Scripts/2_clean_harmonized_data.R`. This script cleans the harmonized death data set (i.e. converts to proper data types, performs joins with code set descriptions, etc.)
+2. Run `Scripts/0_setup.R`. This script loads all packages and custom functions, defines workflow parameters, defines filepaths, and loads in code sets (ex: cemetery, coutnry, facility, fips, and more).
+3. Run `Scripts/1_harmonize_death_files.R`. This script loads each data vintage, performs Data Type Harmonization (all variables as character data types), performs Schema Harmonization (all variables to standardized naming convention), and performs Value Harmonization (recodes data vintage variable values to a set of standardized code options). Lastly, it binds all data vintages together into a single, multiple year data set labelled `harmonized_data`..
+7. Run `Scripts/2_clean_harmonized_data.R`. This unifies variables in `harmonized_data` (ex: some data vintage years only have `disposition_facility_codes`, some data vintage years only have `disposition_facility_names` --> align `disposition_facility` to a single varaible across all of the years), convert all variables to proper, finalized data types (ex: characters --> date, time, or factor variables), applies factor labels to all categorical values (optional) so values are easily understood, and performs joins to expand code sets (ex: cemetery, coutnry, facility, fips, and more).
 
 ### Workflow Diagram
 ![WA DOH CHS Death Files ETL Workflow Diagram](Resources/WA-DOH-CHS_Death-Files-ETL-Workflow-Diagram.png)
@@ -40,18 +40,40 @@ Multiple versions of the data sets are sent throughout the year. There are preli
 | **Data** | **Location** | **Last Update** | **Notes** |
 |----------|--------------|-----------------|-----------|
 | Raw Death Statistical Files | **User Determined** in `.Renviron` file | 2026-03-02 | Users provide the filepath to folder containing all of your organization's raw death statistical files (downloaded from Secure Access Washington) |
-| Variable Name Crosswalk | `Resources/Crosswalks/1_Schema_Harmonization/variable_name_crosswalk.csv` | 2026-03-02 | Crosswalks the BEDROCK variable names to WHALES variable names. All variable names are cleaned and standardized using [`janitor::clean_names()`](https://cloud.r-project.org/web/packages/janitor/vignettes/janitor.html#clean-dataframe-names-with-clean_names) which converts variable names to lowercase, replaces spaces with "_", and more. |
-| Variable Code Crosswalk | `Resources/Crosswalks/3_Value_Harmonization/variable_code_crosswalk.csv` | 2026-03-02 | (Applied after `Variable Name Crosswalk`) Crosswalks the value-code sets used by BEDROCK variables and converts them to/aligns them with WHALES value-code sets.|
-| Standardized Code Sets | `Resources/Crosswalks/4_Code_Set_Expansion` | 2026-03-02 | (Applied after `Variable Code Crosswalk`) Contains the standardized value-code sets for geographies and facilities mentioned in the death files. This includes: NCHS state & county codes, WA county & city-county codes, FIPs codes, country codes, facility codes, funeral home codes, cemetery codes, and occupation codes. These code sets were extracted from WA DOH Death Statistical Dictionary & Crosswalks.xlsx and put into a machine-readable format.|
-| Custom R Functions | `Scripts/Custom_Functions` | 2026-03-02 | Custom R functions were developed to streamline and increase the legibility this data pipeline. |
-| [WA DOH Death Data User Guide](https://doh.wa.gov/sites/default/files/2024-10/422-155-WADeathFileDataUsersGuide2023_1.pdf) | Publicly Available (see link to the left) | 2026-03-02 | Provides description on how to use the WA DOH CHS death microdata |
+| `rename_variables_YYYY.csv` | `Resources/Crosswalks/YYYY` | 3/26/2026 | **Crosswalks data vintage variable names** to the standardized variable naming convention for `harmonized_data` (these variables align with `janitor::clean_names()` as lower snake_case. `rename_variables_YYYY.csv` are an **annual** file (as there are year-over-year variations in variable naming conventions), and only include the subset of overall variables to be included in the `harmonized_data`. | 
+| `all_rename_variables.csv` | `Resources/Crosswalks` | 3/26/2026 | Uses `Scripts/crosswalk_review.R` to combines all annual `rename_variables_YYYY.csv` files into 1 single file to enable quick, user review of variable renaming crosswalks across all data vintages. | 
+| `recode_variables_YYYY.csv` | `Resources/Crosswalks/YYYY` | 3/26/2026 | **Crosswalks data vintage variable coded values** to the standardized variable coding convention for `harmonized_data`. `recode_variables_YYYY.csv` are an **annual** file (as there are year-over-year variations in coding conventions), and only include variable-code value pairs that deviate from the standardized coding convention (if variables-code value pairs don't require recoding they are not included). | 
+| `all_recode_variables.csv` | `Resources/Crosswalks` | 3/26/2026 | Uses `Scripts/crosswalk_review.R` to combines all annual `code_variables_YYYY.csv` files into 1 single file to enable quick, user review of variable recoding crosswalks across all data vintages.| 
+| `schema_data_types.csv` | `Resources/Schemas` | 3/26/2026 | Indicates the proper, finalized data types for all variables in `harmonized_data`. This is used to convert `harmonized_data` variables from character data type (used throughout the data pipeline) to intended data types for end use (such as dates, times, factors, and more). | 
+| `schema_factors.csv` | `Resources/Schemas` | 3/26/2026 | This file provides all of the desired levels and labels for `harmonized_data`'s factor and ordered (factor) variables. | 
 
-### Custom R Functions
-There are multiple custom R functions stored in separate R scripts at `Scripts/Custom_Functions`, including a few critical ones that are nested within each other. The 4 custom functions below are ordered from smallest/most granular to largest/most flexible: 
+### Custom Functions (& Helper R Scripts)
 
-- [`apply_crosswalk_var()`](https://github.com/WA-LHJ-Analytic-Resources/WA-DOH-CHS-Death-Files-ETL/blob/main/Scripts/Custom_Functions/apply_crosswalk_var.R) - This function takes **one variable** from a BEDROCK data vintage, and crosswalks it to use the corresponding coded values from the WHALES data vintages.
-- [`apply_crosswalk()`](https://github.com/WA-LHJ-Analytic-Resources/WA-DOH-CHS-Death-Files-ETL/blob/main/Scripts/Custom_Functions/apply_crosswalk.R) - This function takes a BEDROCK data vintage, and crosswalks **all applicable variables** to use the corresponding coded values from the WHALES data vintages. `apply_crosswalk()` works by iteratively using `apply_crosswalk_var()` over all applicable variables.
-- [`harmonize_vintage()`](https://github.com/WA-LHJ-Analytic-Resources/WA-DOH-CHS-Death-Files-ETL/blob/main/Scripts/Custom_Functions/harmonize_vintage.R) - Performs the entire ETL data pipeline (load data, 1 - Schema Harmonization, 2 - Data Type Harmonization, 3 - Value Harmonization (via `apply_crosswalk()`) for **one BEDROCK or WHALES data vintage file**.
-- [`harmonize_all_vintages()`](https://github.com/WA-LHJ-Analytic-Resources/WA-DOH-CHS-Death-Files-ETL/blob/main/Scripts/Custom_Functions/harmonize_all_vintages.R) - Performs the entire ETL data pipeline (load data, 1 - Schema Harmonization, 2 - Data Type Harmonization, 3 - Value Harmonization (via `apply_crosswalk()`) for **all identified BEDROCK or WHALES data vintage files**. `harmonize_all_vintages()` works by iteratively using `harmonize_vintage()` for all identified data vintage files. 
+Custom R functions were developed to streamline and increase the legibility of this data pipeline. Custom functions are stored under `Scripts/Custom_Functions/`.
 
+**1_harmonize_death_files.R**
+- `load_crosswalk()`: Loads the `rename_variables_YYYY.csv` or `recode_variables_YYYY.csv` for the given year.
+- `load_data_vintage()`: Loads the specified Death Statistical Annual File. Performs under-the-hood operations including Data Type Harmonization (all variables as character data type), adding any missing variables (that are present in other data vintages) with all values as NA, and converting standard placeholders (i.e. "" or "NA" to `NA` values).
+- `rename_variables()`: Performs Schema Harmonization (data vintage variable names --> standard variable naming convention for `harmonized_data`) using related `rename_variables_YYYY.csv` file. Remaining variables are organized with `state_file_number` first, then the remaining in alphabetical order.
+- `recode_variables()`: Performs Value Harmonization (data vintage variable coding --> standard variable coding convention for `harmonized_data`) using related `recode_variables_YYYY.csv` file. Only variable-code value pairs that are not in the standard variable coding convention for `harmonized_data` are converted.
 
+**2_clean_harmonized_data.R**
+- `unify_variables()`: Takes versions of similar variables (ex: `disposition_facility_code` - `disposition_facility_name`, and `funeral_home_code` and `funeral_home_name`) that are slightly different across annual data vintages, and combines them into a singular, standardized variable in `harmonized_data`.
+- `combine_code_columns()`: Takes the many code columns (ex: `record_axis_code_1` to `record_axis_code_20`) and combines them into a single code column as a concatenated string (to allow for easier data management).
+- `clean_date_variables()`: Takes the numerous date variables (stored as the character data type) and converts them to date data types. This function excepts dates formatted in many ways (see the `orders` parameter), and dates with improper formatting or unrealistic values are converted automatically to `NA`.
+- `clean_time_variables()`: Takes the numerous time variables (ex: time_of_death, time_of_death_hour, time_of_death_minute, time_of_injury, time_of_injury_hour, time_of_injury_minute) whose format and availability can vary year-to-year, and converts the values from character data type to time (lubridate hms) data type.
+- `clean_data_types()`: Uses `schema_data_types.csv` to convert `harmonized_data` variables to their final proper data types. **Note:** This does not apply to `date` and `time` related variables as they are handled previously/exclusively in `clean_date_variables()` and `clean_time_variables()`. Includes an audit feature to see original vs converted data types for all variables.
+- `apply_variable_labels()`: This functional is optional to use (as determined by `params$apply_variable_labels` in `0_setup.R`). It uses `schema_factors.csv` to apply proper levelling and labels to all factor and ordered (factor) variables indicated in `schema_data_types.csv`. It includes an audit feature to see applied levels and labels as well as any potentially unmatched values.
+
+**investigate_missingness.R**
+- This is an R script - not a custom R function!
+- Once `harmonized_data` is generated after running `1_harmonize_death_files.R`, users can run this script to generate a heat map of variable completeness over time (by file year) to detect and investigate any potential data quality issues.
+
+**crosswalk_review.R**
+- This is an R script - not a custom R function!
+- This R script should be run anytime any of the `rename_variables_YYYY.csv` or `recode_variables_YYYY.csv` are edited.
+- This R script loads and combines all `rename_variables_YYYY.csv` and `recode_variables_YYYY.csv` files into `all_rename_variables.csv` and  `all_recode_variables.csv` respectively which are easier to users to review and see the crosswalks implemented across all data vintages.
+- Additionally, this R script produces 2 summary files in the `Resouces/Review` folder (`Missing Variables Referenced in Rename Crosswalk.xlsx` and `Flagged Variable Recording Operations.xlsx`) that **succinctly document critical data quality issues observed across annual data vintages that will need to be remedied by the project team**. 
+
+### Other Resources
+- [WA DOH Death Data User Guide](https://doh.wa.gov/sites/default/files/2024-10/422-155-WADeathFileDataUsersGuide2023_1.pdf)
