@@ -11,7 +11,7 @@ pacman::p_load(fs, glue, here, readr, scales, tictoc, tidyverse, writexl)
 
 # Load All Custom functions
 list.files(
-  path = here::here("R"),
+  path = here::here("Scripts", "Custom_Functions"),
   pattern = "\\.R$",
   full.names = TRUE,
   recursive = TRUE
