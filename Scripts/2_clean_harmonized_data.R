@@ -262,4 +262,7 @@ harmonized_data <- harmonized_data %>%
   )
 
 # Save Clean Harmonized Data -----
-save(harmonized_data, "harmonized_data.RData")
+saveRDS(
+  harmonized_data,
+  file = here(Sys.getenv("HARMONIZED_DEATH_FILE_FOLDER"), "harmonized_data.rds")
+)
