@@ -11,7 +11,6 @@ pacman::p_load(
   fs,
   glue,
   here,
-  nanoparquet,
   readr,
   scales,
   tictoc,
