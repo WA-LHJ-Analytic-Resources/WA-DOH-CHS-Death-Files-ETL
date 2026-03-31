@@ -25,9 +25,13 @@ combine_code_columns <- function(
       sep = delimiter, # delimiter (e.g., ";")
       na.rm = TRUE, # drop NAs when concatenating
       remove = remove_inputs # optionally remove the input columns
-    ) %>%
-    # Remove redundant record_axis_code_1 variable (same as underlying_cod_code)
-    select(-record_axis_code_1)
+    )
+
+  if (remove_inputs == TRUE) {
+    df_combined <- df_combined %>%
+      # Remove redundant record_axis_code_1 variable (same as underlying_cod_code)
+      select(-record_axis_code_1)
+  }
 
   # Return the modified data frame/tibble
   df_combined
