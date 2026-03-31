@@ -238,6 +238,13 @@ harmonized_data <- harmonized_data %>%
     me_coroner_referred
   )
 
+# Implement Variable Completeness Check -----
+visualize_completeness(
+  df = harmonized_data,
+  completeness_threshold = 1,
+  plotly = TRUE
+)
+
 # Save Clean Harmonized Data -----
 
 ## Parquet File
