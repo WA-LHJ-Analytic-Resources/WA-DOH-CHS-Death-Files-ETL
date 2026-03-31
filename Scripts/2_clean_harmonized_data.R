@@ -139,14 +139,6 @@ if (params$apply_variable_labels == TRUE) {
 #   by = join_by(residence_county_wa_code == code)
 # ) %>%
 # rename(residence_county_wa_code_label = label) %>%
-# ## Death Facility Codes -----
-# left_join(
-#   .,
-#   params$code_sets$facility %>%
-#     select(code, label),
-#   by = join_by(death_facility == code)
-# ) %>%
-# rename(death_facility_label = label) %>%
 # ## NCHS State Codes -----
 # left_join(
 #   .,
