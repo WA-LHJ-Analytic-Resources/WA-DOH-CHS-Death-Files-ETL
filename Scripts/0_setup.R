@@ -6,7 +6,18 @@ file.edit(".Renviron") # Add RAW_DEATH_FILES_FOLDER (the filepath where all raw 
 # R Packages & Custom Functions -----
 
 # Install/Load R Packages
-pacman::p_load(fs, glue, here, readr, scales, tictoc, tidyverse, writexl)
+pacman::p_load(
+  arrow,
+  fs,
+  glue,
+  here,
+  nanoparquet,
+  readr,
+  scales,
+  tictoc,
+  tidyverse,
+  writexl
+)
 
 
 # Load All Custom functions
