@@ -1,174 +1,185 @@
 # 2_clean_harmonized_data.R
 
-# Load Raw Harmonized Data -----
+# Initialize Audit List -----
+audits <- list()
 
-## Connect to DuckDB database
-con <- dbConnect(duckdb::duckdb(), dbdir = params$duckdb_filepath)
+## Combine Underlying COD Code & All Record Axis Codes --> 1 Variable
+harmonized_data <- combine_code_columns(
+  df = harmonized_data,
+  input_vars = c(
+    underlying_cod_code,
+    matches("^record_axis_code_(?:[2-9]|1[0-9]|20)$") # Function also removes record_axis_code_1 (as it is redundant with underlying_cod_code)
+  ),
+  delimiter = ";",
+  output_var = "all_cod_code",
+  remove_inputs = FALSE # TRUE = Removes all record_axis_code variables as they have all been condensed into all_cod_code
+)
 
-## Connect to Harmonized Death Data Raw Table
-raw_tbl <- tbl(con, "harmonized_data_raw")
+# Convert Harmonized Data to Final Data Types ------
 
-# Clean Data -----
-
-harmonized_data_clean <- raw_tbl %>%
-  ## Demographics
-  mutate(
-    age = as.numeric(age),
-    age_years = as.numeric(age_years)
-  ) %>%
-  # Combine Cause of Death variables
-  combine_code_columns(
-    input_vars = c(
-      underlying_cod_code,
-      matches("^record_axis_code_(?:[2-9]|1[0-9]|20)$")
-    ),
-    output_var = "all_cod_code" # underyling_cod_code;record_axis_code_2;...;record_axis_code_20
-  ) %>%
-  ## Format Code Variable Data Types (for joins)
-  mutate(
-    # birthplace_country = as.numeric(birthplace_country), # EDIT: These includes codes and literals...
-    death_facility = as.numeric(death_facility)
-    # funeral_home_code = as.numeric(funeral_home_code) # EDIT: These includes codes and literals...
-  ) %>%
-  mutate(
-    across(
-      c(
-        injury_state,
-        death_state,
-        birthplace_state_fips_code,
-        residence_state_fips_code,
-        death_county_wa_code,
-        injury_county_wa_code
-      ),
-      zero_pad_2_across()
+## Clean Date & Time Variables
+harmonized_data <- harmonized_data %>%
+  clean_date_variables(
+    df = .,
+    vars = c(
+      "date_of_birth",
+      "date_of_death",
+      "date_of_injury",
+      "date_received",
+      "disposition_date"
     )
   ) %>%
-  # Pull the data into RAM to allow for additional cleaning (not SQL compatible) & joins
-  collect() %>%
-  # Parse Date Variables
-  mutate(ingestion_ts = as_datetime(ingestion_ts)) %>%
-  clean_date_vars(df = ., vars = params$date_vars)
+  clean_time_variables(df = .)
 
 
-# Peform Joins (4_Code_Set_Expansion) -----
+## Load in Final Harmonized Data Schema
+schema_data_types <- readr::read_csv(
+  file = here("Resources", "Schemas", "schema_data_types.csv"),
+  show_col_types = FALSE
+) %>%
+  select(-notes, -flag)
 
-harmonized_data_clean <- harmonized_data_clean %>%
-  # Expand Coded Variables
-  ## Country Codes -----
-  left_join(
-    .,
-    params$code_sets$country %>%
-      select(code, label),
-    by = join_by(birthplace_country == code)
+## Implement Data Type Conversions
+harmonized_data <- clean_data_types(
+  df = harmonized_data,
+  df_schema = schema_data_types
+) # If there's a mismatch in variables (df vs df_schema have more), a warning message will indicate what variables are differing (and their data types will remain the same)
+
+## Audit how data types were converted
+audits$data_type_conversions <- attr(harmonized_data, "schema_audit")
+
+# (Optional) Apply Labels to Factor Variables ------
+if (params$apply_variable_labels == TRUE) {
+  ## Load in DF Factor Schema
+  schema_factors = readr::read_csv(
+    file = here("Resources", "Schemas", "schema_factors.csv"),
+    show_col_types = FALSE
   ) %>%
-  rename(birthplace_country_label = label) %>%
-  ## WA County-City Codes: REVIEW -- GET ASSISTANCE WITH WA COUNTY-CITY CODES -----
-  # left_join(
-  #   .,
-  #   params$code_sets$wa_county_city %>%
-  #     select(code, label),
-  #   by = join_by(death_county_city_wa_code == code)
-  # ) %>%
-  # rename(death_county_city_wa_code_label = label) %>%
-  # left_join(
-  #   .,
-  #   params$code_sets$wa_county_city %>%
-  #     select(code, label),
-  #   by = join_by(injury_county_city_wa_code == code)
-  # ) %>%
-  # rename(injury_county_city_wa_code_label = label) %>%
-  # left_join(
-  #   .,
-  #   params$code_sets$wa_county_city %>%
-  #     select(code, label),
-  #   by = join_by(residence_county_city_wa_code == code)
-  # ) %>%
-  ## WA County Codes -----
-  left_join(
-    .,
-    params$code_sets$wa_county %>%
-      select(code, label),
-    by = join_by(death_county_wa_code == code)
-  ) %>%
-  rename(death_county_wa_code_label = label) %>%
-  left_join(
-    .,
-    params$code_sets$wa_county %>%
-      select(code, label),
-    by = join_by(injury_county_wa_code == code)
-  ) %>%
-  rename(injury_county_wa_code_label = label) %>%
-  left_join(
-    .,
-    params$code_sets$wa_county %>%
-      select(code, label),
-    by = join_by(residence_county_wa_code == code)
-  ) %>%
-  rename(residence_county_wa_code_label = label) %>%
-  ## Death Facility Codes -----
-  left_join(
-    .,
-    params$code_sets$facility %>%
-      select(code, label),
-    by = join_by(death_facility == code)
-  ) %>%
-  rename(death_facility_label = label) %>%
-  ## NCHS State Codes -----
-  left_join(
-    .,
-    params$code_sets$nchs_state %>%
-      select(code, label),
-    by = join_by(death_state == code)
-  ) %>%
-  rename(death_state_label = label) %>%
-  left_join(
-    .,
-    params$code_sets$nchs_state %>%
-      select(code, label),
-    by = join_by(injury_state == code)
-  ) %>%
-  rename(injury_state_label = label) %>%
-  left_join(
-    .,
-    params$code_sets$nchs_state %>%
-      select(code, label),
-    by = join_by(birthplace_state_fips_code == code)
-  ) %>%
-  rename(birthplace_state_fips_code_label = label) %>%
-  left_join(
-    .,
-    params$code_sets$nchs_state %>%
-      select(code, label),
-    by = join_by(residence_state_fips_code == code)
-  ) %>%
-  rename(residence_state_fips_code_label = label) %>%
-  ## Funeral Home Codes -----
-  left_join(
-    .,
-    params$code_sets$funeral_home %>%
-      select(code, label),
-    by = join_by(funeral_home_code == code)
-  ) %>%
-  rename(funeral_home_label = label) %>%
-  ## Occupation - Milham Codes -----
-  left_join(
-    .,
-    params$code_sets$occupation_milham %>%
-      select(code, label),
-    by = join_by(occupation_milham == code)
-  ) %>%
-  rename(occupation_milham_label = label)
+    mutate(order = as.integer(order)) %>%
+    select(variable, level, label, order, ordered, data_type)
+
+  harmonized_data <- apply_variable_labels(
+    df = harmonized_data,
+    dict_df = schema_factors
+  )
+
+  ## Audit how the factor labels were applied
+  audits$factor_labels <- attr(harmonized_data, "factor_audit")
+}
 
 
-# Subset & Organize Cleaned Harmonized Data -----
+# Joining Code Sets -----
 
-harmonized_data_final <- harmonized_data_clean %>%
+#### UNDER DEVELOPMENT ####
+# NEED TO COLLABORATE WITH PROJECT TEAM ON CODE JOINING/HARMONIZING FIPS/WA CODES
+
+# TEST <- harmonized_data %>%
+#   # Ensure single digits are 0 padded for coded variables
+#   mutate(
+#     across(
+#       c(
+#         injury_state,
+#         death_state,
+#         birthplace_state_fips_code,
+#         residence_state_fips_code,
+#         death_county_wa_code,
+#         injury_county_wa_code
+#       ),
+#       .fns = ~ str_pad(., width = 2, side = "left", pad = "0")
+#     )
+#   ) %>%
+#   # Expand Coded Variables
+#   ## Country Codes -----
+#   left_join(
+#     .,
+#     params$code_sets$country %>%
+#       by = join_by(birthplace_country == code)
+#   ) %>%
+#   rename(birthplace_country_label = label) %>%
+## WA County-City Codes: REVIEW -- GET ASSISTANCE WITH WA COUNTY-CITY CODES -----
+# left_join(
+#   .,
+#   params$code_sets$wa_county_city %>%
+#     select(code, label),
+#   by = join_by(death_county_city_wa_code == code)
+# ) %>%
+# rename(death_county_city_wa_code_label = label) %>%
+# left_join(
+#   .,
+#   params$code_sets$wa_county_city %>%
+#     select(code, label),
+#   by = join_by(injury_county_city_wa_code == code)
+# ) %>%
+# rename(injury_county_city_wa_code_label = label) %>%
+# left_join(
+#   .,
+#   params$code_sets$wa_county_city %>%
+#     select(code, label),
+#   by = join_by(residence_county_city_wa_code == code)
+# ) %>%
+## WA County Codes -----
+# left_join(
+#   .,
+#   params$code_sets$wa_county %>%
+#     select(code, label),
+#   by = join_by(death_county_wa_code == code)
+# ) %>%
+# rename(death_county_wa_code_label = label) %>%
+# left_join(
+#   .,
+#   params$code_sets$wa_county %>%
+#     select(code, label),
+#   by = join_by(injury_county_wa_code == code)
+# ) %>%
+# rename(injury_county_wa_code_label = label) %>%
+# left_join(
+#   .,
+#   params$code_sets$wa_county %>%
+#     select(code, label),
+#   by = join_by(residence_county_wa_code == code)
+# ) %>%
+# rename(residence_county_wa_code_label = label) %>%
+# ## NCHS State Codes -----
+# left_join(
+#   .,
+#   params$code_sets$nchs_state %>%
+#     select(code, label),
+#   by = join_by(death_state == code)
+# ) %>%
+# rename(death_state_label = label) %>%
+# left_join(
+#   .,
+#   params$code_sets$nchs_state %>%
+#     select(code, label),
+#   by = join_by(injury_state == code)
+# ) %>%
+# rename(injury_state_label = label) %>%
+# left_join(
+#   .,
+#   params$code_sets$nchs_state %>%
+#     select(code, label),
+#   by = join_by(birthplace_state_fips_code == code)
+# ) %>%
+# rename(birthplace_state_fips_code_label = label) %>%
+# left_join(
+#   .,
+#   params$code_sets$nchs_state %>%
+#     select(code, label),
+#   by = join_by(residence_state_fips_code == code)
+# ) %>%
+# rename(residence_state_fips_code_label = label)
+
+# Reorder Harmonized Data Variables -----
+
+harmonized_data <- harmonized_data %>%
   # Subset & Reorder Columns
   select(
     # Data Vintage Variables
-    ingestion_ts,
-    system,
+    date_harmonized,
+    vintage_label,
+    source_system,
     file_year,
+    source_file,
     # Unique Identifiers
     state_file_number,
     local_file_number,
@@ -179,30 +190,37 @@ harmonized_data_final <- harmonized_data_clean %>%
     date_of_death_modifier,
     date_received,
     disposition_date,
-    starts_with("time_of"),
+    time_of_death,
+    time_of_injury,
     # Cause of Death
     underlying_cod_code,
     all_cod_code,
+    # starts_with("record_axis_code"), # Uncomment if we actually do need all record_axis_code_# variables!
     manner,
+    disposition,
     # Injury
-    all_acme_nature_of_injury_flag,
     injury_acme_place,
     injury_at_work,
-    injury_transportation,
     # Geography
     starts_with("birthplace_country"),
     starts_with("birthplace_state_fips_code"),
+    starts_with("residence_city"),
     starts_with("residence_county"),
     starts_with("residence_state_fips_code"),
     residence_zip_code,
+    residence_city_limits,
     residence_length,
+    residence_length_type,
+    starts_with("injury_city"),
     starts_with("injury_county"),
     injury_place,
     injury_state,
     injury_zip_code,
+    starts_with("death_city"),
     starts_with("death_county"),
     death_state,
     death_zip_code,
+    place_of_death_type,
     # Demographics
     starts_with("age"),
     sex,
@@ -216,28 +234,27 @@ harmonized_data_final <- harmonized_data_clean %>%
     starts_with("hispanic"),
     contains("race"),
     # Operations
-    starts_with("funeral_home"),
-    disposition_facility_code,
+    death_facility,
     informant_relationship,
-    starts_with("autopsy"),
+    autopsy,
     certifier_designation,
     me_coroner_referred
   )
-# Save Clean Harmonized Data -----
 
-## Save Cleaned Harmonized Data to Table
-dbWriteTable(
-  con,
-  "harmonized_data_clean",
-  harmonized_data_final,
-  overwrite = TRUE
+# Implement Variable Completeness Check -----
+visualize_completeness(
+  df = harmonized_data,
+  completeness_threshold = 1, # change completeness_threshold to 0.95 (or other value) to subset to variables with lower incompleteness/higher variability
+  plotly = TRUE
 )
 
-## Remove Raw Harmonized Table
-# dbRemoveTable(con, "harmonized_data_raw")
+# Save Clean Harmonized Data -----
 
-## Disconnect from DuckDB
-dbDisconnect(con) # Close database connection after finishing run all of R script
-
-# Clean Up -----
-# rm(harmonized_data_clean, harmonized_data_final)
+## Parquet File
+arrow::write_parquet(
+  harmonized_data,
+  sink = here(
+    Sys.getenv("HARMONIZED_DEATH_FILE_FOLDER"),
+    "harmonized_data.parquet"
+  )
+)

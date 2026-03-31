@@ -1,0 +1,64 @@
+code,label,notes,review_flag
+01,Alabama,,FALSE
+02,Alaska,,FALSE
+03,Arizona,,FALSE
+04,Arkansas,,FALSE
+05,California,,FALSE
+06,Colorado,,FALSE
+07,Connecticut,,FALSE
+08,Delaware,,FALSE
+09,District of Columbia,,FALSE
+10,Florida,,FALSE
+11,Georgia,,FALSE
+12,Hawaii,,FALSE
+13,Idaho,,FALSE
+14,Illinois,,FALSE
+15,Indiana,,FALSE
+16,Iowa,,FALSE
+17,Kansas,,FALSE
+18,Kentucky,,FALSE
+19,Louisiana,,FALSE
+20,Maine,,FALSE
+21,Maryland,,FALSE
+22,Massachusetts,,FALSE
+23,Michigan,,FALSE
+24,Minnesota,,FALSE
+25,Mississippi,,FALSE
+26,Missouri,,FALSE
+27,Montana,,FALSE
+28,Nebraska,,FALSE
+29,Nevada,,FALSE
+30,New Hampshire,,FALSE
+31,New Jersey,,FALSE
+32,New Mexico,,FALSE
+33,New York,,FALSE
+34,North Carolina,,FALSE
+35,North Dakota,,FALSE
+36,Ohio,,FALSE
+37,Oklahoma,,FALSE
+38,Oregon,,FALSE
+39,Pennsylvania,,FALSE
+40,Rhode Island,,FALSE
+41,South Carolina,,FALSE
+42,South Dakota,,FALSE
+43,Tennessee,,FALSE
+44,Texas,,FALSE
+45,Utah,,FALSE
+46,Vermont,,FALSE
+47,Virginia,,FALSE
+48,Washington,,FALSE
+49,West Virginia,,FALSE
+50,Wisconsin,,FALSE
+51,Wyoming,,FALSE
+52,Puerto Rico,,FALSE
+53,Virgin Islands,,FALSE
+54,Guam,,FALSE
+55,Canada,,FALSE
+56,Cuba,,FALSE
+57,Mexico,,FALSE
+59,Other Foreign Country,,FALSE
+60,American Samoa,,FALSE
+69,Marianas,,FALSE
+90,United States (Unspecified),,FALSE
+91,Refused to State,,FALSE
+99,Not Classifiable,,FALSE

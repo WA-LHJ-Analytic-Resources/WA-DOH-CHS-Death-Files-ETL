@@ -1,0 +1,193 @@
+code,label,notes,review_flag
+0000,Non-Washington State or Unknown ,,FALSE
+9999,Non-Washington State or Unknown ,,FALSE
+0100,Adams County rural,,FALSE
+0103,Othello,,FALSE
+0200,Asotin County rural,,FALSE
+0203,Clarkston,,FALSE
+0300,Benton County rural,,FALSE
+0301,Kennewick,,FALSE
+0302,Richland,,FALSE
+0303,Prosser,,FALSE
+0304,West Richland,,FALSE
+0305,Benton City,,FALSE
+0400,Chelan County rural,,FALSE
+0402,Wenatchee,,FALSE
+0403,Chelan,,FALSE
+0404,Cashmere,,FALSE
+0500,Clallam County rural,,FALSE
+0501,Forks,,FALSE
+0502,Port Angeles,,FALSE
+0503,Sequim,,FALSE
+0600,Clark County rural,,FALSE
+0602,Vancouver,,FALSE
+0603,Camas,,FALSE
+0604,Washougal,,FALSE
+0605,Battle Ground,,FALSE
+0606,Ridgefield,,FALSE
+0607,La Center,,FALSE
+0700,Columbia County rural,,FALSE
+0703,Dayton,Using the latest time period only.,FALSE
+0800,Cowlitz County rural,,FALSE
+0802,Longview,,FALSE
+0803,Kelso,,FALSE
+0804,Woodland,,FALSE
+0805,Kalama,,FALSE
+0900,Douglas County rural,,FALSE
+0901,East Wenatchee,,FALSE
+1000,Ferry County rural,,FALSE
+1100,Franklin County rural,,FALSE
+1102,Pasco,,FALSE
+1103,Connell,,FALSE
+1200,Garfield County rural,,FALSE
+1300,Grant County rural,,FALSE
+1304,Ephrata,,FALSE
+1305,Moses Lake,,FALSE
+1306,Quincy,,FALSE
+1307,Mattawa,,FALSE
+1308,Warden,,FALSE
+1400,Grays Harbor County rural,,FALSE
+1401,Aberdeen,,FALSE
+1402,Hoquiam,,FALSE
+1403,Montesano,,FALSE
+1404,Elma,Using the latest time period only.,FALSE
+1405,Ocean Shores,,FALSE
+1500,Island County rural,,FALSE
+1503,Oak Harbor,,FALSE
+1600,Jefferson County rural,,FALSE
+1603,Port Townsend,,FALSE
+1700,King County rural,,FALSE
+1701,Seattle,,FALSE
+1702,Renton,,FALSE
+1703,Auburn,,FALSE
+1704,Enumclaw,,FALSE
+1705,Kent,,FALSE
+1706,Kirkland,,FALSE
+1707,Bellevue,,FALSE
+1708,Normandy Park,,FALSE
+1709,Mercer Island,,FALSE
+1710,Redmond,,FALSE
+1711,Bothell,,FALSE
+1712,Clyde Hill,Using the latest time period only.,FALSE
+1713,Des Moines,,FALSE
+1714,Issaquah,,FALSE
+1715,Lake Forest Park,,FALSE
+1716,Medina,,FALSE
+1717,Tukwila,,FALSE
+1718,Pacific,,FALSE
+1719,Federal Way,,FALSE
+1720,SeaTac,,FALSE
+1721,Duvall,,FALSE
+1722,North Bend,,FALSE
+1723,Burien,,FALSE
+1724,Woodinville,,FALSE
+1725,Newcastle,,FALSE
+1726,Shoreline,,FALSE
+1727,Black Diamond,,FALSE
+1728,Covington,,FALSE
+1729,Maple Valley,,FALSE
+1730,Kenmore,,FALSE
+1731,Sammamish,,FALSE
+1732,Algona,,FALSE
+1733,Snoqualmie,,FALSE
+1800,Kitsap County rural,,FALSE
+1802,Bremerton,,FALSE
+1803,Port Orchard,,FALSE
+1804,Poulsbo,,FALSE
+1805,Bainbridge Island (formerly Winslow),,FALSE
+1900,Kittitas County rural,,FALSE
+1903,Ellensburg,,FALSE
+2000,Klickitat County rural,,FALSE
+2003,Goldendale,,FALSE
+2100,Lewis County rural,,FALSE
+2103,Centralia,,FALSE
+2104,Chehalis,,FALSE
+2200,Lincoln County rural,,FALSE
+2300,Mason County rural,,FALSE
+2303,Shelton,,FALSE
+2400,Okanogan County rural,,FALSE
+2403,Omak,,FALSE
+2410,Okanogan,,FALSE
+2500,Pacific County rural,,FALSE
+2503,Raymond,,FALSE
+2600,Pend Oreille County rural,,FALSE
+2700,Pierce County rural,,FALSE
+2701,Tacoma,,FALSE
+2702,Puyallup,,FALSE
+2703,Sumner,,FALSE
+2704,Buckley,,FALSE
+2705,Fircrest,,FALSE
+2706,Bonney Lake,,FALSE
+2707,Milton,,FALSE
+2708,Steilacoom,,FALSE
+2709,Gig Harbor,,FALSE
+2710,Fife,,FALSE
+2711,Edgewood,,FALSE
+2712,Lakewood,,FALSE
+2713,University Place,,FALSE
+2714,Orting,,FALSE
+2715,Du Pont,,FALSE
+2716,Auburn,,FALSE
+2800,San Juan County rural,,FALSE
+2900,Skagit County rural,,FALSE
+2903,Anacortes,,FALSE
+2904,Mount Vernon,,FALSE
+2905,Sedro Woolley,,FALSE
+2906,Burlington,,FALSE
+3000,Skamania County rural,,FALSE
+3100,Snohomish County rural,,FALSE
+3101,Arlington,,FALSE
+3102,Everett,,FALSE
+3103,Snohomish,,FALSE
+3104,Edmonds,,FALSE
+3105,Lynnwood,,FALSE
+3106,Marysville,,FALSE
+3107,Mountlake Terrace,,FALSE
+3108,Brier,,FALSE
+3109,Monroe,,FALSE
+3110,Mukilteo,,FALSE
+3111,Mill Creek,,FALSE
+3112,Lake Stevens,,FALSE
+3113,Bothell,,FALSE
+3114,Sultan,,FALSE
+3115,Stanwood,,FALSE
+3116,Granite Falls,,FALSE
+3200,Spokane County rural,,FALSE
+3201,Spokane (City),,FALSE
+3203,Medical Lake,,FALSE
+3204,Cheney,,FALSE
+3205,Airway Heights,,FALSE
+3206,Deer Park,,FALSE
+3207,Liberty Lake,,FALSE
+3208,Spokane Valley,,FALSE
+3300,Stevens County rural,,FALSE
+3303,Colville,,FALSE
+3400,Thurston County rural,,FALSE
+3402,Olympia,,FALSE
+3403,Tumwater,,FALSE
+3404,Lacey,,FALSE
+3405,Yelm,,FALSE
+3500,Wahkiakum County rural,,FALSE
+3600,Walla Walla County rural,,FALSE
+3602,Walla Walla (City),,FALSE
+3603,College Place,,FALSE
+3700,Whatcom County rural,,FALSE
+3702,Bellingham,,FALSE
+3703,Lynden,,FALSE
+3704,Ferndale,,FALSE
+3705,Blaine,Using the latest time period only.,FALSE
+3706,Everson,After 2010 data vintage,TRUE
+3800,Whitman County rural,,FALSE
+3802,Pullman,,FALSE
+3803,Colfax,,FALSE
+3900,Yakima County rural,,FALSE
+3902,Yakima (City),,FALSE
+3903,Sunnyside,,FALSE
+3904,Toppenish,,FALSE
+3905,Grandview,,FALSE
+3906,Wapato,,FALSE
+3907,Selah,,FALSE
+3908,Union Gap,,FALSE
+3909,Granger,,FALSE
+3910,Zillah,,FALSE
+3911,Moxee,,FALSE
