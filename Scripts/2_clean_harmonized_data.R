@@ -256,8 +256,6 @@ harmonized_data <- harmonized_data %>%
     contains("race"),
     # Operations
     death_facility,
-    funeral_home_name,
-    disposition_facility_name,
     informant_relationship,
     autopsy,
     certifier_designation,
@@ -267,7 +265,7 @@ harmonized_data <- harmonized_data %>%
 # Save Clean Harmonized Data -----
 
 ## Parquet File
-nanoparquet::write_parquet(
+arrow::write_parquet(
   harmonized_data,
   sink = here(
     Sys.getenv("HARMONIZED_DEATH_FILE_FOLDER"),

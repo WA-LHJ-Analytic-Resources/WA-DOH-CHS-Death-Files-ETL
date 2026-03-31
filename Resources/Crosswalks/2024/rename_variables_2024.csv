@@ -19,12 +19,8 @@
 2024,Death Zip Code,death_zip_code,FALSE,
 2024,Disposition,disposition,FALSE,
 2024,Disposition Date,disposition_date,FALSE,
-2024,Disposition Place Name,disposition_facility_name,FALSE,Only disposition facility codes provided before 2016; only disposition facility names provided in 2016; both disposition facility codes and disposition facility names provided 2017 and later
-2024,Disposition Facility Code,disposition_facility_code,FALSE,Only disposition facility codes provided before 2016; only disposition facility names provided in 2016; both disposition facility codes and disposition facility names provided 2017 and later
 2024,Education,education,FALSE,
 2024,Education 8 or Less,education_8_or_less,FALSE,
-2024,Funeral Home Name,funeral_home_name,FALSE,Only funeral home codes provided before 2016; only funeral home names provided in 2016; both funeral home codes and funeral home names provided 2017 and later
-2024,Funeral Home Code,funeral_home_code,FALSE,Only funeral home codes provided before 2016; only funeral home names provided in 2016; both funeral home codes and funeral home names provided 2017 and later
 2024,Hispanic Cuban,hispanic_cuban,FALSE,
 2024,Hispanic Mexican,hispanic_mexican,FALSE,
 2024,Hispanic NCHS Bridge,hispanic_nchs_bridge,FALSE,
