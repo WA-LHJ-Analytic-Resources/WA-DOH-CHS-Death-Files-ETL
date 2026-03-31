@@ -6,16 +6,31 @@ clean_data_types <- function(
 ) {
   # Step 1a: Check for missing variables in df ----
   schema_vars <- df_schema$variable
-  missing_vars <- setdiff(schema_vars, names(df))
+  df_missing_vars <- setdiff(schema_vars, names(df))
 
-  # Step 1b: Print warning indicating missing variables in df
+  # Step 1b: Check for extra variables in df (not referenced in df_schema) -----
+  df_extra_vars <- setdiff(names(df), schema_vars)
+
+  # Step 1c: Print warning messages indicating missing/extra variables in df
+
+  ## Missing Variables Message
   if (length(missing_vars) > 0) {
     missing_vars_message <- paste(
-      "Missing variables in data:",
+      "Missing variables in df:",
       paste(missing_vars, collapse = ", ")
     )
 
-    stop(missing_vars_message)
+    warning(missing_vars_message)
+  }
+
+  ## Missing Variables Message
+  if (length(df_extra_vars) > 0) {
+    extra_vars_message <- paste(
+      "Extra variables in df that are not specified in df_schema:",
+      paste(df_extra_vars, collapse = ", ")
+    )
+
+    warning(extra_vars_message)
   }
 
   # Step 2: Audit Original Data Types -----
