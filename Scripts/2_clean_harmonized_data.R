@@ -28,7 +28,7 @@ harmonized_data <- combine_code_columns(
   ),
   delimiter = ";",
   output_var = "all_cod_code",
-  remove_inputs = TRUE # Removes all record_axis_code variables as they have all been condensed into all_cod_code
+  remove_inputs = FALSE # TRUE = Removes all record_axis_code variables as they have all been condensed into all_cod_code
 )
 
 # Convert Harmonized Data to Final Data Types ------
@@ -59,7 +59,7 @@ schema_data_types <- readr::read_csv(
 harmonized_data <- clean_data_types(
   df = harmonized_data,
   df_schema = schema_data_types
-)
+) # If there's a mismatch in variables (df vs df_schema have more), a warning message will indicate what variables are differing (and their data types will remain the same)
 
 ## Audit how data types were converted
 audits$data_type_conversions <- attr(harmonized_data, "schema_audit")
@@ -193,15 +193,17 @@ if (params$apply_variable_labels == TRUE) {
 # ) %>%
 # rename(residence_state_fips_code_label = label)
 
-# Subset & Organize Cleaned Harmonized Data -----
+# Reorder Harmonized Data Variables -----
 
 harmonized_data <- harmonized_data %>%
   # Subset & Reorder Columns
   select(
     # Data Vintage Variables
     date_harmonized,
+    vintage_label,
     source_system,
     file_year,
+    source_file,
     # Unique Identifiers
     state_file_number,
     local_file_number,
@@ -215,8 +217,9 @@ harmonized_data <- harmonized_data %>%
     time_of_death,
     time_of_injury,
     # Cause of Death
-    # underlying_cod_code,
+    underlying_cod_code,
     all_cod_code,
+    starts_with("record_axis_code"),
     manner,
     disposition,
     # Injury
@@ -262,7 +265,12 @@ harmonized_data <- harmonized_data %>%
   )
 
 # Save Clean Harmonized Data -----
-saveRDS(
+
+## Parquet File
+nanoparquet::write_parquet(
   harmonized_data,
-  file = here(Sys.getenv("HARMONIZED_DEATH_FILE_FOLDER"), "harmonized_data.rds")
+  sink = here(
+    Sys.getenv("HARMONIZED_DEATH_FILE_FOLDER"),
+    "harmonized_data.parquet"
+  )
 )
