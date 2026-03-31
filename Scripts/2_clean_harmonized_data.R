@@ -241,7 +241,7 @@ harmonized_data <- harmonized_data %>%
 # Implement Variable Completeness Check -----
 visualize_completeness(
   df = harmonized_data,
-  completeness_threshold = 1,
+  completeness_threshold = 1, # change completeness_threshold to 0.95 (or other value) to subset to variables with lower incompleteness/higher variability
   plotly = TRUE
 )
 
