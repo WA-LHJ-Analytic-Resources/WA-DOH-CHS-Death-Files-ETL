@@ -195,7 +195,7 @@ harmonized_data <- harmonized_data %>%
     # Cause of Death
     underlying_cod_code,
     all_cod_code,
-    starts_with("record_axis_code"),
+    # starts_with("record_axis_code"), # Uncomment if we actually do need all record_axis_code_# variables!
     manner,
     disposition,
     # Injury
