@@ -14,10 +14,10 @@ clean_data_types <- function(
   # Step 1c: Print warning messages indicating missing/extra variables in df
 
   ## Missing Variables Message
-  if (length(missing_vars) > 0) {
+  if (length(df_missing_vars) > 0) {
     missing_vars_message <- paste(
       "Missing variables in df:",
-      paste(missing_vars, collapse = ", ")
+      paste(df_missing_vars, collapse = ", ")
     )
 
     warning(missing_vars_message)
