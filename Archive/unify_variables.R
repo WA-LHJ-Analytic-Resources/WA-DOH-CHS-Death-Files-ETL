@@ -66,3 +66,22 @@ unify_variables <- function(df, vars, code_set) {
 
   return(df_unified)
 }
+
+# Implementation in 2_clean_harmonized.R (DEPRECATED) -----
+## Implemented after Audit List
+
+# Unify Variable Versions -----
+
+## Disposition Facility Codes & Names
+# harmonized_data <- unify_variables(
+#   df = harmonized_data,
+#   vars = "disposition facility",
+#   code_set = params$code_sets$cemetery
+# )
+
+## Funeral Home Codes & Names
+# harmonized_data <- unify_variables(
+#   df = harmonized_data,
+#   vars = "funeral home",
+#   code_set = params$code_sets$funeral_home
+# )

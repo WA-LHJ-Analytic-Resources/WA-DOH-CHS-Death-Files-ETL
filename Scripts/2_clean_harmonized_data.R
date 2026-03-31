@@ -3,22 +3,6 @@
 # Initialize Audit List -----
 audits <- list()
 
-# Unify Variable Versions -----
-
-## Disposition Facility Codes & Names
-harmonized_data <- unify_variables(
-  df = harmonized_data,
-  vars = "disposition facility",
-  code_set = params$code_sets$cemetery
-)
-
-## Funeral Home Codes & Names
-harmonized_data <- unify_variables(
-  df = harmonized_data,
-  vars = "funeral home",
-  code_set = params$code_sets$funeral_home
-)
-
 ## Combine Underlying COD Code & All Record Axis Codes --> 1 Variable
 harmonized_data <- combine_code_columns(
   df = harmonized_data,
