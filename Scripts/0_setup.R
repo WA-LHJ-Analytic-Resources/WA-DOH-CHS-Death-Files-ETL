@@ -46,7 +46,7 @@ params$code_sets_folder <- here::here("Resources", "Code Sets")
 # fmt: skip
 {
   ## Code Sets (4_Code_Set_Expansion)
-  code_sets <- c("cemetery", "country", "fips", "nchs_county", "nchs_state", "wa_county", "wa_county_city")
+  code_sets <- c("country", "fips", "nchs_county", "nchs_state", "wa_county", "wa_county_city")
 
   for(set in code_sets){
 
