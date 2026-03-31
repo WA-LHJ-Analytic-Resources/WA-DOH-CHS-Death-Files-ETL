@@ -9,8 +9,10 @@ file.edit(".Renviron") # Add RAW_DEATH_FILES_FOLDER (the filepath where all raw 
 pacman::p_load(
   arrow,
   fs,
+  ggplot2,
   glue,
   here,
+  plotly,
   readr,
   scales,
   tictoc,
