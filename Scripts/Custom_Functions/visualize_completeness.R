@@ -2,7 +2,7 @@
 
 visualize_completeness <- function(
   df,
-  completeness_threshold = 0.90,
+  completeness_threshold = 1,
   plotly = TRUE
 ) {
   # Step 0: Define Variable Completeness Threshold Helper Function -----
@@ -67,18 +67,18 @@ visualize_completeness <- function(
   ## Note: If a completeness threshold is applied, all variables that meet or exceed that completeness threshold for ALL file_years
   # will NOT be included in the visualization. This is meant to help focus in on incomplete variables.
 
-  vars_to_filter <- apply_completeness_threshold(
+  vars_to_keep <- apply_completeness_threshold(
     df = var_completeness_by_year,
     threshold = completeness_threshold
   )
 
   var_completeness_by_year_final <- var_completeness_by_year %>%
-    filter(!variable %in% vars_to_filter) %>% # Remove these variables --> want to look at variables with lower completeness (or changing completeness over time)
+    filter(!variable %in% vars_to_keep) %>% # Remove these variables --> want to look at variables with lower completeness (or changing completeness over time)
     filter(!str_detect(variable, "record_axis_code")) # keep all record_axis_code variables...
 
   # Step 4: Create ggplot2 Heatmap -----
   heatmap <- ggplot(
-    var_completeness_by_year %>%
+    var_completeness_by_year_final %>%
       mutate(
         variable = factor(variable, levels = rev(sort(unique(variable)))),
         pct_label = percent(pct_complete, accuracy = 0.1) # 0.711111 → "71.1%"
