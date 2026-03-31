@@ -56,6 +56,7 @@ Custom R functions were developed to streamline and increase the legibility of t
 - `load_data_vintage()`: Loads the specified Death Statistical Annual File. Performs under-the-hood operations including Data Type Harmonization (all variables as character data type), adding any missing variables (that are present in other data vintages) with all values as NA, and converting standard placeholders (i.e. "" or "NA" to `NA` values).
 - `rename_variables()`: Performs Schema Harmonization (data vintage variable names --> standard variable naming convention for `harmonized_data`) using related `rename_variables_YYYY.csv` file. Remaining variables are organized with `state_file_number` first, then the remaining in alphabetical order.
 - `recode_variables()`: Performs Value Harmonization (data vintage variable coding --> standard variable coding convention for `harmonized_data`) using related `recode_variables_YYYY.csv` file. Only variable-code value pairs that are not in the standard variable coding convention for `harmonized_data` are converted.
+- `visualize_completeness()`: Creates an interactive heatmap of variable percent completeness by file year (Note: some file years may use `NA` while others may also have explicit `Unknown` values).
 
 **2_clean_harmonized_data.R**
 - `unify_variables()`: Takes versions of similar variables (ex: `disposition_facility_code` - `disposition_facility_name`, and `funeral_home_code` and `funeral_home_name`) that are slightly different across annual data vintages, and combines them into a singular, standardized variable in `harmonized_data`.
@@ -64,10 +65,7 @@ Custom R functions were developed to streamline and increase the legibility of t
 - `clean_time_variables()`: Takes the numerous time variables (ex: time_of_death, time_of_death_hour, time_of_death_minute, time_of_injury, time_of_injury_hour, time_of_injury_minute) whose format and availability can vary year-to-year, and converts the values from character data type to time (lubridate hms) data type.
 - `clean_data_types()`: Uses `schema_data_types.csv` to convert `harmonized_data` variables to their final proper data types. **Note:** This does not apply to `date` and `time` related variables as they are handled previously/exclusively in `clean_date_variables()` and `clean_time_variables()`. Includes an audit feature to see original vs converted data types for all variables.
 - `apply_variable_labels()`: This functional is optional to use (as determined by `params$apply_variable_labels` in `0_setup.R`). It uses `schema_factors.csv` to apply proper levelling and labels to all factor and ordered (factor) variables indicated in `schema_data_types.csv`. It includes an audit feature to see applied levels and labels as well as any potentially unmatched values.
-
-**investigate_missingness.R**
-- This is an R script - not a custom R function!
-- Once `harmonized_data` is generated after running `1_harmonize_death_files.R`, users can run this script to generate a heat map of variable completeness over time (by file year) to detect and investigate any potential data quality issues.
+- `visualize_completeness()`: Creates an interactive heatmap of variable percent completeness by file year (Note: some file years may use `NA` while others may also have explicit `Unknown` values).
 
 **crosswalk_review.R**
 - This is an R script - not a custom R function!
