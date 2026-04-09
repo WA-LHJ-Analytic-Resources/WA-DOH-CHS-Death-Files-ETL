@@ -73,6 +73,36 @@ if (params$apply_variable_labels == TRUE) {
 #### UNDER DEVELOPMENT ####
 # NEED TO COLLABORATE WITH PROJECT TEAM ON CODE JOINING/HARMONIZING FIPS/WA CODES
 
+county_code_pairs <- list(
+  list(
+    wa_col = "death_county_wa_code",
+    fips_col = "death_county_fips",
+    year_threshold = 2022
+  ),
+  list(
+    wa_col = "residence_county_wa_code",
+    fips_col = "residence_county_fips",
+    year_threshold = 2016
+  ),
+  list(
+    wa_col = "injury_county_wa_code",
+    fips_col = "injury_county_fips",
+    year_threshold = 2022
+  )
+)
+
+TEST <- harmonized_data |>
+  left_join(
+    params$code_sets$wa_county_code_to_fips,
+    by = c("death_county_wa_code" = "county_wa_code")
+  ) |>
+  mutate(
+    death_county_fips = case_when(
+      file_year < 2022 ~ county_fips_code,
+      TRUE ~ death_county_fips
+    )
+  ) # should drop other columns from cross walk
+
 # TEST <- harmonized_data %>%
 #   # Ensure single digits are 0 padded for coded variables
 #   mutate(

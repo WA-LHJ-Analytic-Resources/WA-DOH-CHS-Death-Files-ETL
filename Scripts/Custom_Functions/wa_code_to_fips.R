@@ -1,23 +1,5 @@
 # Convert WA Codes to FIPS codes
 
-county_code_pairs <- list(
-  list(
-    wa_col = "death_county_wa_code",
-    fips_col = "death_county_fips",
-    year_threshold = 2022
-  ),
-  list(
-    wa_col = "residence_county_wa_code",
-    fips_col = "residence_county_fips",
-    year_threshold = 2016
-  ),
-  list(
-    wa_col = "injury_county_wa_code",
-    fips_col = "injury_county_fips",
-    year_threshold = 2022
-  )
-)
-
 county_wa_code_to_fips <- function(data, wa_col, fips_col, year_threshold) {
   data %>%
     left_join(
