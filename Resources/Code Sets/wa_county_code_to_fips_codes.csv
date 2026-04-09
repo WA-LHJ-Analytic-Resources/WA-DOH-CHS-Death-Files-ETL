@@ -1,0 +1,41 @@
+﻿county_wa_code,county_wa_label,county_fips_code,county_fips_label
+00,Non-Washington State or Unknown,00,Non-Washington State or Unknown
+01,Adams County,53001,Adams
+02,Asotin County,53003,Asotin
+03,Benton County,53005,Benton
+04,Chelan County,53007,Chelan
+05,Clallam County,53009,Clallam
+06,Clark County,53011,Clark
+07,Columbia County,53013,Columbia
+08,Cowlitz County,53015,Cowlitz
+09,Douglas County,53017,Douglas
+10,Ferry County,53019,Ferry
+11,Franklin County,53021,Franklin
+12,Garfield County,53023,Garfield
+13,Grant County,53025,Grant
+14,Grays Harbor County,53027,Grays Harbor
+15,Island County,53029,Island
+16,Jefferson County,53031,Jefferson
+17,King County,53033,King
+18,Kitsap County,53035,Kitsap
+19,Kittitas County,53037,Kittitas
+20,Klickitat County,53039,Klickitat
+21,Lewis County,53041,Lewis
+22,Lincoln County,53043,Lincoln
+23,Mason County,53045,Mason
+24,Okanogan County,53047,Okanogan
+25,Pacific County,53049,Pacific
+26,Pend Oreille County,53051,Pend Oreille
+27,Pierce County,53053,Pierce
+28,San Juan County,53055,San Juan
+29,Skagit County,53057,Skagit
+30,Skamania County,53059,Skamania
+31,Snohomish County,53061,Snohomish
+32,Spokane County,53063,Spokane
+33,Stevens County,53065,Stevens
+34,Thurston County,53067,Thurston
+35,Wahkiakum County,53069,Wahkiakum
+36,Walla Walla County,53071,Walla Walla
+37,Whatcom County,53073,Whatcom
+38,Whitman County,53075,Whitman
+39,Yakima County,53077,Yakima
