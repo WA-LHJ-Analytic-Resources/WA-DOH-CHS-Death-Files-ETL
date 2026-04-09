@@ -67,12 +67,10 @@ if (params$apply_variable_labels == TRUE) {
   audits$factor_labels <- attr(harmonized_data, "factor_audit")
 }
 
-
-# Joining Code Sets -----
-
-#### UNDER DEVELOPMENT ####
-# NEED TO COLLABORATE WITH PROJECT TEAM ON CODE JOINING/HARMONIZING FIPS/WA CODES
-
+# WA County Code to FIPS Code Conversion -----
+#
+# UNDER DEVELOPMENT #
+# County code pair list based on what years we want to convert WA County codes to FIPS County Codes
 county_code_pairs <- list(
   list(
     wa_col = "death_county_wa_code",
@@ -90,18 +88,20 @@ county_code_pairs <- list(
     year_threshold = 2022
   )
 )
+# Using county code pairs iterate function over the dataframe
+TEST <- county_code_pairs %>%
+  reduce(
+    function(data, pair) {
+      county_wa_code_to_fips(
+        data,
+        pair$wa_col,
+        pair$fips_col,
+        pair$year_threshold
+      )
+    },
+    .init = harmonized_data
+  )
 
-TEST <- harmonized_data |>
-  left_join(
-    params$code_sets$wa_county_code_to_fips,
-    by = c("death_county_wa_code" = "county_wa_code")
-  ) |>
-  mutate(
-    death_county_fips = case_when(
-      file_year < 2022 ~ county_fips_code,
-      TRUE ~ death_county_fips
-    )
-  ) # should drop other columns from cross walk
 
 # TEST <- harmonized_data %>%
 #   # Ensure single digits are 0 padded for coded variables
