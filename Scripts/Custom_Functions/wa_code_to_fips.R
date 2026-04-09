@@ -5,7 +5,7 @@ county_wa_code_to_fips <- function(data, wa_col, fips_col, year_threshold) {
     left_join(
       params$code_sets$wa_county_code_to_fips %>%
         select(county_wa_code, county_fips_code),
-      by = c(wa_col = "county_wa_code")
+      by = setNames("county_wa_code", wa_col)
     ) %>%
     mutate(
       !!fips_col := case_when(
