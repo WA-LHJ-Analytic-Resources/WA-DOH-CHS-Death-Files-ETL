@@ -68,7 +68,7 @@ if (params$apply_variable_labels == TRUE) {
 }
 
 # WA County Code to FIPS Code Conversion -----
-#
+
 # UNDER DEVELOPMENT #
 # County code pair list based on what years we want to convert WA County codes to FIPS County Codes
 county_code_pairs <- list(
@@ -88,7 +88,20 @@ county_code_pairs <- list(
     year_threshold = 2022
   )
 )
-# Using county code pairs iterate function over the dataframe
+# Ensure that WA County code columns that have values 0 - 9 have a leading 0 in the front
+
+TEST <- harmonized_data %>%
+  mutate(across(
+    c(residence_county_wa_code, death_county_wa_code, injury_county_wa_code),
+    ~ str_pad(
+      .,
+      width = 2,
+      side = "left",
+      pad = "0"
+    )
+  ))
+
+# Using county code pairs to iterate function over the dataframe
 TEST <- county_code_pairs %>%
   reduce(
     function(data, pair) {
@@ -99,105 +112,16 @@ TEST <- county_code_pairs %>%
         pair$year_threshold
       )
     },
-    .init = harmonized_data
+    .init = TEST
   )
-
-
-# TEST <- harmonized_data %>%
-#   # Ensure single digits are 0 padded for coded variables
-#   mutate(
-#     across(
-#       c(
-#         injury_state,
-#         death_state,
-#         birthplace_state_fips_code,
-#         residence_state_fips_code,
-#         death_county_wa_code,
-#         injury_county_wa_code
-#       ),
-#       .fns = ~ str_pad(., width = 2, side = "left", pad = "0")
-#     )
-#   ) %>%
-#   # Expand Coded Variables
-#   ## Country Codes -----
-#   left_join(
-#     .,
-#     params$code_sets$country %>%
-#       by = join_by(birthplace_country == code)
-#   ) %>%
-#   rename(birthplace_country_label = label) %>%
-## WA County-City Codes: REVIEW -- GET ASSISTANCE WITH WA COUNTY-CITY CODES -----
-# left_join(
-#   .,
-#   params$code_sets$wa_county_city %>%
-#     select(code, label),
-#   by = join_by(death_county_city_wa_code == code)
-# ) %>%
-# rename(death_county_city_wa_code_label = label) %>%
-# left_join(
-#   .,
-#   params$code_sets$wa_county_city %>%
-#     select(code, label),
-#   by = join_by(injury_county_city_wa_code == code)
-# ) %>%
-# rename(injury_county_city_wa_code_label = label) %>%
-# left_join(
-#   .,
-#   params$code_sets$wa_county_city %>%
-#     select(code, label),
-#   by = join_by(residence_county_city_wa_code == code)
-# ) %>%
-## WA County Codes -----
-# left_join(
-#   .,
-#   params$code_sets$wa_county %>%
-#     select(code, label),
-#   by = join_by(death_county_wa_code == code)
-# ) %>%
-# rename(death_county_wa_code_label = label) %>%
-# left_join(
-#   .,
-#   params$code_sets$wa_county %>%
-#     select(code, label),
-#   by = join_by(injury_county_wa_code == code)
-# ) %>%
-# rename(injury_county_wa_code_label = label) %>%
-# left_join(
-#   .,
-#   params$code_sets$wa_county %>%
-#     select(code, label),
-#   by = join_by(residence_county_wa_code == code)
-# ) %>%
-# rename(residence_county_wa_code_label = label) %>%
-# ## NCHS State Codes -----
-# left_join(
-#   .,
-#   params$code_sets$nchs_state %>%
-#     select(code, label),
-#   by = join_by(death_state == code)
-# ) %>%
-# rename(death_state_label = label) %>%
-# left_join(
-#   .,
-#   params$code_sets$nchs_state %>%
-#     select(code, label),
-#   by = join_by(injury_state == code)
-# ) %>%
-# rename(injury_state_label = label) %>%
-# left_join(
-#   .,
-#   params$code_sets$nchs_state %>%
-#     select(code, label),
-#   by = join_by(birthplace_state_fips_code == code)
-# ) %>%
-# rename(birthplace_state_fips_code_label = label) %>%
-# left_join(
-#   .,
-#   params$code_sets$nchs_state %>%
-#     select(code, label),
-#   by = join_by(residence_state_fips_code == code)
-# ) %>%
-# rename(residence_state_fips_code_label = label)
+# Switch FIPS codes with value of "00" to NA
+TEST <- TEST |>
+  mutate(
+    across(
+      c(death_county_fips, residence_county_fips, injury_county_fips),
+      ~ na_if(., "00")
+    )
+  )
 
 # Reorder Harmonized Data Variables -----
 
