@@ -141,14 +141,21 @@ TEST <- TEST |>
 # Additional details: In 2022 and 2023 these columns included some out of state county fips codes, pre 2022 did not and 2024 onwards does not, so we are nulling these values for consistency
 TEST <- TEST |>
   mutate(
-    across(
-      .cols = c(death_county_fips, injury_county_fips),
-      .fns = ~ case_when(
-        file_year %in%
-          2022:2023 &
-          !coalesce(str_detect(.x, "^53"), FALSE) ~ NA_character_,
-        TRUE ~ as.character(.x)
-      )
+    death_county_fips = case_when(
+      file_year %in%
+        2022:2023 &
+        death_state != "WASHINGTON" ~ NA_character_,
+      TRUE ~ as.character(death_county_fips)
+    )
+  )
+
+TEST <- TEST |>
+  mutate(
+    injury_county_fips = case_when(
+      file_year %in%
+        2022:2023 &
+        injury_state != "WASHINGTON" ~ NA_character_,
+      TRUE ~ as.character(injury_county_fips)
     )
   )
 
@@ -177,15 +184,18 @@ TEST <- TEST |>
     )
   )
 
-## Issue alert ##
-# after dropping out of state there are lots of two charcter values that need a leading 0 and some single digit values that need two leading 00s
+## Make sure residence county fips has zero padding
+# Additional details: after nulling out of state values there are lots of two charcter values that need a leading 0 and some single digit values that need two leading 00s
 TEST <- TEST |>
   mutate(
-    residence_county_fips = str_pad(
-      residence_county_fips,
-      width = 3,
-      side = "left",
-      pad = "0"
+    residence_county_fips = case_when(
+      file_year %in% 2016:2023 ~ str_pad(
+        residence_county_fips,
+        width = 3,
+        side = "left",
+        pad = "0"
+      ),
+      TRUE ~ as.character(residence_county_fips)
     )
   )
 ## Dropping leading 53 from FIPS Residence County values for year 2016:2023
