@@ -179,6 +179,15 @@ TEST <- TEST |>
 
 ## Issue alert ##
 # after dropping out of state there are lots of two charcter values that need a leading 0 and some single digit values that need two leading 00s
+TEST <- TEST |>
+  mutate(
+    residence_county_fips = str_pad(
+      residence_county_fips,
+      width = 3,
+      side = "left",
+      pad = "0"
+    )
+  )
 ## Dropping leading 53 from FIPS Residence County values for year 2016:2023
 # Additional details: Crosswalked FIPS codes do not have leading 53 and 2024 and onwards will not have leading 53 so we are dropping it for these years
 TEST <- TEST |>
