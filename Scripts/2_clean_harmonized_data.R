@@ -121,7 +121,7 @@ TEST <- TEST |>
     across(
       .cols = c(death_county_fips, injury_county_fips),
       .fns = ~ case_when(
-        file_year < 2022 & .x == "00" ~ NA,
+        file_year < 2022 & .x == "00" ~ NA_character_,
         TRUE ~ as.character(.x)
       )
     )
@@ -132,7 +132,7 @@ TEST <- TEST |>
     across(
       .cols = residence_county_fips,
       .fns = ~ case_when(
-        file_year < 2016 & .x == "00" ~ NA,
+        file_year < 2016 & .x == "00" ~ NA_character_,
         TRUE ~ as.character(.x)
       )
     )
@@ -144,7 +144,9 @@ TEST <- TEST |>
     across(
       .cols = c(death_county_fips, injury_county_fips),
       .fns = ~ case_when(
-        file_year %in% 2022:2023 & !coalesce(str_detect(.x, "^53"), FALSE) ~ NA,
+        file_year %in%
+          2022:2023 &
+          !coalesce(str_detect(.x, "^53"), FALSE) ~ NA_character_,
         TRUE ~ as.character(.x)
       )
     )
@@ -168,10 +170,15 @@ TEST <- TEST |>
 TEST <- TEST |>
   mutate(
     residence_county_fips = case_when(
-      file_year %in% 2016:2023 & residence_state_fips_code != "WA" ~ NA,
-      TRUE ~ residence_county_fips
+      file_year %in%
+        2016:2023 &
+        residence_state_fips_code != "WA" ~ NA_character_,
+      TRUE ~ as.character(residence_county_fips)
     )
   )
+
+## Issue alert ##
+# after dropping out of state there are lots of two charcter values that need a leading 0 and some single digit values that need two leading 00s
 ## Dropping leading 53 from FIPS Residence County values for year 2016:2023
 # Additional details: Crosswalked FIPS codes do not have leading 53 and 2024 and onwards will not have leading 53 so we are dropping it for these years
 TEST <- TEST |>
