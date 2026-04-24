@@ -3,7 +3,7 @@
 # Initialize Audit List -----
 audits <- list()
 
-## Combine Underlying COD Code & All Record Axis Codes --> 1 Variable
+# Combine Underlying COD Code & All Record Axis Codes --> 1 Variable ----
 harmonized_data <- combine_code_columns(
   df = harmonized_data,
   input_vars = c(
@@ -69,8 +69,7 @@ if (params$apply_variable_labels == TRUE) {
 
 # WA County Code to FIPS Code Conversion -----
 
-# UNDER DEVELOPMENT #
-# County code pair list based on what years we want to convert WA County codes to FIPS County Codes
+## County code pair list for years we want to convert WA County Codes to FIPS County Codes
 county_code_pairs <- list(
   list(
     wa_col = "death_county_wa_code",
@@ -88,7 +87,7 @@ county_code_pairs <- list(
     year_threshold = 2022
   )
 )
-# Ensure that WA County code columns that have values 0 - 9 have a leading 0 in the front
+## Ensure that WA County code columns that have values 0 - 9 have a leading 0 in the front
 
 TEST <- harmonized_data %>%
   mutate(across(
@@ -101,7 +100,7 @@ TEST <- harmonized_data %>%
     )
   ))
 
-# Using county code pairs to iterate function over the dataframe
+## Using county code pairs to iterate crosswalk function over the dataframe
 TEST <- county_code_pairs %>%
   reduce(
     function(data, pair) {
@@ -114,15 +113,77 @@ TEST <- county_code_pairs %>%
     },
     .init = TEST
   )
-# Switch FIPS codes with value of "00" to NA
+
+## Setting County FIPS code columns with crosswalked value of "00" to NA for crosswalked years
+### For death and injury columns
 TEST <- TEST |>
   mutate(
     across(
-      c(death_county_fips, residence_county_fips, injury_county_fips),
-      ~ na_if(., "00")
+      .cols = c(death_county_fips, injury_county_fips),
+      .fns = ~ case_when(
+        file_year < 2022 & .x == "00" ~ NA,
+        TRUE ~ as.character(.x)
+      )
+    )
+  )
+### For residence column
+TEST <- TEST |>
+  mutate(
+    across(
+      .cols = residence_county_fips,
+      .fns = ~ case_when(
+        file_year < 2016 & .x == "00" ~ NA,
+        TRUE ~ as.character(.x)
+      )
+    )
+  )
+## Setting Out of State values for death county fips and injury county fips in 2022 and 2023 to NA
+# Additional details: In 2022 and 2023 these columns included some out of state county fips codes, pre 2022 did not and 2024 onwards does not, so we are nulling these values for consistency
+TEST <- TEST |>
+  mutate(
+    across(
+      .cols = c(death_county_fips, injury_county_fips),
+      .fns = ~ case_when(
+        file_year %in% 2022:2023 & !coalesce(str_detect(.x, "^53"), FALSE) ~ NA,
+        TRUE ~ as.character(.x)
+      )
     )
   )
 
+## Dropping leading 53 from FIPS County Code for death and injury for 2022 and 2023 to be consistent with other years
+# Additional details: Crosswalked FIPS codes do not have leading 53 and 2024 and onwards will not have leading 53 so we are dropping it for these years
+TEST <- TEST |>
+  mutate(
+    across(
+      .cols = c(death_county_fips, injury_county_fips),
+      .fns = ~ case_when(
+        file_year %in% 2022:2023 ~ str_remove(.x, "^53"),
+        TRUE ~ as.character(.x)
+      )
+    )
+  )
+
+## Setting Out of State values for FIPS Residence County to NA for years in 2016:2023
+# Additional details: Crosswalked FIPS Residence County code does not include Out of State and pre 2016 and 2024 onwards, so we are nulling these values for consistency
+TEST <- TEST |>
+  mutate(
+    residence_county_fips = case_when(
+      file_year %in% 2016:2023 & residence_state_fips_code != "WA" ~ NA,
+      TRUE ~ residence_county_fips
+    )
+  )
+## Dropping leading 53 from FIPS Residence County values for year 2016:2023
+# Additional details: Crosswalked FIPS codes do not have leading 53 and 2024 and onwards will not have leading 53 so we are dropping it for these years
+TEST <- TEST |>
+  mutate(
+    across(
+      .cols = residence_county_fips,
+      .fns = ~ case_when(
+        file_year %in% 2016:2023 ~ str_remove(.x, "^53"),
+        TRUE ~ as.character(.x)
+      )
+    )
+  )
 # Reorder Harmonized Data Variables -----
 
 harmonized_data <- harmonized_data %>%
