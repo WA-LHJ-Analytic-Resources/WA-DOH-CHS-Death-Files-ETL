@@ -138,8 +138,9 @@ TEST <- TEST |>
     )
   )
 
-# Back fill Residence County and Injury County literals using WA County Codes----
-# Additional details: 2010:2015 did not have residence_county or injury_county so we backfill them for
+# Back fill Residence County and Injury County literals using WA County FIPS Codes----
+# Additional details: 2010:2015 did not have residence_county or injury_county so we backfill them
+
 county_label_pairs <- list(
   list(
     fips_col = "residence_county_fips",
@@ -156,7 +157,7 @@ county_label_pairs <- list(
 TEST <- county_label_pairs %>%
   reduce(
     function(data, pair) {
-      county_fips_to_label(
+      county_fips_to_literals(
         data,
         pair$fips_col,
         pair$literal_col,
