@@ -139,7 +139,7 @@ TEST <- TEST |>
   )
 
 # Back fill Residence County and Injury County literals using WA County FIPS Codes----
-# Additional details: 2010:2015 did not have residence_county or injury_county so we backfill them
+# Additional details: 2010:2015 did not have residence_county or injury_county columns so we backfill them based on County FIPS code columns
 
 county_label_pairs <- list(
   list(
@@ -186,7 +186,7 @@ TEST <- TEST |>
 
 ## Reformat Injury County fips column padding and missingness
 # Out of state injuries will have value "00" because 3-character FIPS codes are not unique with out of state values present
-# Remove random number padding from WA County FIPS codes and ensure padding with 0's to reach length 3
+# Remove random number padding from Injury County FIPS codes and ensure padding with 0's to reach length = 3
 
 TEST <- TEST |>
   mutate(
@@ -252,6 +252,34 @@ TEST <- TEST |>
     )
   )
 
+# Reformat 2024 and onward Injury County FIPS Column ----
+# Additional details: Since 3-character FIPS codes are not unique we will code out of State counties to "00"
+TEST <- TEST |>
+  mutate(
+    injury_county_fips = case_when(
+      file_year > 2023 & injury_state != "WASHINGTON" ~ "00",
+      TRUE ~ as.character(injury_county_fips)
+    )
+  )
+# Fix Residence State FIPS code 2010:2015----
+# Additional details: During the 2010 - 2015 file years "48" was used for WA in the residence_state_fips_code column instead of "WA" in the rest of the file years
+TEST <- TEST |>
+  mutate(
+    residence_state_fips_code = case_when(
+      file_year %in% 2010:2015 & residence_state_fips_code == "48" ~ "WA",
+      TRUE ~ as.character(residence_state_fips_code)
+    )
+  )
+
+# Fix Death State column 2010:2015----
+# Additional details: During the 2010 - 2015 file years "48" was used for WASHINGTON in the death_state column instead of "WASHINGTON" in the rest of the file years
+TEST <- TEST |>
+  mutate(
+    death_state = case_when(
+      file_year %in% 2010:2015 & death_state == "48" ~ "WASHINGTON",
+      TRUE ~ as.character(death_state)
+    )
+  )
 # Reorder Harmonized Data Variables -----
 
 harmonized_data <- harmonized_data %>%
