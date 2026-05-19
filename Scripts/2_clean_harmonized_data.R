@@ -140,6 +140,31 @@ TEST <- TEST |>
 
 # Back fill Residence County and Injury County literals using WA County Codes----
 # Additional details: 2010:2015 did not have residence_county or injury_county so we backfill them for
+county_label_pairs <- list(
+  list(
+    fips_col = "residence_county_fips",
+    literal_col = "residence_county",
+    year_threshold = 2016
+  ),
+  list(
+    fips_col = "injury_county_fips",
+    literal_col = "injury_county",
+    year_threshold = 2016
+  )
+)
+
+TEST <- county_label_pairs %>%
+  reduce(
+    function(data, pair) {
+      county_fips_to_label(
+        data,
+        pair$fips_col,
+        pair$literal_col,
+        pair$year_threshold
+      )
+    },
+    .init = TEST
+  )
 
 # Harmonize 2022 and 2023 County FIPS columns ----
 
