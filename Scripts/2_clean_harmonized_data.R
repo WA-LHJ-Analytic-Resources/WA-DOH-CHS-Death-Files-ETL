@@ -138,6 +138,9 @@ TEST <- TEST |>
     )
   )
 
+# Back fill Residence County and Injury County literals using WA County Codes----
+# Additional details: 2010:2015 did not have residence_county or injury_county so we backfill them for
+
 # Harmonize 2022 and 2023 County FIPS columns ----
 
 ## Reformat death county fips column number padding
@@ -156,31 +159,52 @@ TEST <- TEST |>
   )
 
 ## Reformat Injury County fips column padding and missingness
-# Need to have column injury county in harmonized dataset, for WA code years we can use the crosswalked fips column to back fill it if we want it available for every year
-# Logic
-# Injury State == NA & Injury County == NA ~ Injury County FIPS = NA
-# Injury State == WA & Injury County == NA ~ Injury County FIPS = NA
-# Injury State == OOS & Injury County == OOS ~ Injury County FIPS = "00"
-# Injury State == OOS & Injury County == NA ~ Injury County FIPS = "00"
+# Out of state injuries will have value "00" because 3-character FIPS codes are not unique with out of state values present
+# Remove random number padding from WA County FIPS codes and ensure padding with 0's to reach length 3
 
-## Setting Out of State values for FIPS Residence County to NA for years in 2016:2023
-# Additional details: Pre 2016 Crosswalked FIPS Residence County codes do not include Out of State codes, and 2024 onwards does not either, so we are nulling these values for consistency
+TEST <- TEST |>
+  mutate(
+    injury_county_fips = case_when(
+      file_year %in%
+        2022:2023 &
+        is.na(injury_state) &
+        is.na(injury_county) ~ NA_character_,
+      file_year %in%
+        2022:2023 &
+        injury_state == "WASHINGTON" &
+        is.na(injury_county) ~ NA_character_,
+      file_year %in% 2022:2023 & injury_state != "WASHINGTON" ~ "00",
+      TRUE ~ as.character(injury_county_fips)
+    ),
+    injury_county_fips = case_when(
+      file_year %in% 2022:2023 & injury_county_fips != "00" ~ str_pad(
+        # ignore out of state special coding
+        str_sub(injury_county_fips, -3, -1), # extract last 3 characters
+        width = 3, # make sure length is 3 by padding with zero
+        side = "left",
+        pad = "0"
+      ),
+      TRUE ~ as.character(injury_county_fips)
+    )
+  )
+
+## Set Out of State values for FIPS Residence County to "00" for years 2016 onwards
+# Additional details: Pre 2016 Crosswalked FIPS Residence County codes do not include Out of State codes, 2016:2023 did but they used 5-character fips codes with leading state code, in 2024 fips codes were reduces to 3-character codes which are not unique when out of State values are present
 TEST <- TEST |>
   mutate(
     residence_county_fips = case_when(
-      file_year %in%
-        2016:2023 &
-        residence_state_fips_code != "WA" ~ NA_character_,
+      file_year >= 2016 &
+        residence_state_fips_code != "WA" ~ "00",
       TRUE ~ as.character(residence_county_fips)
     )
   )
 
 ## Make sure residence county fips has padding "0"s
-# Additional details: after nulling out of state values, there are many two charcter values that need a leading 0 and some single digit values that need two leading 00s
+# Additional details: after setting out of State values to "00", there are many two charcter values that need a leading 0 and some single digit values that need two leading 00s
 TEST <- TEST |>
   mutate(
     residence_county_fips = case_when(
-      file_year %in% 2016:2023 ~ str_pad(
+      file_year >= 2016 & residence_county_fips != "00" ~ str_pad(
         residence_county_fips,
         width = 3,
         side = "left",
