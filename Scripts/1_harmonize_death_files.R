@@ -96,13 +96,6 @@ harmonized_data <- bind_rows(harmonized_list, .id = "file_year")
 
 tictoc::toc()
 
-# Implement Variable Completeness Check -----
-visualize_completeness(
-  df = harmonized_data,
-  completeness_threshold = 1,
-  plotly = TRUE
-)
-
 # Clean up -----
 rm(
   available_vars,

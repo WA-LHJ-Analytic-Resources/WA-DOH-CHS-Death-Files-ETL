@@ -1,0 +1,41 @@
+﻿county_wa_code,county_wa_label,county_fips_code,county_fips_label
+00,Non-Washington State or Unknown,00,Non-Washington State or Unknown
+01,Adams County,001,Adams
+02,Asotin County,003,Asotin
+03,Benton County,005,Benton
+04,Chelan County,007,Chelan
+05,Clallam County,009,Clallam
+06,Clark County,011,Clark
+07,Columbia County,013,Columbia
+08,Cowlitz County,015,Cowlitz
+09,Douglas County,017,Douglas
+10,Ferry County,019,Ferry
+11,Franklin County,021,Franklin
+12,Garfield County,023,Garfield
+13,Grant County,025,Grant
+14,Grays Harbor County,027,Grays Harbor
+15,Island County,029,Island
+16,Jefferson County,031,Jefferson
+17,King County,033,King
+18,Kitsap County,035,Kitsap
+19,Kittitas County,037,Kittitas
+20,Klickitat County,039,Klickitat
+21,Lewis County,041,Lewis
+22,Lincoln County,043,Lincoln
+23,Mason County,045,Mason
+24,Okanogan County,047,Okanogan
+25,Pacific County,049,Pacific
+26,Pend Oreille County,051,Pend Oreille
+27,Pierce County,053,Pierce
+28,San Juan County,055,San Juan
+29,Skagit County,057,Skagit
+30,Skamania County,059,Skamania
+31,Snohomish County,061,Snohomish
+32,Spokane County,063,Spokane
+33,Stevens County,065,Stevens
+34,Thurston County,067,Thurston
+35,Wahkiakum County,069,Wahkiakum
+36,Walla Walla County,071,Walla Walla
+37,Whatcom County,073,Whatcom
+38,Whitman County,075,Whitman
+39,Yakima County,077,Yakima

@@ -1,9 +1,9 @@
-# 2_clean_harmonized_data.R
+# 3_clean_harmonized_data.R
 
 # Initialize Audit List -----
 audits <- list()
 
-## Combine Underlying COD Code & All Record Axis Codes --> 1 Variable
+# Combine Underlying COD Code & All Record Axis Codes --> 1 Variable ----
 harmonized_data <- combine_code_columns(
   df = harmonized_data,
   input_vars = c(
@@ -67,108 +67,6 @@ if (params$apply_variable_labels == TRUE) {
   audits$factor_labels <- attr(harmonized_data, "factor_audit")
 }
 
-
-# Joining Code Sets -----
-
-#### UNDER DEVELOPMENT ####
-# NEED TO COLLABORATE WITH PROJECT TEAM ON CODE JOINING/HARMONIZING FIPS/WA CODES
-
-# TEST <- harmonized_data %>%
-#   # Ensure single digits are 0 padded for coded variables
-#   mutate(
-#     across(
-#       c(
-#         injury_state,
-#         death_state,
-#         birthplace_state_fips_code,
-#         residence_state_fips_code,
-#         death_county_wa_code,
-#         injury_county_wa_code
-#       ),
-#       .fns = ~ str_pad(., width = 2, side = "left", pad = "0")
-#     )
-#   ) %>%
-#   # Expand Coded Variables
-#   ## Country Codes -----
-#   left_join(
-#     .,
-#     params$code_sets$country %>%
-#       by = join_by(birthplace_country == code)
-#   ) %>%
-#   rename(birthplace_country_label = label) %>%
-## WA County-City Codes: REVIEW -- GET ASSISTANCE WITH WA COUNTY-CITY CODES -----
-# left_join(
-#   .,
-#   params$code_sets$wa_county_city %>%
-#     select(code, label),
-#   by = join_by(death_county_city_wa_code == code)
-# ) %>%
-# rename(death_county_city_wa_code_label = label) %>%
-# left_join(
-#   .,
-#   params$code_sets$wa_county_city %>%
-#     select(code, label),
-#   by = join_by(injury_county_city_wa_code == code)
-# ) %>%
-# rename(injury_county_city_wa_code_label = label) %>%
-# left_join(
-#   .,
-#   params$code_sets$wa_county_city %>%
-#     select(code, label),
-#   by = join_by(residence_county_city_wa_code == code)
-# ) %>%
-## WA County Codes -----
-# left_join(
-#   .,
-#   params$code_sets$wa_county %>%
-#     select(code, label),
-#   by = join_by(death_county_wa_code == code)
-# ) %>%
-# rename(death_county_wa_code_label = label) %>%
-# left_join(
-#   .,
-#   params$code_sets$wa_county %>%
-#     select(code, label),
-#   by = join_by(injury_county_wa_code == code)
-# ) %>%
-# rename(injury_county_wa_code_label = label) %>%
-# left_join(
-#   .,
-#   params$code_sets$wa_county %>%
-#     select(code, label),
-#   by = join_by(residence_county_wa_code == code)
-# ) %>%
-# rename(residence_county_wa_code_label = label) %>%
-# ## NCHS State Codes -----
-# left_join(
-#   .,
-#   params$code_sets$nchs_state %>%
-#     select(code, label),
-#   by = join_by(death_state == code)
-# ) %>%
-# rename(death_state_label = label) %>%
-# left_join(
-#   .,
-#   params$code_sets$nchs_state %>%
-#     select(code, label),
-#   by = join_by(injury_state == code)
-# ) %>%
-# rename(injury_state_label = label) %>%
-# left_join(
-#   .,
-#   params$code_sets$nchs_state %>%
-#     select(code, label),
-#   by = join_by(birthplace_state_fips_code == code)
-# ) %>%
-# rename(birthplace_state_fips_code_label = label) %>%
-# left_join(
-#   .,
-#   params$code_sets$nchs_state %>%
-#     select(code, label),
-#   by = join_by(residence_state_fips_code == code)
-# ) %>%
-# rename(residence_state_fips_code_label = label)
-
 # Reorder Harmonized Data Variables -----
 
 harmonized_data <- harmonized_data %>%
@@ -195,7 +93,7 @@ harmonized_data <- harmonized_data %>%
     # Cause of Death
     underlying_cod_code,
     all_cod_code,
-    # starts_with("record_axis_code"), # Uncomment if we actually do need all record_axis_code_# variables!
+    starts_with("record_axis_code"), # Comment out if we do not want all record_axis_code_# variables!
     manner,
     disposition,
     # Injury
@@ -205,19 +103,22 @@ harmonized_data <- harmonized_data %>%
     starts_with("birthplace_country"),
     starts_with("birthplace_state_fips_code"),
     starts_with("residence_city"),
-    starts_with("residence_county"),
+    residence_county,
+    residence_county_fips,
     starts_with("residence_state_fips_code"),
     residence_zip_code,
     residence_city_limits,
     residence_length,
     residence_length_type,
-    starts_with("injury_city"),
-    starts_with("injury_county"),
     injury_place,
+    starts_with("injury_city"),
+    injury_county,
+    injury_county_fips,
     injury_state,
     injury_zip_code,
     starts_with("death_city"),
-    starts_with("death_county"),
+    # death_county,
+    death_county_fips,
     death_state,
     death_zip_code,
     place_of_death_type,
