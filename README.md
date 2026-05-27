@@ -29,8 +29,9 @@ Multiple versions of the data sets are sent throughout the year. There are preli
 ## How to Run the Code
 1. Download all WA DOH CHS Death Certificate Statistical Files from Secure Access Washington.
 2. Run `Scripts/0_setup.R`. This script loads all packages and custom functions, defines workflow parameters, defines filepaths, and loads in code sets (ex: cemetery, coutnry, facility, fips, and more).
-3. Run `Scripts/1_harmonize_death_files.R`. This script loads each data vintage, performs Data Type Harmonization (all variables as character data types), performs Schema Harmonization (all variables to standardized naming convention), and performs Value Harmonization (recodes data vintage variable values to a set of standardized code options). Lastly, it binds all data vintages together into a single, multiple year data set labelled `harmonized_data`..
-7. Run `Scripts/2_clean_harmonized_data.R`. This unifies variables in `harmonized_data` (ex: some data vintage years only have `disposition_facility_codes`, some data vintage years only have `disposition_facility_names` --> align `disposition_facility` to a single varaible across all of the years), convert all variables to proper, finalized data types (ex: characters --> date, time, or factor variables), applies factor labels to all categorical values (optional) so values are easily understood, and performs joins to expand code sets (ex: cemetery, coutnry, facility, fips, and more).
+3. Run `Scripts/1_harmonize_death_files.R`. This script loads each data vintage, performs Data Type Harmonization (all variables as character data types), performs Schema Harmonization (all variables to standardized naming convention), and performs Value Harmonization (recodes data vintage variable values to a set of standardized code options). Lastly, it binds all data vintages together into a single, multiple year data set labelled `harmonized_data`.
+4. Run `Scripts/2_process_geography_variables.R` This unifies the disparate death, residence, and injury county and state code (WA code & FIPS code) variables across data vintages.
+5. Run `Scripts/3_clean_harmonized_data.R`. This unifies variables in `harmonized_data` (ex: some data vintage years only have `disposition_facility_codes`, some data vintage years only have `disposition_facility_names` --> align `disposition_facility` to a single varaible across all of the years), convert all variables to proper, finalized data types (ex: characters --> date, time, or factor variables), applies factor labels to all categorical values (optional) so values are easily understood, and performs joins to expand code sets (ex: cemetery, coutnry, facility, and more).
 
 ### Workflow Diagram
 ![WA DOH CHS Death Files ETL Workflow Diagram](Resources/WA-DOH-CHS_Death-Files-ETL-Workflow-Diagram.png)
@@ -58,7 +59,11 @@ Custom R functions were developed to streamline and increase the legibility of t
 - `recode_variables()`: Performs Value Harmonization (data vintage variable coding --> standard variable coding convention for `harmonized_data`) using related `recode_variables_YYYY.csv` file. Only variable-code value pairs that are not in the standard variable coding convention for `harmonized_data` are converted.
 - `visualize_completeness()`: Creates an interactive heatmap of variable percent completeness by file year (Note: some file years may use `NA` while others may also have explicit `Unknown` values).
 
-**2_clean_harmonized_data.R**
+**2_process_geography_variables.R**
+- `county_wa_code_to_fips()`: Translates WA code geography variables to FIPS codes. These translations are then used to backfill missing FIP code information.
+- `county_fips_to_literals()`: Translates FIPS code geography variables and translates to literal geographies. These translations are then used to backfill missing literal geography variable values.
+
+**3_clean_harmonized_data.R**
 - `unify_variables()`: Takes versions of similar variables (ex: `disposition_facility_code` - `disposition_facility_name`, and `funeral_home_code` and `funeral_home_name`) that are slightly different across annual data vintages, and combines them into a singular, standardized variable in `harmonized_data`.
 - `combine_code_columns()`: Takes the many code columns (ex: `record_axis_code_1` to `record_axis_code_20`) and combines them into a single code column as a concatenated string (to allow for easier data management).
 - `clean_date_variables()`: Takes the numerous date variables (stored as the character data type) and converts them to date data types. This function excepts dates formatted in many ways (see the `orders` parameter), and dates with improper formatting or unrealistic values are converted automatically to `NA`.
