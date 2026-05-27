@@ -71,15 +71,6 @@ harmonized_data <- harmonized_data %>%
     )
   )
 
-## 2d) Remove WA Codes
-harmonized_data <- harmonized_data %>%
-  select(
-    -death_county_wa_code,
-    -residence_county_wa_code,
-    -injury_county_wa_code
-  )
-
-
 # 3) Translate FIPS Codes to Literals -----
 
 ## 3a) county_label_pairs specifies each FIPS code & Literal variable pairing, along with the year_threshold (that indicates what years to use WA Codes to fill in missing Literal values)
