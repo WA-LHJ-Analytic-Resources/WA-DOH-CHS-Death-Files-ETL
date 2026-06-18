@@ -3,9 +3,18 @@
 # Initialize Audit List -----
 audits <- list()
 
-# Combine Underlying COD Code & All Record Axis Codes --> 1 Variable ----
-harmonized_data <- combine_code_columns(
-  df = harmonized_data,
+# Clean ICD-10 Codes & Create a Combined Underlying (underlying_cod_code) & Contributing Cause of Death (record_axis_#) Code Variable ----
+harmonized_data <- harmonized_data %>%
+  # Implement rads ICD-10 clean functions for all COD code variables.
+  mutate(
+    across(
+      .cols = c(underlying_cod_code, matches("^record_axis_code_")),
+      .fns = ~ rads::death_icd10_clean(icdcol = .x)
+  )
+) %>%
+  # Create Combined COD COde Variable
+  combine_code_columns(
+  df = .,
   input_vars = c(
     underlying_cod_code,
     matches("^record_axis_code_(?:[2-9]|1[0-9]|20)$") # Function also removes record_axis_code_1 (as it is redundant with underlying_cod_code)
@@ -148,6 +157,9 @@ visualize_completeness(
   completeness_threshold = 1, # change completeness_threshold to 0.95 (or other value) to subset to variables with lower incompleteness/higher variability
   plotly = TRUE
 )
+
+# Check rads R Package Death Functions Compatability -----
+rads::death_validate_data(harmonized_data)
 
 # Save Clean Harmonized Data -----
 
