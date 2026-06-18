@@ -159,7 +159,7 @@ visualize_completeness(
 )
 
 # Check rads R Package Death Functions Compatability -----
-rads::death_validate_data(harmonized_data)
+rads::death_validate_data(harmonized_data, check_multicause = TRUE)
 
 # Save Clean Harmonized Data -----
 
