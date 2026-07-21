@@ -14,12 +14,17 @@ WA DOH CHS provides two sets of death certificate data vintages which have disti
 | 1980-2015   | BEDROCK                                  | DOH         | Only 2010 to 2015 data vintages are available in Secure Access Washington                                                                                                                                    |
 | 2016+       | [Washington Health and Life Events System (WHALES)](https://doh.wa.gov/licenses-permits-and-certificates/vital-records/whales) | DOH         | Bedrock --> WHALES migration means that BEDROCK data vintages must have variable names and coded values converted to align with WHALES schema. |
 
-- **STAT** - This data contains nearly all of the demographic information about the decedent, dates, codes for causes of death, and other intent and mechanism information about the death.
+- **STAT** - This data contains nearly all of the demographic information about the decedent, dates, codes for causes of death, and other intent and mechanism information about the death. 
 - **GEO** - This data contains lattitude and longitude information that is then geocoded to blocks, school districts, zip codes, and other geographic identifiers.
 - **NAMES** - This data contains full names, SSNs, and full address of the decedent.
 - **LITERAL** - This data contains full text descriptions for causes of death.
 
 Multiple versions of the data sets are sent throughout the year. There are preliminary and final versions of the data. Preliminary data will come in the form of quarterly (Q1, Q2, Q3, Q4) and then several less descriptive versions (Q5, Q6, P). Q5 and Q6 are typically not adding new rows but filling in or updating columns in already existing rows. P is usually the last preliminary and most complete file before the final file (F) is released.
+
+## Scope
+[This project currently focuses on harmonizing:]{.underline}
+- The Death Statistical Files (**STAT**)
+- Annual finalized files (**F**)
 
 # Data Processing Workflow
 
@@ -28,7 +33,7 @@ Multiple versions of the data sets are sent throughout the year. There are preli
 
 ## How to Run the Code
 1. Download all WA DOH CHS Death Certificate Statistical Files from Secure Access Washington.
-2. Run `Scripts/0_setup.R`. This script loads all packages and custom functions, defines workflow parameters, defines filepaths, and loads in code sets (ex: cemetery, coutnry, facility, fips, and more).
+2. Run `Scripts/0_setup.R`. This script loads all packages and custom functions, defines workflow parameters, defines filepaths, and loads in code sets (ex: cemetery, country, facility, fips, and more).
 3. Run `Scripts/1_harmonize_death_files.R`. This script loads each data vintage, performs Data Type Harmonization (all variables as character data types), performs Schema Harmonization (all variables to standardized naming convention), and performs Value Harmonization (recodes data vintage variable values to a set of standardized code options). Lastly, it binds all data vintages together into a single, multiple year data set labelled `harmonized_data`.
 4. Run `Scripts/2_process_geography_variables.R` This unifies the disparate death, residence, and injury county and state code (WA code & FIPS code) variables across data vintages.
 5. Run `Scripts/3_clean_harmonized_data.R`. This unifies variables in `harmonized_data` (ex: some data vintage years only have `disposition_facility_codes`, some data vintage years only have `disposition_facility_names` --> align `disposition_facility` to a single varaible across all of the years), convert all variables to proper, finalized data types (ex: characters --> date, time, or factor variables), applies factor labels to all categorical values (optional) so values are easily understood, and performs joins to expand code sets (ex: cemetery, coutnry, facility, and more).
@@ -40,15 +45,57 @@ Multiple versions of the data sets are sent throughout the year. There are preli
 
 | **Data** | **Location** | **Last Update** | **Notes** |
 |----------|--------------|-----------------|-----------|
-| Raw Death Statistical Files | **User Determined** in `.Renviron` file | 2026-03-02 | Users provide the filepath to folder containing all of your organization's raw death statistical files (downloaded from Secure Access Washington) |
-| `rename_variables_YYYY.csv` | `Resources/Crosswalks/YYYY` | 3/26/2026 | **Crosswalks data vintage variable names** to the standardized variable naming convention for `harmonized_data` (these variables align with `janitor::clean_names()` as lower snake_case. `rename_variables_YYYY.csv` are an **annual** file (as there are year-over-year variations in variable naming conventions), and only include the subset of overall variables to be included in the `harmonized_data`. | 
-| `all_rename_variables.csv` | `Resources/Crosswalks` | 3/26/2026 | Uses `Scripts/crosswalk_review.R` to combines all annual `rename_variables_YYYY.csv` files into 1 single file to enable quick, user review of variable renaming crosswalks across all data vintages. | 
-| `recode_variables_YYYY.csv` | `Resources/Crosswalks/YYYY` | 3/26/2026 | **Crosswalks data vintage variable coded values** to the standardized variable coding convention for `harmonized_data`. `recode_variables_YYYY.csv` are an **annual** file (as there are year-over-year variations in coding conventions), and only include variable-code value pairs that deviate from the standardized coding convention (if variables-code value pairs don't require recoding they are not included). | 
-| `all_recode_variables.csv` | `Resources/Crosswalks` | 3/26/2026 | Uses `Scripts/crosswalk_review.R` to combines all annual `code_variables_YYYY.csv` files into 1 single file to enable quick, user review of variable recoding crosswalks across all data vintages.| 
+| Raw Death Statistical Files | **User Determined** in `.Renviron` file (`RAW_DEATH_FILES_FOLDER`) | 7/21/2026 | Users provide the filepath to folder containing all of your organization's raw death statistical files (downloaded from Secure Access Washington) |
+| `rename_variables_YYYY.csv` | `Resources/Crosswalks/YYYY` | 3/26/2026 | **Crosswalks data vintage variable names** to the standardized variable naming convention for `harmonized_data` (these variables align with `janitor::clean_names()` as lower snake_case). `rename_variables_YYYY.csv` are an **annual** file (as there are year-over-year variations in variable naming conventions), and **only include the subset of overall variables to be included in the `harmonized_data`**. | 
+| `recode_variables_YYYY.csv` | `Resources/Crosswalks/YYYY` | 3/26/2026 | **Crosswalks data vintage variable coded values** to the standardized variable coding convention for `harmonized_data`. `recode_variables_YYYY.csv` are an **annual** file (as there are year-over-year variations in coding conventions), and **only include variable code-description value pairs that deviate from the standardized coding convention (i.e., if a variable's code-description value pair does not require recoding it is not included)**. | 
 | `schema_data_types.csv` | `Resources/Schemas` | 3/26/2026 | Indicates the proper, finalized data types for all variables in `harmonized_data`. This is used to convert `harmonized_data` variables from character data type (used throughout the data pipeline) to intended data types for end use (such as dates, times, factors, and more). | 
 | `schema_factors.csv` | `Resources/Schemas` | 3/26/2026 | This file provides all of the desired levels and labels for `harmonized_data`'s factor and ordered (factor) variables. | 
 
-### Custom Functions (& Helper R Scripts)
+## Workflow Outputs 
+| **Data** | **Location** | **Last Update** | **Notes** |
+|----------|--------------|-----------------|-----------|
+| `harmonized_data.parquet` | **User Determined** in `.Renviron` file (`HARMONIZED_DEATH_FILE_FOLDER`) | 7/21/2026 | A multi-year death statstical file (2010 to Present) containing a subset of frequently used variables. | 
+| `all_rename_variables.csv` | `Resources/Crosswalks` | 3/26/2026 | Uses `Scripts/crosswalk_review.R` to combines all annual `rename_variables_YYYY.csv` files into 1 single file (`all_rename_variables.xlsx`) to enable quick, user review of variable renaming crosswalks across all data vintages. | 
+| `all_recode_variables.csv` | `Resources/Crosswalks` | 3/26/2026 | Uses `Scripts/crosswalk_review.R` to combines all annual `code_variables_YYYY.csv` files into 1 single file (`all_recode_variables.xlsx`) to enable quick, user review of variable recoding crosswalks across all data vintages.| 
+
+# Harmonizing a New Data Vintage
+
+**Note:** This workflow assumes only minor variations across future WHALEs vintages. Any major changes to data vintages (such as those due to a subsequent system migration) would likely result in code-breaking changes and would require additional development efforts to harmonize the data.
+
+1. Download the new year's WA DOH CHS Death Certificate Statistical Files from Secure Access Washington.
+
+2. Under `Resources/Crosswalks`:
+    - Create a new year (`YYYY`) subfolder for the data vintage.
+    - Copy a `rename_variables_YYYY.csv` from the previous year and place it in the new year subfolder.
+    - Copy a `recode_variables_YYYY.csv` from the previous year and place it in the new year subfolder.
+
+3. Edit `rename_variables_YYYY.csv` (this is the **Variable Renaming Crosswalk**)
+    - `file_year` - Enter in the new year (`YYYY`)
+    - `from_name` - Enter in the variable names in the new year data vintage that would align with the `harmonized data` variable referenced in `to_name`. 
+    - `to_name` - Keep as-is. These are the the cleaned variable names (harmonized across all years' data vintages)
+    - `missing` - Default is `FALSE`. Mark `TRUE` for edge cases where the new year data vintage does not contain a `from_name` variable that could be cleaned/harmonized into the `to_name` variable. (If `missing` is `TRUE` it does not really matter what you enter for `from_name`).
+
+4 Edit `recode_variables_YYYY.csv` (this is the **Variable Recoding Crosswalk**)
+    - `file_year` - Enter in the new year (`YYYY`)
+    - `variable` - Enter in the harmonized variable name (same as `to_name` from the **Variable Renaming Crosswalk**)
+    - `from_code` - Enter in the code value for the new data year variable to be recoded (to align with the `harmonized data` coded values). 
+        - **Note**: Codes that are already aligned the `harmonized data` coded values **do not need to be added to this file**.
+    - `to_code` - Enter in the coded value `from_code` will be recoded to. This will be the respective `harmonized data` coded value.
+    - `from_label` - Enter in the description value for the new data year variable to be recoded (to align with the `harmonized data` label values)
+        - **Note**: Labels that are already aligned the `harmonized data` coded values **do not need to be added to this file**.
+    - `to_label` - Enter in the description value `from_label` will be recoded to. This will be the respective `harmonized data` label value.
+    - `notes` - A free-text column to add any context around the recoding of specific variables
+    - `review_flag` - Default is `FALSE`. Mark `TRUE` if any specific recodings should be reviewed and discussed by SMEs before implementing. 
+
+5. Run `Scripts/crosswalk_review.R`. It will create:
+    - `Resources/Crosswalks/all_rename_variables.xlsx` - A collated spreadsheet of all yearly **Variable Renaming Crosswalks** (`rename_variables_YYYY.csv`). This is meant to support end user reviews of the renaming subprocess.
+    - `Resources/Crosswalks/all_recode_variables.xlsx` - A collated spreadsheet of all yearly **Variable Recoding Crosswalks** (`recode_variables_YYYY.csv`). This is meant to support end user reviews the recoding subprocess.
+    - `Resources/Review/Missing Variables Referenced in Rename Crosswalk.xlsx` - A spreadsheet summarizing all of the variables (and respective years) in `all_rename_variables.xlsx` that were flagged as `missing` = `TRUE`. This is meant to flag edge cases in the variable renaming subprocess where variables in the `harmonized data` are entirely missing/not present in the data (only for a few select years).
+    -  `Resources/Review/Flagged Variable Recoding Operations.xlsx`- A spreadsheet summarizing all of the variables (and respective years) in `all_recode_variables.xlsx` that were flagged as `review_flag` = `TRUE`. This is meant to edge cases in the variable recodoing subprocess where a specific recode should be reviewed and discussed by SMEs before implementing. This is primarily used for data values not specifically listed in the WA DOH Data Dictionary. 
+
+# Misc
+
+## Custom Functions (& Helper R Scripts)
 
 Custom R functions were developed to streamline and increase the legibility of this data pipeline. Custom functions are stored under `Scripts/Custom_Functions/`.
 
