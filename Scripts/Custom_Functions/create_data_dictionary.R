@@ -1,6 +1,10 @@
 # create_data_dictionary.R
 
-create_data_dictionary <- function(df, vars_no_val, vars_no_val_limit = 30) {
+create_data_dictionary <- function(
+  df,
+  vars_no_val = "source_file",
+  vars_no_val_limit = 30
+) {
   # Create Data Dictionary
   data_dictionary <- tibble(
     variable = names(df),
@@ -13,6 +17,11 @@ create_data_dictionary <- function(df, vars_no_val, vars_no_val_limit = 30) {
       ~ {
         vals <- unique(.x)
         vals <- vals[!is.na(vals)]
+
+        ## Sort example values. For factor (by levels), for a character (alphabetical)
+        vals <- sort(vals)
+
+        ## Concatenate all example values into a string
         paste(vals, collapse = ", ")
       }
     )
