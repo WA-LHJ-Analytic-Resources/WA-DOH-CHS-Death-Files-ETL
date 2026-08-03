@@ -22,7 +22,7 @@ WA DOH CHS provides two sets of death certificate data vintages which have disti
 Multiple versions of the data sets are sent throughout the year. There are preliminary and final versions of the data. Preliminary data will come in the form of quarterly (Q1, Q2, Q3, Q4) and then several less descriptive versions (Q5, Q6, P). Q5 and Q6 are typically not adding new rows but filling in or updating columns in already existing rows. P is usually the last preliminary and most complete file before the final file (F) is released.
 
 ## Scope
-[This project currently focuses on harmonizing:]{.underline}
+**This project currently focuses on harmonizing:**
 - The Death Statistical Files (**STAT**)
 - Annual finalized files (**F**)
 
@@ -45,8 +45,7 @@ Multiple versions of the data sets are sent throughout the year. There are preli
 
 | **Data** | **Location** | **Last Update** | **Notes** |
 |----------|--------------|-----------------|-----------|
-| Raw Death Statistical Files | **User Determined** in `.Renviron` file (`RAW_DEATH_FILES_FOLDER`) | 7/21/2026 | Users provide the filepath to folder containing all of your organization's raw death statistical files (downloaded from Secure Access Washington) |
-| `rename_variables_YYYY.csv` | `Resources/Crosswalks/YYYY` | 3/26/2026 | **Crosswalks data vintage variable names** to the standardized variable naming convention for `harmonized_data` (these variables align with `janitor::clean_names()` as lower snake_case). `rename_variables_YYYY.csv` are an **annual** file (as there are year-over-year variations in variable naming conventions), and **only include the subset of overall variables to be included in the `harmonized_data`**. | 
+| Raw Death Statistical Files | **User Determined** in [`.Renviron`](https://docs.posit.co/ide/user/ide/guide/environments/r/managing-r.html#renviron) file (`RAW_DEATH_FILES_FOLDER`) | 7/21/2026 | Users provide the file path to folder containing all of your organization's raw death statistical files (downloaded from Secure Access Washington) |
 | `recode_variables_YYYY.csv` | `Resources/Crosswalks/YYYY` | 3/26/2026 | **Crosswalks data vintage variable coded values** to the standardized variable coding convention for `harmonized_data`. `recode_variables_YYYY.csv` are an **annual** file (as there are year-over-year variations in coding conventions), and **only include variable code-description value pairs that deviate from the standardized coding convention (i.e., if a variable's code-description value pair does not require recoding it is not included)**. | 
 | `schema_data_types.csv` | `Resources/Schemas` | 3/26/2026 | Indicates the proper, finalized data types for all variables in `harmonized_data`. This is used to convert `harmonized_data` variables from character data type (used throughout the data pipeline) to intended data types for end use (such as dates, times, factors, and more). | 
 | `schema_factors.csv` | `Resources/Schemas` | 3/26/2026 | This file provides all of the desired levels and labels for `harmonized_data`'s factor and ordered (factor) variables. | 
@@ -55,6 +54,8 @@ Multiple versions of the data sets are sent throughout the year. There are preli
 | **Data** | **Location** | **Last Update** | **Notes** |
 |----------|--------------|-----------------|-----------|
 | `harmonized_data.parquet` | **User Determined** in `.Renviron` file (`HARMONIZED_DEATH_FILE_FOLDER`) | 7/21/2026 | A multi-year death statstical file (2010 to Present) containing a subset of frequently used variables. | 
+| `Data Dictionary - Harmonized Data.xlsx` | `Resources/Schemas` | 8/3/2026 | A **Data Dictionary** describing the `variable(s)`, `class(es)`, `n_missing` (missing rows), `pct_missing` (missing rows/total rows x 100), `n_distinct` (distinct values in the variable), and `values` (a summary of all possible answer values for each `variable`, excludes values for unique identifier and/or high cardinality variables). | 
+| `all_recode_variables.csv` | `Resources/Crosswalks` | 3/26/2026 | Uses `Scripts/crosswalk_review.R` to combines all annual `code_variables_YYYY.csv` files into 1 single file (`all_recode_variables.xlsx`) to enable quick, user review of variable recoding crosswalks across all data vintages.| 
 | `all_rename_variables.csv` | `Resources/Crosswalks` | 3/26/2026 | Uses `Scripts/crosswalk_review.R` to combines all annual `rename_variables_YYYY.csv` files into 1 single file (`all_rename_variables.xlsx`) to enable quick, user review of variable renaming crosswalks across all data vintages. | 
 | `all_recode_variables.csv` | `Resources/Crosswalks` | 3/26/2026 | Uses `Scripts/crosswalk_review.R` to combines all annual `code_variables_YYYY.csv` files into 1 single file (`all_recode_variables.xlsx`) to enable quick, user review of variable recoding crosswalks across all data vintages.| 
 
@@ -116,8 +117,9 @@ Custom R functions were developed to streamline and increase the legibility of t
 - `clean_date_variables()`: Takes the numerous date variables (stored as the character data type) and converts them to date data types. This function excepts dates formatted in many ways (see the `orders` parameter), and dates with improper formatting or unrealistic values are converted automatically to `NA`.
 - `clean_time_variables()`: Takes the numerous time variables (ex: time_of_death, time_of_death_hour, time_of_death_minute, time_of_injury, time_of_injury_hour, time_of_injury_minute) whose format and availability can vary year-to-year, and converts the values from character data type to time (lubridate hms) data type.
 - `clean_data_types()`: Uses `schema_data_types.csv` to convert `harmonized_data` variables to their final proper data types. **Note:** This does not apply to `date` and `time` related variables as they are handled previously/exclusively in `clean_date_variables()` and `clean_time_variables()`. Includes an audit feature to see original vs converted data types for all variables.
-- `apply_variable_labels()`: This functional is optional to use (as determined by `params$apply_variable_labels` in `0_setup.R`). It uses `schema_factors.csv` to apply proper levelling and labels to all factor and ordered (factor) variables indicated in `schema_data_types.csv`. It includes an audit feature to see applied levels and labels as well as any potentially unmatched values.
+- `apply_variable_labels()`: This function is optional to use (as determined by `params$apply_variable_labels` in `0_setup.R`). It uses `schema_factors.csv` to apply proper levelling and labels to all factor and ordered (factor) variables indicated in `schema_data_types.csv`. It includes an audit feature to see applied levels and labels as well as any potentially unmatched values.
 - `visualize_completeness()`: Creates an interactive heatmap of variable percent completeness by file year (Note: some file years may use `NA` while others may also have explicit `Unknown` values).
+- `create_data_dictionary()`: Creates a data dictionary for the harmonized death data. 
 
 **crosswalk_review.R**
 - This is an R script - not a custom R function!
