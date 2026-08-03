@@ -51,3 +51,4 @@ rsconnect/
 
 # Define Project-Specific .gitignore here ----
 *.RData
+*.xlsx 

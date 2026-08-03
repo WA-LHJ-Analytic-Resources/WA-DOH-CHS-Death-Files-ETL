@@ -10,19 +10,19 @@ harmonized_data <- harmonized_data %>%
     across(
       .cols = c(underlying_cod_code, matches("^record_axis_code_")),
       .fns = ~ rads::death_icd10_clean(icdcol = .x)
-  )
-) %>%
-  # Create Combined COD COde Variable
+    )
+  ) %>%
+  # Create Combined COD Code Variable
   combine_code_columns(
-  df = .,
-  input_vars = c(
-    underlying_cod_code,
-    matches("^record_axis_code_(?:[2-9]|1[0-9]|20)$") # Function also removes record_axis_code_1 (as it is redundant with underlying_cod_code)
-  ),
-  delimiter = ";",
-  output_var = "all_cod_code",
-  remove_inputs = FALSE # TRUE = Removes all record_axis_code variables as they have all been condensed into all_cod_code
-)
+    df = .,
+    input_vars = c(
+      underlying_cod_code,
+      matches("^record_axis_code_(?:[2-9]|1[0-9]|20)$") # Function also removes record_axis_code_1 (as it is redundant with underlying_cod_code)
+    ),
+    delimiter = ";",
+    output_var = "all_cod_code",
+    remove_inputs = FALSE # TRUE = Removes all record_axis_code variables as they have all been condensed into all_cod_code
+  )
 
 # Convert Harmonized Data to Final Data Types ------
 
@@ -31,6 +31,7 @@ harmonized_data <- harmonized_data %>%
   clean_date_variables(
     df = .,
     vars = c(
+      "date_harmonized",
       "date_of_birth",
       "date_of_death",
       "date_of_injury",
@@ -39,7 +40,6 @@ harmonized_data <- harmonized_data %>%
     )
   ) %>%
   clean_time_variables(df = .)
-
 
 ## Load in Final Harmonized Data Schema
 schema_data_types <- readr::read_csv(
@@ -60,7 +60,7 @@ audits$data_type_conversions <- attr(harmonized_data, "schema_audit")
 # (Optional) Apply Labels to Factor Variables ------
 if (params$apply_variable_labels == TRUE) {
   ## Load in DF Factor Schema
-  schema_factors = readr::read_csv(
+  schema_factors <- readr::read_csv(
     file = here("Resources", "Schemas", "schema_factors.csv"),
     show_col_types = FALSE
   ) %>%
@@ -75,6 +75,14 @@ if (params$apply_variable_labels == TRUE) {
   ## Audit how the factor labels were applied
   audits$factor_labels <- attr(harmonized_data, "factor_audit")
 }
+
+# Adjust string variable case -----
+
+harmonized_data <- harmonized_data %>%
+  mutate(across(
+    .cols = c(occupation, industry, informant_relationship),
+    .fns = ~ str_to_title(.x)
+  )) # All caps to Title Case
 
 # Reorder Harmonized Data Variables -----
 
@@ -169,5 +177,21 @@ arrow::write_parquet(
   sink = here(
     Sys.getenv("HARMONIZED_DEATH_FILE_FOLDER"),
     "harmonized_data.parquet"
+  )
+)
+
+## Create & Write Data Dictionary - Harmonized Data
+data_dictionary <- create_data_dictionary(
+  df = harmonized_data,
+  vars_no_val = c("source_file"), # Dont show example values for these provided variable names.
+  vars_no_val_limit = 30 # Only show example values for variables with <= 30 distinct values (avoids unique IDs/high cardinal vars)
+)
+
+writexl::write_xlsx(
+  x = data_dictionary,
+  path = here::here(
+    "Resources",
+    "Schemas",
+    "Data Dictionary - Harmonized Data.xlsx"
   )
 )
