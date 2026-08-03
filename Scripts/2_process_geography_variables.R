@@ -35,7 +35,7 @@ county_code_pairs <- list(
   )
 )
 
-## 2b) Use county_code_pairs & params$code_sets$wa_county_code_to_fips to translate WA Codes (before year_threshold) t
+## 2b) Use county_code_pairs & params$code_sets$wa_county_code_to_fips to translate WA Codes (before year_threshold)
 ## to fill in missing FIPS codes (for death_county_fips, residence_county_fips, and injury_county_fips)
 
 harmonized_data <- county_code_pairs %>%
