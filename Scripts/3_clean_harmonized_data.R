@@ -181,7 +181,11 @@ arrow::write_parquet(
 )
 
 ## Create & Write Data Dictionary - Harmonized Data
-data_dictionary <- create_data_dictionary(df = harmonized_data)
+data_dictionary <- create_data_dictionary(
+  df = harmonized_data,
+  vars_no_val = c("source_file"), # Dont show example values for these provided variable names.
+  vars_no_val_limit = 30 # Only show example values for variables with <= 30 distinct values (avoids unique IDs/high cardinal vars)
+)
 
 writexl::write_xlsx(
   x = data_dictionary,
