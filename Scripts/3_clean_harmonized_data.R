@@ -179,3 +179,15 @@ arrow::write_parquet(
     "harmonized_data.parquet"
   )
 )
+
+## Create & Write Data Dictionary - Harmonized Data
+data_dictionary <- create_data_dictionary(df = harmonized_data)
+
+writexl::write_xlsx(
+  x = data_dictionary,
+  path = here::here(
+    "Resources",
+    "Schemas",
+    "Data Dictionary - Harmonized Data.xlsx"
+  )
+)
