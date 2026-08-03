@@ -12,7 +12,7 @@ harmonized_data <- harmonized_data %>%
       .fns = ~ rads::death_icd10_clean(icdcol = .x)
     )
   ) %>%
-  # Create Combined COD COde Variable
+  # Create Combined COD Code Variable
   combine_code_columns(
     df = .,
     input_vars = c(
