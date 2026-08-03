@@ -10,19 +10,19 @@ harmonized_data <- harmonized_data %>%
     across(
       .cols = c(underlying_cod_code, matches("^record_axis_code_")),
       .fns = ~ rads::death_icd10_clean(icdcol = .x)
-  )
-) %>%
+    )
+  ) %>%
   # Create Combined COD COde Variable
   combine_code_columns(
-  df = .,
-  input_vars = c(
-    underlying_cod_code,
-    matches("^record_axis_code_(?:[2-9]|1[0-9]|20)$") # Function also removes record_axis_code_1 (as it is redundant with underlying_cod_code)
-  ),
-  delimiter = ";",
-  output_var = "all_cod_code",
-  remove_inputs = FALSE # TRUE = Removes all record_axis_code variables as they have all been condensed into all_cod_code
-)
+    df = .,
+    input_vars = c(
+      underlying_cod_code,
+      matches("^record_axis_code_(?:[2-9]|1[0-9]|20)$") # Function also removes record_axis_code_1 (as it is redundant with underlying_cod_code)
+    ),
+    delimiter = ";",
+    output_var = "all_cod_code",
+    remove_inputs = FALSE # TRUE = Removes all record_axis_code variables as they have all been condensed into all_cod_code
+  )
 
 # Convert Harmonized Data to Final Data Types ------
 
@@ -31,6 +31,7 @@ harmonized_data <- harmonized_data %>%
   clean_date_variables(
     df = .,
     vars = c(
+      "date_harmonized",
       "date_of_birth",
       "date_of_death",
       "date_of_injury",
@@ -39,7 +40,6 @@ harmonized_data <- harmonized_data %>%
     )
   ) %>%
   clean_time_variables(df = .)
-
 
 ## Load in Final Harmonized Data Schema
 schema_data_types <- readr::read_csv(
@@ -60,7 +60,7 @@ audits$data_type_conversions <- attr(harmonized_data, "schema_audit")
 # (Optional) Apply Labels to Factor Variables ------
 if (params$apply_variable_labels == TRUE) {
   ## Load in DF Factor Schema
-  schema_factors = readr::read_csv(
+  schema_factors <- readr::read_csv(
     file = here("Resources", "Schemas", "schema_factors.csv"),
     show_col_types = FALSE
   ) %>%
