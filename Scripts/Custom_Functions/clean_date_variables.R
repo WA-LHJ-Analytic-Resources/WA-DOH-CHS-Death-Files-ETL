@@ -24,7 +24,16 @@ clean_date_variables <- function(
       mutate(
         !!var_sym := str_squish(as.character(!!var_sym)),
         !!var_sym := na_if(!!var_sym, ""), # blank -> NA
-        !!var_sym := parse_date_wrapper(!!var_sym)
+        !!var_sym := parse_date_wrapper(!!var_sym),
+
+        # Convert improbable/impossible years to NA
+        !!var_sym := dplyr::case_when(
+          is.na(!!var_sym) ~ NA_Date_, # already NA
+          lubridate::year(!!var_sym) < 1900 ~ NA_Date_, # Meant to capture dates before 1900's (typos)
+          lubridate::year(!!var_sym) >
+            lubridate::year(lubridate::today()) + 1 ~ NA_Date_, # Meant to capture 9999's and dates that are more than 1 year into the future.
+          TRUE ~ as.Date(!!var_sym)
+        )
       )
   }
 
