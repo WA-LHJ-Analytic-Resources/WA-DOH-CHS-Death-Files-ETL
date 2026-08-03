@@ -76,6 +76,14 @@ if (params$apply_variable_labels == TRUE) {
   audits$factor_labels <- attr(harmonized_data, "factor_audit")
 }
 
+# Adjust string variable case -----
+
+harmonized_data <- harmonized_data %>%
+  mutate(across(
+    .cols = c(occupation, industry, informant_relationship),
+    .fns = ~ str_to_title(.x)
+  )) # All caps to Title Case
+
 # Reorder Harmonized Data Variables -----
 
 harmonized_data <- harmonized_data %>%
