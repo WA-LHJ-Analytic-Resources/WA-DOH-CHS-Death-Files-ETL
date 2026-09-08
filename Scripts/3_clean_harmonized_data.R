@@ -26,6 +26,14 @@ harmonized_data <- harmonized_data %>%
 
 # Convert Harmonized Data to Final Data Types ------
 
+## Clean Date Variables
+cleaned_date_output <- clean_date_variables(df = harmonized_data)
+
+harmonized_data <- cleaned_date_output$df_clean
+date_parse_errors <- cleaned_date_output$parsing_errors
+
+rm(cleaned_date_output)
+
 ## Clean Date & Time Variables
 harmonized_data <- harmonized_data %>%
   clean_date_variables(
