@@ -2,7 +2,14 @@
 
 clean_date_variables <- function(
   df,
-  vars,
+  vars = c(
+    "date_harmonized",
+    "date_of_birth",
+    "date_of_death",
+    "date_of_injury",
+    "date_received",
+    "disposition_date"
+  ),
   orders = c("Ymd", "Y-m-d", "m/d/Y", "d%b%Y"),
   tz = "UTC", # Does not matter as all input variables are dates only (no times)
   verbose = FALSE
@@ -68,6 +75,16 @@ clean_date_variables <- function(
         ) # Only returns the variables pre-specified here.
     }
   )
-  # Step 4: Return df & parsing_errors
-  return(list(df = df, parsing_errors = parsing_error_examples))
+
+  # Step 4: Drop Raw Date Variables, Rename Parsed Variables (to Raw Date Variable Names)
+  df <- df %>%
+    select(-all_of(vars)) %>% # Drop original raw date fields
+    rename_with(
+      # Rename parsed fields → original names
+      ~vars,
+      all_of(new_names)
+    )
+
+  # Step 5: Return df & parsing_errors
+  return(list(df_clean = df, parsing_errors = parsing_error_examples))
 }
