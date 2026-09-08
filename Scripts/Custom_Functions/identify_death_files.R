@@ -10,7 +10,7 @@ identify_death_files <- function(folder, data_only = TRUE) {
   }
 
   # Step 1: List files recursively under the folder
-  paths <- list.files(folder, recursive = TRUE, full.names = TRUE)
+  paths <- list.files(folder, recursive = FALSE, full.names = TRUE)
 
   # Step 2: Build the 'files' tibble
   files <- tibble(
