@@ -91,7 +91,7 @@ for (file_yr in death_stat_files$file_year) {
 }
 
 ## Step 7: Append all data vintages together
-harmonized_data <- bind_rows(harmonized_list, .id = "file_year")
+harmonized_data <- bind_rows(harmonized_list)
 
 tictoc::toc()
 
