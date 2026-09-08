@@ -107,7 +107,7 @@ identify_death_files <- function(folder, data_only = TRUE) {
 
         stop(
           paste(
-            "More than 1 file found per data vintage. The problematic files are:",
+            "More than 1 file found per data vintage. If a final vintage is present, remove preliminary vintage file(s). If more than 1 preliminary vintage file(s) are present, keep the most recently updated file.",
             tibble_error_string
           ),
           call. = FALSE
