@@ -91,12 +91,31 @@ identify_death_files <- function(folder, data_only = TRUE) {
             multiple_files_per_year,
             by = c("file_type", "file_year")
           ) %>%
+          group_by(file_type, file_year) %>%
+          mutate(
+            # Rule 1: If both Preliminary and Final exist:
+            has_prelim = any(file_status == "Preliminary"),
+            has_final = any(file_status == "Final"),
+
+            remove = case_when(
+              # Rule 1: Remove Preliminary when Final exists
+              has_prelim & has_final & file_status == "Preliminary" ~ TRUE,
+
+              # Rule 2: Multiple Preliminary files, remove older ones
+              has_prelim & !has_final & file_status == "Preliminary" ~
+                file_modified_date_time != max(file_modified_date_time),
+
+              # Otherwise: keep
+              TRUE ~ FALSE
+            )
+          ) %>%
+          ungroup() %>%
           select(
             file_year,
-            system,
             file_status,
             file_location,
-            file_modified_date_time
+            file_modified_date_time,
+            remove
           )
 
         ### Create a clean, printable tibble for error message
@@ -107,7 +126,7 @@ identify_death_files <- function(folder, data_only = TRUE) {
 
         stop(
           paste(
-            "More than 1 file found per data vintage. If a final vintage is present, remove preliminary vintage file(s). If more than 1 preliminary vintage file(s) are present, keep the most recently updated file.",
+            "More than 1 file found per data vintage. See 'remove' column for recommendation(s) on files to remove.",
             tibble_error_string
           ),
           call. = FALSE
