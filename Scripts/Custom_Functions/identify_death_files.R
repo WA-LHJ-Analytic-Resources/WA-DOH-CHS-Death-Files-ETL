@@ -34,23 +34,24 @@ identify_death_files <- function(folder, data_only = TRUE) {
       )
   }
 
+  # files_orig <- files
+
   # Step 4: Add File Year & File Status to "files" tibble
-  files <- files %>%
+  files <- files_orig %>%
     mutate(
       ## Create file_year via detecting 4 digit strings within the file_name, convert it to numeric
       file_year = str_extract(file_name, pattern = "[:digit:]{4}"),
       file_year = as.integer(file_year),
-      ## Extract Last Few Characters from file_name_no_ext
-      second_last_char = str_sub(file_name_no_ext, -2, -2),
-      third_last_char = str_sub(file_name_no_ext, -3, -3),
-      fourth_last_char = str_sub(file_name_no_ext, -4, -4),
-      ## Identify file_status using last few characters of file_name_no_ext
-      file_status = case_when(
-        second_last_char == "Q" ~ str_sub(file_name_no_ext, -2, -1), # last 2 chars
-        third_last_char == "D" ~ str_sub(file_name_no_ext, -4, -1), # last 4 chars
-        fourth_last_char == "P" ~ str_sub(file_name_no_ext, -4, -4), # the 'P' itself
-        TRUE ~ "F"
-      )
+      ## File Status
+      file_name_no_ext_stem = str_remove(
+        file_name_no_ext,
+        pattern = "DeathLit|DeathNames|DeathStat"
+      ),
+      file_status = ifelse(
+        str_detect(file_name_no_ext_stem, "^F"),
+        "Final",
+        "Preliminary"
+      ),
     ) %>%
     # Add WA DOH System Tag
     mutate(system = ifelse(file_year <= 2015, "BEDROCK", 'WHALES')) %>%
