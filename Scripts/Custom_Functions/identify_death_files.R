@@ -15,8 +15,16 @@ identify_death_files <- function(folder, data_only = TRUE) {
   # Step 2: Build the 'files' tibble
   files <- tibble(
     file_name = path_file(paths), # just the file name
-    file_type = str_extract(file_name, pattern = "Lit|Names|Stat|Geo"), # Extract the Death Certificate File Type from the file_name (options: Lit, Names, Stat, Geo)
-    file_location = paths, # full path
+    file_type = case_when(
+      # Extract the Death Certificate File Type from the file_name (options: Lit, Names, Stat, Geo)
+      str_detect(file_name, "Lit") ~ "Cause of Death Literals",
+      str_detect(file_name, "Names") ~ "Death Names",
+      str_detect(file_name, "Stat") ~ "Death Statistical",
+      str_detect(file_name, "Stat") ~ "Death Geographic",
+      TRUE ~ NA
+    ),
+    file_location = paths, # full path,
+    file_modified_date_time = file_info(paths)$modification_time,
     stringsAsFactors = FALSE
   ) %>%
     ## Add file name w/o extension, and extension column
@@ -62,7 +70,8 @@ identify_death_files <- function(folder, data_only = TRUE) {
       file_year,
       system,
       file_status,
-      file_location
+      file_location,
+      file_modified_date_time
     ) %>%
     # Arrange by File Type & File Year
     arrange(file_type, file_year)
@@ -82,7 +91,13 @@ identify_death_files <- function(folder, data_only = TRUE) {
             multiple_files_per_year,
             by = c("file_type", "file_year")
           ) %>%
-          select(file_year, system, file_status, file_location)
+          select(
+            file_year,
+            system,
+            file_status,
+            file_location,
+            file_modified_date_time
+          )
 
         ### Create a clean, printable tibble for error message
         tibble_error_string <- paste(
