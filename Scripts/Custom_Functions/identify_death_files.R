@@ -29,13 +29,14 @@ identify_death_files <- function(folder, data_only = TRUE) {
   if (data_only == TRUE) {
     files <- files %>%
       filter(file_ext %in% c("csv", "xlsx")) %>% # Add more death data file formats here (if there are more in the future)
+      # Remove Death Statistical Data Dictionary
       filter(
         !str_detect(file_name, "Death Statistical Dictionary and Crosswalk")
       )
   }
 
   # Step 4: Add File Year & File Status to "files" tibble
-  files <- files_orig %>%
+  files <- files %>%
     mutate(
       ## Create file_year via detecting 4 digit strings within the file_name (that start with "20"), convert it to numeric
       file_year = str_extract(file_name, pattern = "20[0-9]{2}"),
@@ -62,8 +63,51 @@ identify_death_files <- function(folder, data_only = TRUE) {
       system,
       file_status,
       file_location
-    )
+    ) %>%
+    # Arrange by File Type & File Year
+    arrange(file_type, file_year)
 
-  # Step 4: Return files tibble
+  ## Step 5: Logic Check - Ensure 1 File Per Year
+  tryCatch(
+    expr = {
+      ### Identify potential errors (multiple files per data vintage)
+      multiple_files_per_year <- files %>%
+        count(file_type, file_year) %>%
+        filter(n > 1)
+
+      if (nrow(multiple_files_per_year) > 0) {
+        ### Extract the problematic files
+        bad_files <- files %>%
+          semi_join(
+            multiple_files_per_year,
+            by = c("file_type", "file_year")
+          ) %>%
+          select(file_year, system, file_status, file_location)
+
+        ### Create a clean, printable tibble for error message
+        tibble_error_string <- paste(
+          capture.output(print(bad_files)),
+          collapse = "\n"
+        )
+
+        stop(
+          paste(
+            "More than 1 file found per data vintage. The problematic files are:",
+            tibble_error_string
+          ),
+          call. = FALSE
+        )
+      }
+
+      # Normal return from your function goes here
+    },
+
+    error = function(e) {
+      message("Error: ", e$message)
+      NA
+    }
+  )
+
+  # Step 6: Return files tibble
   return(files)
 }
