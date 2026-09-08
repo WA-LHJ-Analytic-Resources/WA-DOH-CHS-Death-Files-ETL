@@ -34,13 +34,11 @@ identify_death_files <- function(folder, data_only = TRUE) {
       )
   }
 
-  # files_orig <- files
-
   # Step 4: Add File Year & File Status to "files" tibble
   files <- files_orig %>%
     mutate(
-      ## Create file_year via detecting 4 digit strings within the file_name, convert it to numeric
-      file_year = str_extract(file_name, pattern = "[:digit:]{4}"),
+      ## Create file_year via detecting 4 digit strings within the file_name (that start with "20"), convert it to numeric
+      file_year = str_extract(file_name, pattern = "20[0-9]{2}"),
       file_year = as.integer(file_year),
       ## File Status
       file_name_no_ext_stem = str_remove(
