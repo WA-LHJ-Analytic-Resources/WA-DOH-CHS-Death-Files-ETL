@@ -57,7 +57,7 @@ clean_date_variables <- function(
     ) %>%
     select(-age_calc) # remove temporary column
 
-  # Step 3: parse error report (reuse parsed columns; no re-parsing)
+  # Step 3: Generate Parsing Error Report
   parsing_error_examples <- purrr::map_dfr(
     vars,
     function(v) {
