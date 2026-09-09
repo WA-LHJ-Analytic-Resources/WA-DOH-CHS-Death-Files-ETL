@@ -1,9 +1,15 @@
 # clean_time_variables.R
 
-df <- harmonized_data %>%
-  select(state_file_number, file_year, contains("time"))
-
 clean_time_variables <- function(df, verbose = FALSE) {
+  # Helper function to conditionally suppress warnings during time parsing
+  parse_time_wrap <- function(x, fmt = "%H%M") {
+    if (verbose == TRUE) {
+      readr::parse_time(x, format = fmt)
+    } else if (verbose == FALSE) {
+      suppressWarnings(readr::parse_time(x, format = fmt))
+    }
+  }
+
   # Step 0: Remove All Punctuation in All Time Variables
   df <- df %>%
     mutate(across(
@@ -92,7 +98,7 @@ clean_time_variables <- function(df, verbose = FALSE) {
       time_of_injury = coalesce(time_of_injury_primary, time_of_injury)
     )
 
-  # Step 5: Normalize "2400" timestamp to "0000"; COnvert "9999" to NA
+  # Step 5: Normalize "2400" timestamp to "0000"; Convert "9999" (common placeholder) to NA
   df <- df %>%
     mutate(
       across(
@@ -101,7 +107,7 @@ clean_time_variables <- function(df, verbose = FALSE) {
       ),
       across(
         .cols = c(time_of_death, time_of_injury),
-        ~ ifelse(.x == "9999", NA, .x) # 9999 = very common NA placeholder value
+        ~ ifelse(.x == "9999", NA, .x)
       )
     )
 
@@ -113,35 +119,34 @@ clean_time_variables <- function(df, verbose = FALSE) {
     )
 
   # Step 7: Generate Parsing Error Report
-  parsing_error_examples1 <- df %>%
-    select(
-      state_file_number,
-      time_of_death,
-      time_of_death_primary,
-      time_of_death_hour,
-      time_of_death_minutes,
-      time_of_death_final
-    ) %>%
-    distinct(time_of_death, time_of_death_primary, .keep_all = TRUE) %>%
-    filter(
-      (!is.na(time_of_death_primary) | !is.na(time_of_death)) &
-        is.na(time_of_death_final)
-    )
 
-  parsing_error_examples2 <- df %>%
-    select(
-      state_file_number,
-      time_of_injury,
-      time_of_injury_primary,
-      time_of_injury_hour,
-      time_of_injury_minutes,
-      time_of_injury_final
-    ) %>%
-    distinct(time_of_injury, time_of_injury_primary, .keep_all = TRUE) %>%
-    filter(
-      (!is.na(time_of_injury_primary) | !is.na(time_of_injury)) &
-        is.na(time_of_injury_final)
-    )
+  parsing_errors_examples <- purrr::map_dfr(
+    c("time_of_death", "time_of_injury"),
+
+    function(v) {
+      primary_v <- paste0(v, "_primary")
+      final_v <- paste0(v, "_final")
+      hour_v <- paste0(v, "_hour")
+      min_v <- paste0(v, "_minutes")
+
+      df %>%
+        filter(
+          (!is.na(.data[[v]]) | !is.na(.data[[primary_v]])) &
+            is.na(.data[[final_v]])
+        ) %>%
+        distinct(.data[[v]], .data[[primary_v]], .keep_all = TRUE) %>%
+        transmute(
+          state_file_number,
+          file_year,
+          variable = v,
+          original_value = .data[[v]],
+          primary_value = .data[[primary_v]],
+          hour_component = .data[[hour_v]],
+          minute_component = .data[[min_v]],
+          parsed_value = .data[[final_v]]
+        )
+    }
+  )
 
   # Step 8: Remove Unecessary Variables & Rename Variables
   df <- df %>%
@@ -160,5 +165,6 @@ clean_time_variables <- function(df, verbose = FALSE) {
       time_of_injury = time_of_injury_final
     )
 
-  return(df)
+  # Step 9: Return df & parsing_errors
+  return(list(df_clean = df, parsing_errors = parsing_error_examples))
 }
