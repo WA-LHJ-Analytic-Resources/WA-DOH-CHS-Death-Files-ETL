@@ -29,12 +29,12 @@ harmonized_data <- harmonized_data %>%
 ## Clean Date Variables
 cleaned_date_output <- clean_date_variables(df = harmonized_data)
 harmonized_data <- cleaned_date_output$df_clean
-# date_parse_errors <- cleaned_date_output$parsing_errors # Contains all unique examples of when date string parsing failed (i.e. values in final harmonized data set are NA)
+# audits$date_parse_errors <- cleaned_date_output$parsing_errors # Contains all unique examples of when date string parsing failed (i.e. values in final harmonized data set are NA)
 
 ## Clean Time Variables
 cleaned_time_output <- clean_time_variables(df = harmonized_data)
 harmonized_data <- cleaned_time_output$df_clean
-# time_parse_errors <- cleaned_time_output$parsing_errors # Contains all unique examples of when time string parsing failed (i.e. values in final harmonized data set are NA)
+# audits$time_parse_errors <- cleaned_time_output$parsing_errors # Contains all unique examples of when time string parsing failed (i.e. values in final harmonized data set are NA)
 
 ## Load in Final Harmonized Data Schema
 schema_data_types <- readr::read_csv(
