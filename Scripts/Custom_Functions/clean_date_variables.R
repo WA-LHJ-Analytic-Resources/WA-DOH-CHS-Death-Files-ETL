@@ -85,6 +85,8 @@ clean_date_variables <- function(
       all_of(new_names)
     )
 
-  # Step 5: Return df & parsing_errors
-  return(list(df_clean = df, parsing_errors = parsing_error_examples))
+  # Step 5: Add parsing_error_examples as an attribute to output
+  attr(df, "date_parsing_errors") <- parsing_error_examples
+
+  return(df)
 }

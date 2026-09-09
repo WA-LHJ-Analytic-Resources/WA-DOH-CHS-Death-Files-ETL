@@ -120,7 +120,7 @@ clean_time_variables <- function(df, verbose = FALSE) {
 
   # Step 7: Generate Parsing Error Report
 
-  parsing_errors_examples <- purrr::map_dfr(
+  parsing_error_examples <- purrr::map_dfr(
     c("time_of_death", "time_of_injury"),
 
     function(v) {
@@ -165,6 +165,8 @@ clean_time_variables <- function(df, verbose = FALSE) {
       time_of_injury = time_of_injury_final
     )
 
-  # Step 9: Return df & parsing_errors
-  return(list(df_clean = df, parsing_errors = parsing_errors_examples))
+  # Step 9: Add parsing_error_examples as an attribute to output
+  attr(df, "time_parsing_errors") <- parsing_error_examples
+
+  return(df)
 }
