@@ -28,26 +28,13 @@ harmonized_data <- harmonized_data %>%
 
 ## Clean Date Variables
 cleaned_date_output <- clean_date_variables(df = harmonized_data)
-
 harmonized_data <- cleaned_date_output$df_clean
-date_parse_errors <- cleaned_date_output$parsing_errors
+# date_parse_errors <- cleaned_date_output$parsing_errors # Contains all unique examples of when date string parsing failed (i.e. values in final harmonized data set are NA)
 
-rm(cleaned_date_output)
-
-## Clean Date & Time Variables
-harmonized_data <- harmonized_data %>%
-  clean_date_variables(
-    df = .,
-    vars = c(
-      "date_harmonized",
-      "date_of_birth",
-      "date_of_death",
-      "date_of_injury",
-      "date_received",
-      "disposition_date"
-    )
-  ) %>%
-  clean_time_variables(df = .)
+## Clean Time Variables
+cleaned_time_output <- clean_time_variables(df = harmonized_data)
+harmonized_data <- cleaned_time_output$df_clean
+# time_parse_errors <- cleaned_time_output$parsing_errors # Contains all unique examples of when time string parsing failed (i.e. values in final harmonized data set are NA)
 
 ## Load in Final Harmonized Data Schema
 schema_data_types <- readr::read_csv(
@@ -202,4 +189,12 @@ writexl::write_xlsx(
     "Schemas",
     "Data Dictionary - Harmonized Data.xlsx"
   )
+)
+
+
+# Clean up -----
+
+rm(
+  cleaned_date_output,
+  cleaned_time_output
 )
