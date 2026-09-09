@@ -166,5 +166,5 @@ clean_time_variables <- function(df, verbose = FALSE) {
     )
 
   # Step 9: Return df & parsing_errors
-  return(list(df_clean = df, parsing_errors = parsing_error_examples))
+  return(list(df_clean = df, parsing_errors = parsing_errors_examples))
 }
