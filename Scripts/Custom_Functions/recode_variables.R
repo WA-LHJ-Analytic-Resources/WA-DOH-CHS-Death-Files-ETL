@@ -46,8 +46,11 @@ recode_variables <- function(
     tictoc::tic("Variable Recoding Process")
   }
 
-  # Step 0: Initialize a df_recoded output data frame
+  # Step 0a: Initialize a df_recoded output data frame
   df_recoded <- df
+
+  # Step 0b: Filter crosswalk to specific data vintage year
+  cw <- cw %>% filter(file_year == year)
 
   # Step 1: Identify variables to recode from the crosswalk
   recode_vars <- cw %>% filter(file_year == year) %>% pull(variable) %>% unique()
