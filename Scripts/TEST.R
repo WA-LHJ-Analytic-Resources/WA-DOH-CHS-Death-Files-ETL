@@ -166,7 +166,7 @@ process_year <- function(file_year, cw = crosswalk, file_path) {
 
   # Perform renaming for variables that exist in the data vintage
   df <- df %>%
-    rename(!!!rename_map) # !!! expands named vector so that value (new_var_name) = name (old_var_name)
+    rename(!!!rename_map) # !!! expands named vector so that name (new_var_name) = value (old_var_name)
 
   # For missing variables (in specific data vintages; where from_name = NA) create 100% NA to_name variable -----
 
