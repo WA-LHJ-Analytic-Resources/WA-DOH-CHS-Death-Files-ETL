@@ -23,7 +23,7 @@ tictoc::tic("Harmonize all death data vintages")
 harmonized_list <- list()
 
 ## Step 1: Load Variable Rename & Recode Crosswalks
-var_rename_crosswalk <- read_excel("Resources/Crosswalks/crosswalk.xlsx", sheet = "rename_variables") %>%
+var_rename_crosswalk <- read_excel("Resources/Crosswalks and Schemas.xlsx", sheet = "rename_variables") %>%
    pivot_longer(
       cols = matches("^\\d{4}$"),     # matches columns named as "2010","2011",…
       names_to = "file_year",
@@ -32,7 +32,7 @@ var_rename_crosswalk <- read_excel("Resources/Crosswalks/crosswalk.xlsx", sheet 
     mutate(file_year = as.integer(file_year)) %>%
     select(file_year, from_name, to_name, notes)
 
-var_recode_crosswalk <- read_excel("Resources/Crosswalks/crosswalk.xlsx", sheet = "recode_variables") %>%
+var_recode_crosswalk <- read_excel("Resources/Crosswalks and Schemas.xlsx", sheet = "recode_variables") %>%
   select(file_year, variable, from_code, from_label, to_code, to_label)
 
 ## Step 2: Load, Rename, and Recode Each Data Vintage
