@@ -37,7 +37,7 @@
 recode_variables <- function(
   df,
   year, 
-  cw = var_recode_crosswalk,
+  cw,
   verbose = TRUE,
   timed = FALSE
 ) {

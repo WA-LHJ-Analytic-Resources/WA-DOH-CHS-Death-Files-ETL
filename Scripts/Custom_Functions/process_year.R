@@ -1,6 +1,6 @@
 # process_year.R
 
-process_year <- function(year, cw = var_rename_crosswalk, file_path) {
+process_year <- function(year, cw, file_path) {
 
   # Identify renaming instructions for this specific file_year -----
 
