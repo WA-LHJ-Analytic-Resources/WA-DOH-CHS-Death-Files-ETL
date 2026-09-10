@@ -28,17 +28,8 @@ harmonized_list <- list()
 # 1. LOAD CROSSWALK (rename_variables sheet)
 #-------------------------------------------------------------
 
-crosswalk <- read_excel("Resources/Crosswalks/crosswalk.xlsx", sheet = "rename_variables")
-
-#-------------------------------------------------------------
-# 3. FUNCTION TO PROCESS ONE YEAR OF DATA
-#-------------------------------------------------------------
-
-process_year <- function(file_year, cw = crosswalk, file_path) {
-
-  # Convert cw to long format: each row gives (year, from_name, to_name) -----
-  cw_long <- cw %>%
-    pivot_longer(
+crosswalk <- read_excel("Resources/Crosswalks/crosswalk.xlsx", sheet = "rename_variables") %>%
+   pivot_longer(
       cols = matches("^\\d{4}$"),     # matches columns named as "2010","2011",…
       names_to = "year",
       values_to = "from_name"
@@ -46,9 +37,15 @@ process_year <- function(file_year, cw = crosswalk, file_path) {
     mutate(year = as.integer(year)) %>%
     select(year, from_name, to_name, notes)
 
+#-------------------------------------------------------------
+# 3. FUNCTION TO PROCESS ONE YEAR OF DATA
+#-------------------------------------------------------------
+
+process_year <- function(file_year, cw = crosswalk, file_path) {
+
   # Identify renaming instructions for this specific file_year -----
 
-  cw_year <- cw_long %>%
+  cw_year <- cw %>%
     filter(year == file_year)
 
   # Identify source columns that are actually needed from this vintage ---- 
@@ -98,7 +95,7 @@ process_year <- function(file_year, cw = crosswalk, file_path) {
 
   # Ensure data contain exactly the final schema columns (Useful for harmonization across vintages) -----
 
-  final_schema <- cw$to_name
+  final_schema <- unique(cw$to_name)
 
   df <- df %>%
     select(all_of(final_schema))   # Subset & reorder to only the to_name (final target schema) variables specified in the cw.
@@ -109,18 +106,38 @@ process_year <- function(file_year, cw = crosswalk, file_path) {
 
 for (file_yr in death_stat_files$file_year) {
 
-  tictoc::tic(glue("Processing the data vintage for: {file_yr}"))
+  tictoc::tic(glue("Processing the data vintage for {file_yr}"))
 
+  ### Step 3a: Identify death statistical file vintage to be loaded
   data_vintage <- death_stat_files %>% filter(file_year == file_yr)
 
+  ### Step 3b: Extact vintage metadata
+  provenance <- tibble(
+    vintage_label = data_vintage$vintage_label,
+    file_year = data_vintage$file_year,
+    source_file = data_vintage$file_location,
+    source_system = data_vintage$system,
+    date_harmonized = as.character(lubridate::today())
+  )
+
+  ### Step 4: Load in Data Vintage (Perform 1-Data Type & 2-Schema Harmonization)
   harmonized_list[[as.character(file_yr)]] <- process_year(
     file_year = file_yr,
     cw = crosswalk, 
     file_path = data_vintage$file_location
-  )
+  ) %>%
+    bind_cols(provenance) %>%
+    dplyr::relocate(
+      vintage_label,
+      source_file,
+      date_harmonized,
+      source_system,
+      file_year,
+      .before = everything()
+    ) # Move these variables to the front.
 
   tictoc::toc()
 }
 
 
-harmonized_data <- bind_rows(harmonized_list, .id = "file_year")
+harmonized_data <- bind_rows(harmonized_list)
