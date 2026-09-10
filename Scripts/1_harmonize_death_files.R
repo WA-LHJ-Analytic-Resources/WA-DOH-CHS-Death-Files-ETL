@@ -22,13 +22,6 @@ tictoc::tic("Harmonize all death data vintages")
 ## Step 0: Initiate Data Storage Lists
 harmonized_list <- list()
 
-# Harmonization Process ----
-
-tictoc::tic("Harmonize all death data vintages")
-
-## Step 0: Initiate Data Storage Lists
-harmonized_list <- list()
-
 ## Step 1: Load Variable Rename & Recode Crosswalks
 var_rename_crosswalk <- read_excel("Resources/Crosswalks/crosswalk.xlsx", sheet = "rename_variables") %>%
    pivot_longer(
