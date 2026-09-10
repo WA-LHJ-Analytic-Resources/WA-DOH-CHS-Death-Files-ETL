@@ -5,7 +5,7 @@ process_year <- function(file_year, cw = crosswalk, file_path) {
   # Identify renaming instructions for this specific file_year -----
 
   cw_year <- cw %>%
-    filter(year == file_year)
+    filter(file_year == file_year)
 
   # Identify source columns that are actually needed from this vintage ---- 
   source_vars <- cw_year %>% filter(!is.na(from_name)) %>% pull(from_name) %>% unique()

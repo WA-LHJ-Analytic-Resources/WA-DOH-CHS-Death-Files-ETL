@@ -26,11 +26,11 @@ harmonized_list <- list()
 var_rename_crosswalk <- read_excel("Resources/Crosswalks/crosswalk.xlsx", sheet = "rename_variables") %>%
    pivot_longer(
       cols = matches("^\\d{4}$"),     # matches columns named as "2010","2011",…
-      names_to = "year",
+      names_to = "file_year",
       values_to = "from_name"
     ) %>%
-    mutate(year = as.integer(year)) %>%
-    select(year, from_name, to_name, notes)
+    mutate(file_year = as.integer(file_year)) %>%
+    select(file_year, from_name, to_name, notes)
 
 
 for (file_yr in death_stat_files$file_year) {
