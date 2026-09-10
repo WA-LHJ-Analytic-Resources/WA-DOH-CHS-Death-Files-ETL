@@ -27,6 +27,7 @@ pacman::p_load(
   plotly,
   rads, 
   readr,
+  readxl,
   scales,
   tictoc,
   tidyverse,
