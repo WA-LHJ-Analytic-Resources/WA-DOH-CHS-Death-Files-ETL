@@ -51,7 +51,7 @@ for (file_yr in death_stat_files$file_year) {
 
   ### Step 3: Load in Data Vintage (Perform 1-Data Type & 2-Schema Harmonization)
   harmonized_list[[as.character(file_yr)]] <- process_year(
-    file_year = file_yr,
+    year = file_yr,
     cw = var_rename_crosswalk, 
     file_path = data_vintage$file_location
   ) %>%
@@ -71,8 +71,6 @@ for (file_yr in death_stat_files$file_year) {
 harmonized_data <- bind_rows(harmonized_list)
 
 tictoc::toc()
-
-
 
 # Clean up -----
 
