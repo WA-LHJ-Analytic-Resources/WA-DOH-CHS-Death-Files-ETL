@@ -1,76 +1,23 @@
 # crosswalk_review.R
 
-## Identify All Crosswalk Files ----
+# Missing Variables (via Variable Rename Crosswalk) -----
 
-# Step 1: Identify all files (recursively)
-all_files <- fs::dir_ls(
-  path = params$cw_folder,
-  recurse = TRUE,
-  type = "file"
-)
+## Load in Variable Rename Crosswalk
+var_rename_crosswalk <- read_excel("Resources/crosswalk.xlsx", sheet = "rename_variables") %>%
+  pivot_longer(
+      cols = matches("^\\d{4}$"),     # matches columns named as "2010","2011",…
+      names_to = "file_year",
+      values_to = "from_name"
+    ) %>%
+    mutate(file_year = as.integer(file_year)) %>%
+    select(file_year, from_name, to_name)
 
-## Step 2: Build the 'files' tibble
-cw_files <- tibble(
-  file_name = fs::path_file(all_files), # final path segment (filename)
-  file_location = all_files, # full path to the file
-  parent_dir = fs::path_file(fs::path_dir(all_files)) # just the parent directory name
-) %>%
-  ## Filter to only annual data vintage crosswalks
-  filter(str_detect(parent_dir, "[:digit:]{4}")) %>%
-  mutate(
-    rename_cw = ifelse(str_detect(file_name, "rename_variables"), TRUE, FALSE),
-    recode_cw = ifelse(str_detect(file_name, "recode_variables"), TRUE, FALSE)
-  )
+## Identify Missing Variables
+var_rename_crosswalk <- var_rename_crosswalk %>%
+  mutate(missing = is.na(from_name))
 
-## Load All Crosswalk Files -----
-
-## Step 3: Initiate Storage Lists
-rename_cw_list <- list()
-recode_cw_list <- list()
-
-for (file in 1:nrow(cw_files)) {
-  cw_file <- cw_files %>% slice(file)
-
-  message(glue("Processing {cw_file$file_name}"))
-
-  if (cw_file$rename_cw == TRUE) {
-    rename_cw_list[[cw_file$parent_dir]] <- readr::read_csv(
-      file = cw_file$file_location,
-      show_col_types = FALSE
-    )
-  }
-
-  if (cw_file$recode_cw == TRUE) {
-    recode_cw_list[[cw_file$parent_dir]] <- readr::read_csv(
-      file = cw_file$file_location,
-      show_col_types = FALSE
-    )
-  }
-}
-
-## Bind All Crosswalk Files Together -----
-
-all_rename_cw <- bind_rows(rename_cw_list, .id = "file_year")
-all_recode_cw <- bind_rows(recode_cw_list, .id = "file_year")
-
-## Export Multi-Year Missing/Review Flag Variables ----
-
-all_rename_cw %>%
-  writexl::write_xlsx(
-    .,
-    path = here(params$cw_folder, "all_rename_variables.xlsx")
-  )
-
-all_recode_cw %>%
-  writexl::write_xlsx(
-    .,
-    path = here(params$cw_folder, "all_recode_variables.xlsx")
-  )
-
-# Create High-Level Summaries -----
-
-## Create a Summary Data Frame where each row details the file_years where they underlying variable is missing
-all_rename_missing_summary <- all_rename_cw %>%
+## Create Missing Summary by Variable
+missing_variable_summary <- var_rename_crosswalk %>%
   filter(missing == TRUE) %>%
   arrange(to_name, file_year) %>%
   group_by(to_name) %>%
@@ -78,9 +25,25 @@ all_rename_missing_summary <- all_rename_cw %>%
   ungroup() %>%
   distinct(to_name, missing_years)
 
-all_rename_missing_summary %>%
-  writexl::write_xlsx(
-    .,
+
+# Flagged Recoing Variables (via Variable Recode Crosswalk) -----
+
+## Load in Variable Recode Crosswalk
+var_recode_crosswalk <- read_excel("Resources/crosswalk.xlsx", sheet = "recode_variables")
+
+## Create Missing Summary by Variable
+flagged_variable_recode_summary <-  var_recode_crosswalk %>%
+  filter(review_flag == TRUE) %>%
+  group_by(variable, from_code, to_code) %>%
+  mutate(applicable_years = paste0(file_year, collapse = ",")) %>%
+  ungroup() %>%
+  distinct(variable, from_code, from_label, to_code, to_label, applicable_years, review_decision)
+
+# Save Summaries -----
+
+## Missing Variables
+writexl::write_xlsx(
+    missing_variable_summary,
     path = here(
       "Resources",
       "Review",
@@ -88,35 +51,12 @@ all_rename_missing_summary %>%
     )
   )
 
-## Create a Summary Data Frame where each row details a variable recoding (where review_flag == TRUE), and the file_years where it applies.
-
-all_recode_review_summary <- all_recode_cw %>%
-  filter(review_flag == TRUE) %>%
-  arrange(variable, file_year) %>%
-  group_by(variable, from_code, to_code) %>%
-  mutate(applicable_years = paste0(file_year, collapse = ",")) %>%
-  ungroup() %>%
-  distinct(variable, from_code, from_label, to_code, to_label, applicable_years)
-
-all_recode_review_summary %>%
-  writexl::write_xlsx(
-    .,
+## Flagged Recoding
+writexl::write_xlsx(
+    flagged_variable_recode_summary,
     path = here(
       "Resources",
       "Review",
       "Flagged Variable Recoding Operations.xlsx"
     )
   )
-
-
-# Clean up -----
-rm(
-  rename_cw_list,
-  recode_cw_list,
-  all_rename_cw,
-  all_recode_cw,
-  all_files,
-  cw_files,
-  cw_file,
-  file
-)
