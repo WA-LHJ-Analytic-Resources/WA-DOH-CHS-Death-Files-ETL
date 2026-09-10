@@ -79,15 +79,13 @@ recode_variables <- function(
     # 2.4: Build a readable message of the pairs (from_code --> to_code) being recoded for each variable in the var_recode_cw
     if (verbose == TRUE) {
       pairs_txt <- lu_pairs %>%
-        dplyr::mutate(
-          from_code = as.character(.data$from_code),
-          to_code = as.character(.data$to_code)
-        ) %>%
-        dplyr::transmute(pair = glue::glue("{from_code} -> {to_code}")) %>%
-        dplyr::pull(pair) %>%
-        paste(collapse = "; ")
+          transmute(line = glue::glue("   - {from_code} → {to_code}")) %>%
+          pull(line) %>%
+          paste(collapse = "\n")
 
-      message(glue::glue("Recoding {var}: {pairs_txt}"))
+        message(glue::glue(
+          "Recoding variable '{var}' with {nrow(lu_pairs)} mappings:\n{pairs_txt}\n"
+        ))
     }
 
     # 2.5: Perform recoding of variable codes (using tidy-eval with join_by())
