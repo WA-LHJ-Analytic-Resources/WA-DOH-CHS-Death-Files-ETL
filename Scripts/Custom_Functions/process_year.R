@@ -14,7 +14,7 @@ process_year <- function(year, cw = var_rename_crosswalk, file_path) {
 
   df <- read_csv(
     file = file_path,
-    col_select = all_of(source_vars), # Only load source_vars
+    col_select = all_of(source_vars), # Only load source_vars. all_of() will throw an error if there's a mismatch (helpful for identifying potential bugs)
     col_types = cols(.default = col_character()), # force all vars to character
     show_col_types = FALSE   
   )
