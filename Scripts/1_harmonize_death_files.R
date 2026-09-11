@@ -6,9 +6,8 @@ death_files <- identify_death_files(folder = params$raw_data_folder)
 death_stat_files <- death_files %>%
   # Filter to Finalized Death Statistical Files
   filter(
-    file_type == "Stat",
-    file_ext == "csv", # avoid including .xlsx or other documents (PDFs)
-    file_status == "F" # Filter data vintages only (for now)
+    file_type == "Death Statistical",
+    file_status == "Final" # Filter data vintages only (for now)
   ) %>%
   # Add Vintage Label tag
   mutate(vintage_label = glue("{system}_{file_year}")) %>%
@@ -92,7 +91,7 @@ for (file_yr in death_stat_files$file_year) {
 }
 
 ## Step 7: Append all data vintages together
-harmonized_data <- bind_rows(harmonized_list, .id = "file_year")
+harmonized_data <- bind_rows(harmonized_list)
 
 tictoc::toc()
 

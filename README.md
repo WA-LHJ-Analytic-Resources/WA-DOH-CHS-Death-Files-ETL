@@ -3,7 +3,7 @@ WA LHJs are provided death certificate data by the WA DOH Center for Health Stat
 
 ## Author(s) & Contributor(s)
 - [Tyler Bonnell](mailto:Tyler.Bonnell@co.snohomish.wa.us) (Snohomish County Health Department - Informatics & Data Management Epidemiologist)
-- [Jacob Armitage](mailto:jacob.armitage@co.thurston.wa.us) (Thurston County Public Health & Social Services Deparmtent - Assessment & Evaluation Epidemiologist)
+- [Jacob Armitage](mailto:jacob.armitage@co.thurston.wa.us) (Thurston County Public Health & Social Services Department - Assessment & Evaluation Epidemiologist)
 - [Neil Panlasigui](mailto:neilp@co.skagit.wa.us) (Skagit County Public Health - Epidemiologist)
 
 ## Motivation
@@ -112,7 +112,6 @@ Custom R functions were developed to streamline and increase the legibility of t
 - `county_fips_to_literals()`: Translates FIPS code geography variables and translates to literal geographies. These translations are then used to backfill missing literal geography variable values.
 
 **3_clean_harmonized_data.R**
-- `unify_variables()`: Takes versions of similar variables (ex: `disposition_facility_code` - `disposition_facility_name`, and `funeral_home_code` and `funeral_home_name`) that are slightly different across annual data vintages, and combines them into a singular, standardized variable in `harmonized_data`.
 - `combine_code_columns()`: Takes the many code columns (ex: `record_axis_code_1` to `record_axis_code_20`) and combines them into a single code column as a concatenated string (to allow for easier data management).
 - `clean_date_variables()`: Takes the numerous date variables (stored as the character data type) and converts them to date data types. This function excepts dates formatted in many ways (see the `orders` parameter), and dates with improper formatting or unrealistic values are converted automatically to `NA`.
 - `clean_time_variables()`: Takes the numerous time variables (ex: time_of_death, time_of_death_hour, time_of_death_minute, time_of_injury, time_of_injury_hour, time_of_injury_minute) whose format and availability can vary year-to-year, and converts the values from character data type to time (lubridate hms) data type.
