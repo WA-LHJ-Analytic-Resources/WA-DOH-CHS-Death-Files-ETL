@@ -5,38 +5,45 @@ WA LHJs are provided death certificate data by the WA DOH Center for Health Stat
 - [Tyler Bonnell](mailto:Tyler.Bonnell@co.snohomish.wa.us) (Snohomish County Health Department - Informatics & Data Management Epidemiologist)
 - [Jacob Armitage](mailto:jacob.armitage@co.thurston.wa.us) (Thurston County Public Health & Social Services Deparmtent - Assessment & Evaluation Epidemiologist)
 - [Neil Panlasigui](mailto:neilp@co.skagit.wa.us) (Skagit County Public Health - Epidemiologist)
+- Danny Colombara (Public Health-Seattle King County)
+- Jeremy Whitehurst (Public Health-Seattle King County)
 
 ## Motivation
-WA DOH CHS provides two sets of death certificate data vintages which have distinct schemas and value-code sets, making it difficult to derive granular insights over extended time periods. This repository aims to address this problem by generating a data pipeline that integrates the various data vintages into a single harmonized data set.
+The Washington Department of Health (WA DOH) Center for Health Statistics (CHS) provides two sets of death certificate statistical files which have distinct schemas and value-code sets, making it difficult to derive granular insights over extended time periods. This repository aims to address this problem by harmonizing multiple annual data vintages into a single, multi year data set.
 
 | **Year(s)** | **Source**                                        | **Contact** | **Notes**                                                                                                                           |
 | ----------- | ------------------------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------- |
 | 1980-2015   | BEDROCK                                  | DOH         | Only 2010 to 2015 data vintages are available in Secure Access Washington                                                                                                                                    |
-| 2016+       | [Washington Health and Life Events System (WHALES)](https://doh.wa.gov/licenses-permits-and-certificates/vital-records/whales) | DOH         | Bedrock --> WHALES migration means that BEDROCK data vintages must have variable names and coded values converted to align with WHALES schema. |
+| 2016+       | [Washington Health and Life Events System (WHALES)](https://doh.wa.gov/licenses-permits-and-certificates/vital-records/whales) | DOH         | Bedrock to WHALES migration means that BEDROCK (2010-2015) data vintages must have variable names and coded values converted to align with WHALES (2016-Present) schema. |
 
-- **STAT** - This data contains nearly all of the demographic information about the decedent, dates, codes for causes of death, and other intent and mechanism information about the death. 
-- **GEO** - This data contains lattitude and longitude information that is then geocoded to blocks, school districts, zip codes, and other geographic identifiers.
-- **NAMES** - This data contains full names, SSNs, and full address of the decedent.
-- **LITERAL** - This data contains full text descriptions for causes of death.
+Currently, the multi-year data set (`harmonized_data`) focuses only on harmonizing multiple years of **finalized** death certificate **statistical** files. This code and workflow could be adapted to incorporate additional types of death certificate files as well as preliminary data if it would be valuable to end users. 
 
-Multiple versions of the data sets are sent throughout the year. There are preliminary and final versions of the data. Preliminary data will come in the form of quarterly (Q1, Q2, Q3, Q4) and then several less descriptive versions (Q5, Q6, P). Q5 and Q6 are typically not adding new rows but filling in or updating columns in already existing rows. P is usually the last preliminary and most complete file before the final file (F) is released.
-
-## Scope
-**This project currently focuses on harmonizing:**
-- The Death Statistical Files (**STAT**)
-- Annual finalized files (**F**)
-
-# Data Processing Workflow
+# Workflow - New Users
+This workflow details how users can leverage the pre-existing code to generate a new `harmonized_data` file for their teams. 
 
 ## Pre-Requisites
-1. **All raw WA DOH CHS Death Certificate data files be downloaded from Secure Access Washington and placed in a single folder location**. Preferrably, this folder location will only store death data files, and not include any documentation-related files. 
+1. **All raw WA DOH CHS Death Certificate statistical data files are downloaded from Secure Access Washington and placed in a single folder location**. Preferably, this folder location will only store death data files and not include any documentation-related files. 
 
 ## How to Run the Code
-1. Download all WA DOH CHS Death Certificate Statistical Files from Secure Access Washington.
-2. Run `Scripts/0_setup.R`. This script loads all packages and custom functions, defines workflow parameters, defines filepaths, and loads in code sets (ex: cemetery, country, facility, fips, and more).
-3. Run `Scripts/1_harmonize_death_files.R`. This script loads each data vintage, performs Data Type Harmonization (all variables as character data types), performs Schema Harmonization (all variables to standardized naming convention), and performs Value Harmonization (recodes data vintage variable values to a set of standardized code options). Lastly, it binds all data vintages together into a single, multiple year data set labelled `harmonized_data`.
-4. Run `Scripts/2_process_geography_variables.R` This unifies the disparate death, residence, and injury county and state code (WA code & FIPS code) variables across data vintages.
-5. Run `Scripts/3_clean_harmonized_data.R`. This unifies variables in `harmonized_data` (ex: some data vintage years only have `disposition_facility_codes`, some data vintage years only have `disposition_facility_names` --> align `disposition_facility` to a single varaible across all of the years), convert all variables to proper, finalized data types (ex: characters --> date, time, or factor variables), applies factor labels to all categorical values (optional) so values are easily understood, and performs joins to expand code sets (ex: cemetery, coutnry, facility, and more).
+0. Open the `.Renviron` file and specify:
+    - `RAW_DEATH_FILES_FOLDER` = Where your team stores WA DOH CHS Death Certificate Statistical Files
+    - `HARMONIZED_DEATH_FILE_FOLDER` = Where you want `harmonized_data` to be saved (can be the same as `RAW_DEATH_FILES_FOLDER`.)
+2. Run `Scripts/0_setup.R`. This script loads all packages and custom functions, defines workflow parameters, and loads critical crosswalks (`Resources/Crosswalks and Schemas`) and code sets (ex: cemetery, country, facility, fips, and more).
+3. Run `Scripts/1_harmonize_death_files.R`. This script loads each data vintage and performs the operations (specified below) before returning the single, multiple year data set: `harmonized_data`.
+    - **Data Type Harmonization** (all variables as character data types)
+    - **Schema Harmonization** (all variables to standardized naming convention)
+    - **Value Harmonization (recodes data vintage variable values to a set of standardized code options)**
+4. Run `Scripts/2_process_geography_variables.R` This script unifies the disparate death, residence, and injury county and state code variables used across data vintages (most notable being WA codes vs FIPS codes).
+5. Run `Scripts/3_clean_harmonized_data.R`. This script:
+    - Cleans all ICD-10 code variables
+    - Cleans all date and time variables
+    - Ensures all variables are converted to their final, desired data type (such as characters to factors with labels)
+    - String variables are set to title case
+    - `harmonized_data` saved as a [parquet](https://www.r-bloggers.com/2023/11/folks-cmon-use-parquet/) file (optimized for working with large dat asets).
+
+# Workflow - Admin
+This workflow details how repository administrators can adapt the code to accomodate new/future annual death statistical file vintages into `harmonized_data`.
+
 
 ### Workflow Diagram
 ![WA DOH CHS Death Files ETL Workflow Diagram](Resources/WA-DOH-CHS_Death-Files-ETL-Workflow-Diagram.png)
