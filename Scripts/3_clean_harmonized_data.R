@@ -43,14 +43,14 @@ harmonized_data <- harmonized_data %>%
 
 # Compare Harmonized Data to Final Schema -----
 
-## Implement Data Type Conversions
+## Convert all variables to proper data types
 harmonized_data <- clean_data_types(
   df = harmonized_data,
-  df_schema = schema_data_types
-) # If there's a mismatch in variables (df vs df_schema have more), a warning message will indicate what variables are differing (and their data types will remain the same)
+  df_schema = params$harmonized_data_schema
+) # If there's a mismatch in variables (in df vs df_schema), a warning message will indicate what variables are differing (and their data types will remain the same)
 
 ## Audit how data types were converted
-audits$data_type_conversions <- attr(harmonized_data, "schema_audit")
+audits$data_type_conversions <- attr(harmonized_data, "data_type_conversions")
 
 # (Optional) Apply Labels to Factor Variables ------
 if (params$apply_variable_labels == TRUE) {
