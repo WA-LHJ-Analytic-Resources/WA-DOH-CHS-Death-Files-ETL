@@ -18,14 +18,14 @@ The Washington Department of Health (WA DOH) Center for Health Statistics (CHS) 
 
 Currently, the multi-year data set (`harmonized_data`) focuses only on harmonizing multiple years of **finalized** death certificate **statistical** files. This code and workflow could be adapted to incorporate additional types of death certificate files as well as preliminary data if it would be valuable to end users. 
 
-# Workflow - New Users
-This workflow details how users can leverage the pre-existing code to generate a new `harmonized_data` file for their teams. 
+# Workflow
+This workflow details how users can leverage the pre-existing code to generate a new `harmonized_data` file for their teams. **Note:** Users will only need to run the code 1 time per data refresh cycle. At the end of this workflow, the multiple year harmonized data set (`harmonized_data`) will be available for use without re-running this code.
+
 
 ## Pre-Requisites
 1. **All raw WA DOH CHS Death Certificate statistical data files are downloaded from Secure Access Washington and placed in a single folder location**. Preferably, this folder location will only store death data files and not include any documentation-related files. 
 
 ## How to Run the Code
-**Note:** Users will only need to run the code 1 time per data refresh cycle. At the end of this workflow, the multiple year harmonized data set (`harmonized_data`) will be available for use without re-running this code.
 
 0. Open the `.Renviron` file and specify:
     - `RAW_DEATH_FILES_FOLDER` = Where your team stores WA DOH CHS Death Certificate Statistical Files
