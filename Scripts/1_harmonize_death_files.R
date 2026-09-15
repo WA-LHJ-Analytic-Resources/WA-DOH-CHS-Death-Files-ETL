@@ -23,22 +23,21 @@ tictoc::tic("Harmonize all death data vintages")
 harmonized_list <- list()
 
 ## Step 1: Load Variable Rename & Recode Crosswalks
-var_rename_crosswalk <- read_excel("Resources/Crosswalks and Schemas.xlsx", sheet = "rename_variables") %>%
-   pivot_longer(
-      cols = matches("^\\d{4}$"),     # matches columns named as "2010","2011",…
-      names_to = "file_year",
-      values_to = "from_name"
-    ) %>%
-    mutate(file_year = as.integer(file_year)) %>%
-    select(file_year, from_name, to_name, notes)
+var_rename_crosswalk <- params$variable_rename_cw %>%
+  pivot_longer(
+    cols = matches("^\\d{4}$"), # matches columns named as "2010","2011",…
+    names_to = "file_year",
+    values_to = "from_name"
+  ) %>%
+  mutate(file_year = as.integer(file_year)) %>%
+  select(file_year, from_name, to_name, notes)
 
-var_recode_crosswalk <- read_excel("Resources/Crosswalks and Schemas.xlsx", sheet = "recode_variables") %>%
+var_recode_crosswalk <- params$variable_recode_cw %>%
   select(file_year, variable, from_code, from_label, to_code, to_label)
 
 ## Step 2: Load, Rename, and Recode Each Data Vintage
 
 for (file_yr in death_stat_files$file_year) {
-
   tictoc::tic(glue("Processing the data vintage for {file_yr}"))
 
   ### Step 2a: Identify death statistical file vintage to be loaded
@@ -56,7 +55,7 @@ for (file_yr in death_stat_files$file_year) {
   ### Step 2c: Load in Data Vintage (Perform 1-Data Type & 2-Schema Harmonization)
   harmonized_list[[as.character(file_yr)]] <- process_year(
     year = file_yr,
-    cw = var_rename_crosswalk, 
+    cw = var_rename_crosswalk,
     file_path = data_vintage$file_location
   ) %>%
     bind_cols(provenance) %>%
@@ -68,11 +67,18 @@ for (file_yr in death_stat_files$file_year) {
       file_year,
       .before = everything()
     ) # Move these variables to the front.
-  
+
   ### Step 2d: Recode Variables
-  harmonized_list[[as.character(file_yr)]] <- harmonized_list[[as.character(file_yr)]] %>%
-    recode_variables(df = ., year = file_yr, cw = var_recode_crosswalk, verbose = FALSE) # Change verbose to TRUE (if you want to see variable recoding implemented per data vintage)
-  
+  harmonized_list[[as.character(file_yr)]] <- harmonized_list[[as.character(
+    file_yr
+  )]] %>%
+    recode_variables(
+      df = .,
+      year = file_yr,
+      cw = var_recode_crosswalk,
+      verbose = FALSE
+    ) # Change verbose to TRUE (if you want to see variable recoding implemented per data vintage)
+
   tictoc::toc()
 }
 
