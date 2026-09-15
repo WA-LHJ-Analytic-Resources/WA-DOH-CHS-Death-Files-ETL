@@ -66,14 +66,14 @@ apply_variable_labels <- function(df, df_schema) {
     audits[[var]] <- tibble::tibble(
       variable = var,
       ordered = any(dict_var$factor_is_ordered), # Will be TRUE/FALSE for a given factor variable being processed.
-      n = length(x_raw),
-      n_unmatched = sum(is.na(df[[var]])),
+      n = length(x_raw), # Number of Rows
+      n_unmatched = sum(is.na(df[[var]])), # Number of NA values in the factor values. If unmatched_values is blank then these are due to NA's.
       unmatched_values = paste(
         unknown,
         collapse = ", "
-      ),
-      levels_codes = paste(factor_values, collapse = " | "),
-      levels_labels = paste(factor_labels, collapse = " | ")
+      ), # Show examples of values in df that did not align with the factor values/labels. These would be NA in the factor version of the variable
+      levels_values = paste(factor_values, collapse = " | "), # Summarize all specified factor values
+      levels_labels = paste(factor_labels, collapse = " | ") # Summarize all specified factor labels
     )
   }
 
