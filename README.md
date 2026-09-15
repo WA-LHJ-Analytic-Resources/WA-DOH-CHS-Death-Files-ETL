@@ -25,6 +25,8 @@ This workflow details how users can leverage the pre-existing code to generate a
 1. **All raw WA DOH CHS Death Certificate statistical data files are downloaded from Secure Access Washington and placed in a single folder location**. Preferably, this folder location will only store death data files and not include any documentation-related files. 
 
 ## How to Run the Code
+**Note:** Users will only need to run the code 1 time per data refresh cycle. At the end of this workflow, the multiple year harmonized data set (`harmonized_data`) will be available for use without re-running this code.
+
 0. Open the `.Renviron` file and specify:
     - `RAW_DEATH_FILES_FOLDER` = Where your team stores WA DOH CHS Death Certificate Statistical Files
     - `HARMONIZED_DEATH_FILE_FOLDER` = Where you want `harmonized_data` to be saved (can be the same as `RAW_DEATH_FILES_FOLDER`.)
@@ -39,7 +41,19 @@ This workflow details how users can leverage the pre-existing code to generate a
     - Cleans all date and time variables
     - Ensures all variables are converted to their final, desired data type (such as characters to factors with labels)
     - String variables are set to title case
-    - `harmonized_data` saved as a [parquet](https://www.r-bloggers.com/2023/11/folks-cmon-use-parquet/) file (optimized for working with large dat asets).
+    - Save`harmonized_data`
+  
+## Workflow Diagram
+![](./Resources/WA-DOH-CHS-Death-Files-ETL-Workflow-Diagram.png)
+
+## How to Use the Harmonized Data Set
+The multiple year harmonized data set (`harmonized_data`) will be saved as a [parquet](https://www.r-bloggers.com/2023/11/folks-cmon-use-parquet/) file. Parquet is a file format that is optimized for working with large data sets (it is fast and has great file size compression) and collaborating across multiple environments. Here's how you can load a parquet file using R:
+
+```R
+# install.packages("arrow") # uncomment and install if you do not have the arrow package installed
+library(arrow)
+harmonized_data <- arrow::read_parquet("INSERT_FOLDER/harmonized_data.parquet")
+```
 
 ## Updating the Harmonized Data Set
 The admins of this repository  will seek to update this repository annual to ensure `harmonized_data` includes the most recently published annual death statistical files released. Instructions to add new data vintages or new variables to `harmonized_data` is available in the `README` excel sheet of `Resources/Crosswalks and Schemas.xlsx`
