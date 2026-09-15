@@ -68,7 +68,6 @@ params$harmonized_data_schema <- readxl::read_excel(
 ) %>%
   mutate(factor_order = as.integer(factor_order)) %>%
   select(
-    variable_id,
     variable,
     data_type,
     factor_is_ordered,
