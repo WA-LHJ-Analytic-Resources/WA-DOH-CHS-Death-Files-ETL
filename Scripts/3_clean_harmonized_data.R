@@ -26,20 +26,13 @@ harmonized_data <- harmonized_data %>%
 
 # Clean Date & Time Variables ------
 
-## Clean Date & Time Variables
-harmonized_data <- harmonized_data %>%
-  clean_date_variables(
-    df = .,
-    vars = c(
-      "date_harmonized",
-      "date_of_birth",
-      "date_of_death",
-      "date_of_injury",
-      "date_received",
-      "disposition_date"
-    )
-  ) %>%
-  clean_time_variables(df = .)
+## Clean Date Variables
+harmonized_data <- clean_date_variables(df = harmonized_data)
+audits$date_parse_errors <- attr(harmonized_data, "date_parsing_errors")
+
+## Clean Time Variables
+harmonized_data <- clean_time_variables(df = harmonized_data)
+audits$time_parse_errors <- attr(harmonized_data, "time_parsing_errors")
 
 # Convert Variables to Final Data Types (Specified by Harmonized Data Schema) -----
 

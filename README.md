@@ -3,7 +3,7 @@ WA local health jurisdictions (LHJs( are provided death certificate data by the 
 
 ## Author(s) & Contributor(s)
 - [Tyler Bonnell](mailto:Tyler.Bonnell@co.snohomish.wa.us) (Snohomish County Health Department - Informatics & Data Management Epidemiologist)
-- [Jacob Armitage](mailto:jacob.armitage@co.thurston.wa.us) (Thurston County Public Health & Social Services Deparmtent - Assessment & Evaluation Epidemiologist)
+- [Jacob Armitage](mailto:jacob.armitage@co.thurston.wa.us) (Thurston County Public Health & Social Services Department - Assessment & Evaluation Epidemiologist)
 - [Neil Panlasigui](mailto:neilp@co.skagit.wa.us) (Skagit County Public Health - Epidemiologist)
 - Danny Colombara (Public Health-Seattle King County)
 - Jeremy Whitehurst (Public Health-Seattle King County)
