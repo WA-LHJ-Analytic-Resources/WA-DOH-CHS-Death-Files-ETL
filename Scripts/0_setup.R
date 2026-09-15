@@ -65,7 +65,17 @@ params$variable_recode_cw <- readxl::read_excel(
 params$harmonized_data_schema <- readxl::read_excel(
   path = here::here("Resources", "Crosswalks and Schemas.xlsx"),
   sheet = "harmonized_data_schema"
-)
+) %>%
+  mutate(factor_order = as.integer(factor_order)) %>%
+  select(
+    variable_id,
+    variable,
+    data_type,
+    factor_is_ordered,
+    factor_value,
+    factor_label,
+    factor_order
+  )
 
 # Load Code Sets -----
 params$code_sets_folder <- here::here("Resources", "Code Sets")
