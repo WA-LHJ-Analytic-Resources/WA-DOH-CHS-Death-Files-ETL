@@ -1,6 +1,6 @@
 # 0_setup.R
 
-# Define Filepaths (.REnviron file) -----
+# Define Filepaths (.Renviron file) -----
 ## Resource URL: https://rstats.wtf/r-startup.html#renviron
 ## Note(s):
 # a) Add RAW_DEATH_FILES_FOLDER (the filepath where all raw WA DOH CHS Death files are stored after being downloaded from Secure Access Washington)
