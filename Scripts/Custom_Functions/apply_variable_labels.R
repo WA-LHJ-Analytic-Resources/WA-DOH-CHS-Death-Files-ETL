@@ -6,11 +6,6 @@
 #' @param df_schema A tibble with: variable_id, variable, data_type, factor_is_ordered, factor_value, factor_label, factor_order, notes
 #' @return df with factored/ordered columns; audit stored in attr(df, "factor_audit")
 
-df <- harmonized_data
-df_schema <- params$harmonized_data_schema
-# var = "armed_forces"
-# var <- "education"
-
 apply_variable_labels <- function(df, df_schema) {
   # Step 0: Initialize Audits list & Factor Variables (from df_schema)
   audits <- list()
