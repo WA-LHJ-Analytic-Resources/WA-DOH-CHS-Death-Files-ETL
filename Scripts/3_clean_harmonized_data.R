@@ -56,11 +56,11 @@ audits$data_type_conversions <- attr(harmonized_data, "data_type_conversions")
 if (params$apply_variable_labels == TRUE) {
   harmonized_data <- apply_variable_labels(
     df = harmonized_data,
-    dict_df = schema_factors
+    dict_df = params$harmonized_data_schema
   )
 
   ## Audit how the factor labels were applied
-  audits$factor_labels <- attr(harmonized_data, "factor_audit")
+  audits$factor_conversion <- attr(harmonized_data, "factor_audit")
 }
 
 # Adjust string variable case -----
