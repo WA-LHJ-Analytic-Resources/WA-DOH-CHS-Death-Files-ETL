@@ -2,12 +2,12 @@
 
 # Define Filepaths (.REnviron file) -----
 ## Resource URL: https://rstats.wtf/r-startup.html#renviron
-## Note(s): 
+## Note(s):
 # a) Add RAW_DEATH_FILES_FOLDER (the filepath where all raw WA DOH CHS Death files are stored after being downloaded from Secure Access Washington)
 # b) Add HARMONIZED_DEATH_FILE_FOLDER (The file path where the output harmonized death data file will be stored)
 # c) Restart the R session after creating .Renviron file for the first time.
 
-file.edit(".Renviron") 
+file.edit(".Renviron")
 
 # R Packages & Custom Functions -----
 
@@ -25,7 +25,7 @@ pacman::p_load(
   glue,
   here,
   plotly,
-  rads, 
+  rads,
   readr,
   readxl,
   scales,
@@ -52,11 +52,23 @@ params$output_folder <- Sys.getenv("HARMONIZED_DEATH_FILE_FOLDER") # Note: Shoul
 ## Add Variable Labels (Convert Coded Variables to Factors)
 params$apply_variable_labels <- TRUE
 
-## Define Crosswalk Filepaths
-params$cw_folder <- here::here("Resources", "Crosswalks")
-params$code_sets_folder <- here::here("Resources", "Code Sets")
+
+# Load Crosswalks & Harmonized Data Schema -----
+params$variable_rename_cw <- readxl::read_excel(
+  path = here::here("Resources", "Crosswalks and Schemas.xlsx"),
+  sheet = "rename_variables"
+)
+params$variable_recode_cw <- readxl::read_excel(
+  path = here::here("Resources", "Crosswalks and Schemas.xlsx"),
+  sheet = "recode_variables"
+)
+params$harmonized_data_schema <- readxl::read_excel(
+  path = here::here("Resources", "Crosswalks and Schemas.xlsx"),
+  sheet = "harmonized_data_schema"
+)
 
 # Load Code Sets -----
+params$code_sets_folder <- here::here("Resources", "Code Sets")
 
 # fmt: skip
 {
