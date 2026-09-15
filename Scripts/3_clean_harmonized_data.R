@@ -24,7 +24,7 @@ harmonized_data <- harmonized_data %>%
     remove_inputs = FALSE # TRUE = Removes all record_axis_code variables as they have all been condensed into all_cod_code
   )
 
-# Convert Harmonized Data to Final Data Types ------
+# Clean Date & Time Variables ------
 
 ## Clean Date & Time Variables
 harmonized_data <- harmonized_data %>%
