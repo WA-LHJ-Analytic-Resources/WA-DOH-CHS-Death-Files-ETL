@@ -16,7 +16,7 @@ clean_data_types <- function(
   ## Missing Variables Message
   if (length(df_missing_vars) > 0) {
     missing_vars_message <- paste(
-      "Missing variables in df:",
+      "The provided df has missing variables that were specified in the harmonized_data_schema:",
       paste(df_missing_vars, collapse = ", ")
     )
 
@@ -26,7 +26,7 @@ clean_data_types <- function(
   ## Missing Variables Message
   if (length(df_extra_vars) > 0) {
     extra_vars_message <- paste(
-      "Extra variables in df that are not specified in df_schema:",
+      "The provided df has extra variables that WERE NOT specified in the harmonized_data_schema:",
       paste(df_extra_vars, collapse = ", ")
     )
 
@@ -85,7 +85,7 @@ clean_data_types <- function(
     mutate(new_class = sapply(df, function(z) paste(class(z), collapse = "/")))
 
   ## Add schema_audit as an attribute to output
-  attr(df, "schema_audit") <- audit
+  attr(df, "data_type_conversions") <- audit
 
   # Step 5: Return df -----
   df
