@@ -11,9 +11,9 @@ WA LHJs are provided death certificate data by the WA DOH Center for Health Stat
 ## Motivation
 The Washington Department of Health (WA DOH) Center for Health Statistics (CHS) provides two sets of death certificate statistical files which have distinct schemas and value-code sets, making it difficult to derive granular insights over extended time periods. This repository aims to address this problem by harmonizing multiple annual data vintages into a single, multi year data set.
 
-| **Year(s)** | **Source**                                        | **Contact** | **Notes**                                                                                                                           |
-| ----------- | ------------------------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| 1980-2015   | BEDROCK                                  | DOH         | Only 2010 to 2015 data vintages are available in Secure Access Washington                                                                                                                                    |
+| **Year(s)** | **Source**                                        | **Notes**                                                                                                                           |
+| ----------- | ------------------------------------------------- |  ----------------------------------------------------------------------------------------------------------------------------------- |
+| 1980-2015   | BEDROCK                                  | Only 2010 to 2015 data vintages are available in Secure Access Washington                                                                                                                                    |
 | 2016+       | [Washington Health and Life Events System (WHALES)](https://doh.wa.gov/licenses-permits-and-certificates/vital-records/whales) | DOH         | Bedrock to WHALES migration means that BEDROCK (2010-2015) data vintages must have variable names and coded values converted to align with WHALES (2016-Present) schema. |
 
 Currently, the multi-year data set (`harmonized_data`) focuses only on harmonizing multiple years of **finalized** death certificate **statistical** files. This code and workflow could be adapted to incorporate additional types of death certificate files as well as preliminary data if it would be valuable to end users. 
