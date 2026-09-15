@@ -1,9 +1,9 @@
 # apply_variable_labels.R
 
-#' Apply factor/ordered levels & labels using a dictionary (no df_schema needed)
+#' Apply factor/ordered levels & labels using the harmonized_data_schema.
 #'
 #' @param df      A data.frame/tibble with data
-#' @param df_schema A tibble with: variable, level, label [, order] [, ordered]
+#' @param df_schema A tibble with: variable_id, variable, data_type, factor_is_ordered, factor_value, factor_label, factor_order, notes
 #' @return df with factored/ordered columns; audit stored in attr(df, "factor_audit")
 
 df <- harmonized_data
