@@ -56,7 +56,7 @@ audits$data_type_conversions <- attr(harmonized_data, "data_type_conversions")
 if (params$apply_variable_labels == TRUE) {
   harmonized_data <- apply_variable_labels(
     df = harmonized_data,
-    dict_df = params$harmonized_data_schema
+    df_schema = params$harmonized_data_schema
   )
 
   ## Audit how the factor labels were applied
@@ -158,7 +158,7 @@ rads::death_validate_data(harmonized_data, check_multicause = TRUE)
 
 # Save Clean Harmonized Data -----
 
-## Parquet File
+## Save Harmonized Data (as a .parquet file)
 arrow::write_parquet(
   harmonized_data,
   sink = here(
@@ -167,13 +167,14 @@ arrow::write_parquet(
   )
 )
 
-## Create & Write Data Dictionary - Harmonized Data
+## Create a Dictionary for the Harmonized Data
 data_dictionary <- create_data_dictionary(
   df = harmonized_data,
   vars_no_val = c("source_file"), # Dont show example values for these provided variable names.
   vars_no_val_limit = 30 # Only show example values for variables with <= 30 distinct values (avoids unique IDs/high cardinal vars)
 )
 
+## Save the Harmonized Data Dictionary
 writexl::write_xlsx(
   x = data_dictionary,
   path = here::here(
