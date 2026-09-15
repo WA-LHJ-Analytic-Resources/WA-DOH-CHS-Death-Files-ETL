@@ -41,9 +41,7 @@ harmonized_data <- harmonized_data %>%
   ) %>%
   clean_time_variables(df = .)
 
-## Load in Final Harmonized Data Schema
-schema_data_types <- read_excel("Resources/Crosswalks and Schemas.xlsx", sheet = "schema_data_types") %>%
-  select(-notes)
+# Compare Harmonized Data to Final Schema -----
 
 ## Implement Data Type Conversions
 harmonized_data <- clean_data_types(
@@ -57,7 +55,10 @@ audits$data_type_conversions <- attr(harmonized_data, "schema_audit")
 # (Optional) Apply Labels to Factor Variables ------
 if (params$apply_variable_labels == TRUE) {
   ## Load in DF Factor Schema
-  schema_factors <- read_excel("Resources/Crosswalks and Schemas.xlsx", sheet = "schema_factors") %>%
+  schema_factors <- read_excel(
+    "Resources/Crosswalks and Schemas.xlsx",
+    sheet = "schema_factors"
+  ) %>%
     select(-notes) %>%
     mutate(order = as.integer(order)) %>%
     select(variable, level, label, order, ordered, data_type)
