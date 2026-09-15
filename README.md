@@ -1,5 +1,5 @@
 # Overview
-WA LHJs are provided death certificate data by the WA DOH Center for Health Statistics (CHS) in the Secure Access Washington platform. This repository covers the preparation and use of person level microdata which can be used for in-depth population health analyses from 2010 to present.
+WA local health jurisdictions (LHJs( are provided death certificate data by the WA DOH Center for Health Statistics (CHS) in the Secure Access Washington platform. This repository covers the preparation and use of person level microdata which can be used for in-depth population health analyses from 2010 to present.
 
 ## Author(s) & Contributor(s)
 - [Tyler Bonnell](mailto:Tyler.Bonnell@co.snohomish.wa.us) (Snohomish County Health Department - Informatics & Data Management Epidemiologist)
@@ -41,5 +41,5 @@ This workflow details how users can leverage the pre-existing code to generate a
     - String variables are set to title case
     - `harmonized_data` saved as a [parquet](https://www.r-bloggers.com/2023/11/folks-cmon-use-parquet/) file (optimized for working with large dat asets).
 
-# Workflow - Admin
-This workflow details how repository administrators can adapt the code to accomodate new/future annual death statistical file vintages into `harmonized_data`.
+## Updating the Harmonized Data Set
+The admins of this repository  will seek to update this repository annual to ensure `harmonized_data` includes the most recently published annual death statistical files released. Instructions to add new data vintages or new variables to `harmonized_data` is available in the `README` excel sheet of `Resources/Crosswalks and Schemas.xlsx`
