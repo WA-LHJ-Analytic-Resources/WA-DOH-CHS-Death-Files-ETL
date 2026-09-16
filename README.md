@@ -25,7 +25,9 @@ This workflow details how users can leverage the pre-existing code to generate a
 
 
 ## Pre-Requisites
-1. **All raw WA DOH CHS Death Certificate statistical data files are downloaded from Secure Access Washington and placed in a single folder location**. Preferably, this folder location will only store death data files and not include any documentation-related files. 
+1. Download and store all raw annual WA DOH CHS death certificate files in a single folder location.
+- **Note:** Be sure to download the `.csv` version of the files, as this workflow is NOT designed to process `.xlsx` files. It is ok if you download both the `.csv` and `.xlsx` version of the same annual file (as it will only pick up the `.csv` version).
+
 
 ## How to Run the Code
 
