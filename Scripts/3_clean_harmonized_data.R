@@ -161,10 +161,11 @@ arrow::write_parquet(
 )
 
 ## Create a Dictionary for the Harmonized Data
-data_dictionary <- create_data_dictionary(
-  df = harmonized_data,
-  vars_no_val = c("source_file"), # Dont show example values for these provided variable names.
-  vars_no_val_limit = 30 # Only show example values for variables with <= 30 distinct values (avoids unique IDs/high cardinal vars)
+data_dictionary <- rads::create_dictionary(
+  ph.data = harmonized_data,
+  source = "harmonized_data",
+  max_unique_values = 30,
+  truncation_threshold = 15
 )
 
 ## Save the Harmonized Data Dictionary
