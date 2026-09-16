@@ -26,7 +26,7 @@ This workflow details how users can leverage the pre-existing code to generate a
 
 ## Pre-Requisites
 1. Download and store all raw annual WA DOH CHS death certificate files in a single folder location.
-- **Note:** Be sure to download the `.csv` version of the files, as this workflow is NOT designed to process `.xlsx` files. It is ok if you download both the `.csv` and `.xlsx` version of the same annual file (as it will only pick up the `.csv` version).
+    - **Note:** Be sure to download the `.csv` version of the files, as this workflow is NOT designed to process `.xlsx` files. It is ok if you download both the `.csv` and `.xlsx` version of the same annual file (as it will only pick up the `.csv` version).
 
 
 ## How to Run the Code
