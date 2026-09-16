@@ -43,8 +43,7 @@ flagged_variable_recode_summary <- var_recode_crosswalk %>%
     from_label,
     to_code,
     to_label,
-    applicable_years,
-    review_decision
+    applicable_years
   )
 
 # Save Summaries -----
