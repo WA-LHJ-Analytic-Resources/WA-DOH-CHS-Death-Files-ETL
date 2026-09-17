@@ -71,11 +71,17 @@ harmonized_data <- harmonized_data %>%
   )) %>%
   ## Convert Unknown Placeholder Values to NA (Note: This may not capture all placeholder values, but aiming to convert the most frequently occurring ones)
   mutate(
-    industry = case_when(
-      industry %in% c("-", "--", "---", ".") ~ NA,
-      str_detect(industry, "Not Applicable") ~ NA,
-      str_detect(industry, "Unknown") ~ NA,
-      TRUE ~ industry # If value does not meet above logic, keep as is
+    across(
+      .cols = c(industry, occupation),
+      .fns = ~ case_when(
+        .x %in% c("-", "--", "---", "------", ".", "?") ~ NA_character_,
+        str_detect(
+          .x,
+          regex("Not Applicable", ignore_case = TRUE)
+        ) ~ NA_character_,
+        str_detect(.x, regex("Unknown", ignore_case = TRUE)) ~ NA_character_,
+        TRUE ~ .x
+      )
     ),
     injury_place = case_when(
       injury_place %in% c("-", "?") ~ NA,
@@ -83,7 +89,8 @@ harmonized_data <- harmonized_data %>%
       TRUE ~ injury_place
     ),
     residence_length = if_else(residence_length == "999", NA, residence_length), # Could be possible based on residence_length_type but unlikely
-    age = if_else(age_type == "Unknown" & age == 999, NA, age)
+    age = if_else(age_type == "Unknown" & age == 999, NA, age),
+    age_years = if_else(age_years > 120, NA, age_years) # Convert age_years over 120 to NA
   )
 
 # Reorder Harmonized Data Variables -----
