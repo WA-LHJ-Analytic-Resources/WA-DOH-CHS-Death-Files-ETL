@@ -56,13 +56,35 @@ if (params$apply_variable_labels == TRUE) {
   audits$factor_conversion <- attr(harmonized_data, "factor_audit")
 }
 
-# Adjust string variable case -----
+# Final Cleaning of Variables (Predominantly Strings) -----
 
 harmonized_data <- harmonized_data %>%
+  ## Convert All Caps to Title Case
   mutate(across(
     .cols = c(occupation, industry, informant_relationship),
     .fns = ~ str_to_title(.x)
-  )) # All caps to Title Case
+  )) %>%
+  ## Ensure Zip Codes follow 5-digit formatting
+  mutate(across(
+    .cols = c(death_zip_code, injury_zip_code, residence_zip_code),
+    .fns = ~ ifelse(stringr::str_detect(.x, "^[0-9]{5}$"), .x, NA) # if ZIP is not following 5 digit format, convert to NA
+  )) %>%
+  ## Convert Unknown Placeholder Values to NA (Note: This may not capture all placeholder values, but aiming to convert the most frequently occurring ones)
+  mutate(
+    industry = case_when(
+      industry %in% c("-", "--", "---", ".") ~ NA,
+      str_detect(industry, "Not Applicable") ~ NA,
+      str_detect(industry, "Unknown") ~ NA,
+      TRUE ~ industry # If value does not meet above logic, keep as is
+    ),
+    injury_place = case_when(
+      injury_place %in% c("-", "?") ~ NA,
+      injury_place %in% c("NONE", "UNKNOWN", "NOT APPLICABLE") ~ NA,
+      TRUE ~ injury_place
+    ),
+    residence_length = ifelse(residence_length == "999", NA, residence_length), # Could be possible based on residence_length_type but unlikely
+    age = ifelse(age_type == "Unknown" & age == 999, NA, age)
+  )
 
 # Reorder Harmonized Data Variables -----
 
