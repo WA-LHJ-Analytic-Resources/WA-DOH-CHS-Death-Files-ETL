@@ -57,7 +57,26 @@ clean_date_variables <- function(
       )
     )
 
-  # Step 3: Implement Variable-specific Logic Checks
+  # Step 3: Generate Parsing Error Report
+  parsing_error_examples <- purrr::map_dfr(
+    vars,
+    function(v) {
+      parsed_v <- paste0(v, "_parsed") # Parsed variable names
+
+      df %>%
+        filter(!is.na(.data[[v]]) & is.na(.data[[parsed_v]])) %>% # Filter to mismatches between original (non-NA) and parsed values (NA)
+        distinct(.data[[v]], .keep_all = TRUE) %>% # Filter to distinct original values (avoid duplicative examples of parsing errors)
+        transmute(
+          state_file_number,
+          file_year,
+          variable = v,
+          original_value = .data[[v]],
+          parsed_value = .data[[parsed_v]]
+        ) # Only returns the variables pre-specified here.
+    }
+  )
+
+  # Step 4: Implement Variable-specific Logic Checks (these won't be captured in parsing_error_examples)
   df <- df %>%
     # Establish file_year date range (temporary calculated columns)
     mutate(
@@ -127,25 +146,6 @@ clean_date_variables <- function(
     ) %>%
     # Remove Calculation Columns
     select(-age_calculated, -file_year_start, -file_year_end)
-
-  # Step 4: Generate Parsing Error Report
-  parsing_error_examples <- purrr::map_dfr(
-    vars,
-    function(v) {
-      parsed_v <- paste0(v, "_parsed") # Parsed variable names
-
-      df %>%
-        filter(!is.na(.data[[v]]) & is.na(.data[[parsed_v]])) %>% # Filter to mismatches between original (non-NA) and parsed values (NA)
-        distinct(.data[[v]], .keep_all = TRUE) %>% # Filter to distinct original values (avoid duplicative examples of parsing errors)
-        transmute(
-          state_file_number,
-          file_year,
-          variable = v,
-          original_value = .data[[v]],
-          parsed_value = .data[[parsed_v]]
-        ) # Only returns the variables pre-specified here.
-    }
-  )
 
   # Step 5: Drop Raw Date Variables, Rename Parsed Variables (to Raw Date Variable Names)
   df <- df %>%
