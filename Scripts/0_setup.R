@@ -54,16 +54,22 @@ params$apply_variable_labels <- TRUE
 
 
 # Load Crosswalks & Harmonized Data Schema -----
+params$crosswalk_filepath <- here::here(
+  "Resources",
+  "Admin",
+  "Crosswalks and Schemas.xlsx"
+)
+
 params$variable_rename_cw <- readxl::read_excel(
-  path = here::here("Resources", "Crosswalks and Schemas.xlsx"),
+  path = params$crosswalk_filepath,
   sheet = "rename_variables"
 )
 params$variable_recode_cw <- readxl::read_excel(
-  path = here::here("Resources", "Crosswalks and Schemas.xlsx"),
+  path = params$crosswalk_filepath,
   sheet = "recode_variables"
 )
 params$harmonized_data_schema <- readxl::read_excel(
-  path = here::here("Resources", "Crosswalks and Schemas.xlsx"),
+  path = params$crosswalk_filepath,
   sheet = "harmonized_data_schema"
 ) %>%
   mutate(factor_order = as.integer(factor_order)) %>%
