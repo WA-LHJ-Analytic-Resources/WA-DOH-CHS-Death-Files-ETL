@@ -67,7 +67,7 @@ harmonized_data <- harmonized_data %>%
   ## Ensure Zip Codes follow 5-digit formatting
   mutate(across(
     .cols = c(death_zip_code, injury_zip_code, residence_zip_code),
-    .fns = ~ ifelse(stringr::str_detect(.x, "^[0-9]{5}$"), .x, NA) # if ZIP is not following 5 digit format, convert to NA
+    .fns = ~ if_else(str_detect(.x, "^[0-9]{5}$"), .x, NA) # if ZIP is not following 5 digit format, convert to NA
   )) %>%
   ## Convert Unknown Placeholder Values to NA (Note: This may not capture all placeholder values, but aiming to convert the most frequently occurring ones)
   mutate(
@@ -82,8 +82,8 @@ harmonized_data <- harmonized_data %>%
       injury_place %in% c("NONE", "UNKNOWN", "NOT APPLICABLE") ~ NA,
       TRUE ~ injury_place
     ),
-    residence_length = ifelse(residence_length == "999", NA, residence_length), # Could be possible based on residence_length_type but unlikely
-    age = ifelse(age_type == "Unknown" & age == 999, NA, age)
+    residence_length = if_else(residence_length == "999", NA, residence_length), # Could be possible based on residence_length_type but unlikely
+    age = if_else(age_type == "Unknown" & age == 999, NA, age)
   )
 
 # Reorder Harmonized Data Variables -----
