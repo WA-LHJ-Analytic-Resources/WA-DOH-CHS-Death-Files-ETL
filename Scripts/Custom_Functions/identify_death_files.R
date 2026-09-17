@@ -1,4 +1,68 @@
-# identify_death_files.R
+#' Identify Washington State Death Certificate Files In A Folder
+#'
+#' This function scans a folder containing WA Department of Health death
+#' certificate data files, identifies all file types (Statistical, Literals,
+#' Names, Geographic), normalizes known naming issues, extracts metadata (year,
+#' status, system version), and performs quality checks to ensure required
+#' `.csv` files exist for all available death data vintages (this data pipeline only works with .csv files).
+#'
+#' A tibble describing all detected files is returned. If any data vintages are
+#' missing `.csv` files, the function stops with a detailed error message.
+#'
+#' @param folder Character path to the folder containing death certificate
+#'   files. This should typically correspond to your project's raw data folder.
+#' @param death_file_type Character string specifying which type of death files
+#'   to return. Options include:
+#'   \itemize{
+#'     \item `"Death Statistical"` (default)
+#'     \item `"Death Names"`
+#'     \item `"Cause of Death Literals"`
+#'     \item `"Death Geographic"`
+#'   }
+#'
+#' @return
+#' A tibble containing metadata for all files matching the requested
+#' `death_file_type`, with columns:
+#' \describe{
+#'   \item{file_type}{Identified category of death file.}
+#'   \item{file_name}{File name without extension.}
+#'   \item{file_ext}{File extension (`csv`, `xlsx`, etc.).}
+#'   \item{file_year}{Extracted 4‑digit year within the file name.}
+#'   \item{system}{`"BEDROCK"` for years ≤ 2015, otherwise `"WHALES"`.}
+#'   \item{file_status}{`"Final"` or `"Preliminary"` based on file name prefix.}
+#'   \item{file_location}{Full file path.}
+#'   \item{file_modified_date_time}{Last modified datetime.}
+#' }
+#'
+#' @details
+#' The function performs the following operations:
+#'
+#' \enumerate{
+#'   \item Fix the known 2012 naming issue (`DeathStat2012.csv` → `DeathStatF2012.csv`)
+#'         introduced by WA DOH.
+#'
+#'   \item List files in the folder (non-recursive), extract file names,
+#'         extensions, and classify each file type using patterns such as
+#'         `"Lit"`, `"Names"`, `"Stat"`.
+#'
+#'   \item Filter to the requested `death_file_type` (default = Statistical).
+#'
+#'   \item Extract the file year using a 4‑digit pattern (`"20[0-9]{2}"`).
+#'
+#'   \item Infer the file status:
+#'         \itemize{
+#'           \item `"Final"` if file name stem begins with `"F"`
+#'           \item otherwise `"Preliminary"`
+#'         }
+#'
+#'   \item Determine system source (`BEDROCK` ≤ 2015, `WHALES` > 2015).
+#'
+#'   \item Ensure each data vintage includes a `.csv` version. If any vintages
+#'         are missing `.csv` files, the function throws a detailed `stop()`
+#'         message including a bullet list of missing years.
+#' }
+#'
+#' @export
 
 identify_death_files <- function(
   folder,
@@ -51,14 +115,14 @@ identify_death_files <- function(
         file_name_no_ext,
         pattern = "DeathLit|DeathNames|DeathStat"
       ),
-      file_status = ifelse(
+      file_status = if_else(
         str_detect(file_name_no_ext_stem, "^F"),
         "Final",
         "Preliminary"
       ),
     ) %>%
     # Add WA DOH System Tag
-    mutate(system = ifelse(file_year <= 2015, "BEDROCK", 'WHALES')) %>%
+    mutate(system = if_else(file_year <= 2015, "BEDROCK", 'WHALES')) %>%
     # Subset & Order Variables
     select(
       file_type,
