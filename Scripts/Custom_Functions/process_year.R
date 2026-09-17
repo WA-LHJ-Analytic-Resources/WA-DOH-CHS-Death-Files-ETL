@@ -1,14 +1,16 @@
 # process_year.R
 
 process_year <- function(year, cw, file_path) {
-
   # Identify renaming instructions for this specific file_year -----
 
   cw_year <- cw %>%
     filter(file_year == year)
 
-  # Identify source columns that are actually needed from this vintage ---- 
-  source_vars <- cw_year %>% filter(!is.na(from_name)) %>% pull(from_name) %>% unique()
+  # Identify source columns that are actually needed from this vintage ----
+  source_vars <- cw_year %>%
+    filter(!is.na(from_name)) %>%
+    pull(from_name) %>%
+    unique()
 
   # Read the CSV for this year; set all columns as character -----
 
@@ -16,17 +18,24 @@ process_year <- function(year, cw, file_path) {
     file = file_path,
     col_select = all_of(source_vars), # Only load source_vars. all_of() will throw an error if there's a mismatch (helpful for identifying potential bugs)
     col_types = cols(.default = col_character()), # force all vars to character
-    show_col_types = FALSE   
+    show_col_types = FALSE
   )
 
   # Normalize missing values & trim whitespace -----
 
   df <- df %>%
-    mutate(across(everything(), ~stringi::stri_enc_toutf8(.x))) %>%
-    mutate(across(everything(), ~stringi::stri_replace_all_regex(.x, pattern = "[\\p{C}]", replacement = ""))) %>% # Removes control characters and invalid (per UTF-8 string encoding) bytes
-    mutate(across(everything(), ~na_if(.x, ""))) %>%   # convert "" to NA
-    mutate(across(everything(), ~na_if(.x, "NA"))) %>% # convert "NA" to NA
-    mutate(across(everything(), ~str_trim(.x, side = "both")))
+    mutate(across(everything(), ~ stringi::stri_enc_toutf8(.x))) %>%
+    mutate(across(
+      everything(),
+      ~ stringi::stri_replace_all_regex(
+        .x,
+        pattern = "[\\p{C}]",
+        replacement = ""
+      )
+    )) %>% # Removes control characters and invalid (per UTF-8 string encoding) bytes
+    mutate(across(everything(), ~ na_if(.x, ""))) %>% # convert "" to NA
+    mutate(across(everything(), ~ na_if(.x, "NA"))) %>% # convert "NA" to NA
+    mutate(across(everything(), ~ str_trim(.x, side = "both")))
 
   # Apply renaming logic -----
 
@@ -54,11 +63,11 @@ process_year <- function(year, cw, file_path) {
   }
 
   # Ensure data contain exactly the final schema columns (Useful for harmonization across vintages) -----
-
   final_schema <- cw %>% pull(to_name) %>% unique()
 
   df <- df %>%
-    select(all_of(final_schema))   # Subset & reorder to only the to_name (final target schema) variables specified in the cw.
+    select(all_of(final_schema)) # Subset & reorder to only the to_name (final target schema) variables specified in the cw.
 
+  # Return processed data vintage file -----
   return(df)
 }
