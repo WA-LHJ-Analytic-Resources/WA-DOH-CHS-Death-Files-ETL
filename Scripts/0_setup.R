@@ -25,6 +25,7 @@ pacman::p_load(
   glue,
   here,
   plotly,
+  purrr,
   rads,
   readr,
   readxl,
