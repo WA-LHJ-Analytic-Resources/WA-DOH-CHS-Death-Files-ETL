@@ -173,6 +173,6 @@ writexl::write_xlsx(
   x = data_dictionary,
   path = here::here(
     "Resources",
-    "Data Dictionary - Harmonized Data.xlsx"
+    "Data Dictionary.xlsx"
   )
 )
