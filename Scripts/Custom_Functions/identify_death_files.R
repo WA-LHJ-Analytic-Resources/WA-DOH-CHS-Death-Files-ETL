@@ -1,6 +1,9 @@
 # identify_death_files.R
 
-identify_death_files <- function(folder, data_only = TRUE) {
+identify_death_files <- function(
+  folder,
+  death_file_type = "Death Statistical"
+) {
   # Step 0: Fix 2012 Death Statistical File Naming Convention
   if (file_exists(here::here(folder, "DeathStat2012.csv"))) {
     fs::file_move(
@@ -33,15 +36,9 @@ identify_death_files <- function(folder, data_only = TRUE) {
       file_ext = path_ext(file_name)
     )
 
-  # (Optional) Step 3: Remove Documentation-related files
-  if (data_only == TRUE) {
-    files <- files %>%
-      filter(file_ext %in% c("csv", "xlsx")) %>% # Add more death data file formats here (if there are more in the future)
-      # Remove Death Statistical Data Dictionary
-      filter(
-        !str_detect(file_name, "Death Statistical Dictionary and Crosswalk")
-      )
-  }
+  # Step 3: Subset to Specific Type of Death Files (default = Death Statistical)
+  files <- files %>%
+    filter(file_type == death_file_type)
 
   # Step 4: Add File Year & File Status to "files" tibble
   files <- files %>%
@@ -76,71 +73,31 @@ identify_death_files <- function(folder, data_only = TRUE) {
     # Arrange by File Type & File Year
     arrange(file_type, file_year)
 
-  ## Step 5: Logic Check - Ensure 1 File Per Year
-  tryCatch(
-    expr = {
-      ### Identify potential errors (multiple files per data vintage)
-      multiple_files_per_year <- files %>%
-        count(file_type, file_year) %>%
-        filter(n > 1)
+  ## Step 5 (Error Check): Identify if any Data Vintages do not have a .csv version in the data folder
+  years_missing_csv <- files %>%
+    group_by(file_type, file_year) %>%
+    summarise(has_csv = any(file_ext == "csv"), .groups = "drop") %>%
+    filter(has_csv == FALSE)
 
-      if (nrow(multiple_files_per_year) > 0) {
-        ### Extract the problematic files
-        bad_files <- files %>%
-          semi_join(
-            multiple_files_per_year,
-            by = c("file_type", "file_year")
-          ) %>%
-          group_by(file_type, file_year) %>%
-          mutate(
-            # Rule 1: If both Preliminary and Final exist:
-            has_prelim = any(file_status == "Preliminary"),
-            has_final = any(file_status == "Final"),
+  if (nrow(years_missing_csv) > 0) {
+    # Create a bulleted list of missing vintages
+    missing_msg <- years_missing_csv %>%
+      mutate(
+        combo = glue("- {file_type} ({file_year})")
+      ) %>%
+      pull(combo) %>%
+      glue::glue_collapse(sep = "\n")
 
-            remove = case_when(
-              # Rule 1: Remove Preliminary when Final exists
-              has_prelim & has_final & file_status == "Preliminary" ~ TRUE,
-
-              # Rule 2: Multiple Preliminary files, remove older ones
-              has_prelim & !has_final & file_status == "Preliminary" ~
-                file_modified_date_time != max(file_modified_date_time),
-
-              # Otherwise: keep
-              TRUE ~ FALSE
-            )
-          ) %>%
-          ungroup() %>%
-          select(
-            file_year,
-            file_status,
-            file_location,
-            file_modified_date_time,
-            remove
-          )
-
-        ### Create a clean, printable tibble for error message
-        tibble_error_string <- paste(
-          capture.output(print(bad_files)),
-          collapse = "\n"
-        )
-
-        stop(
-          paste(
-            "More than 1 file found per data vintage. See 'remove' column for recommendation(s) on files to remove.",
-            tibble_error_string
-          ),
-          call. = FALSE
-        )
-      }
-
-      # Normal return from your function goes here
-    },
-
-    error = function(e) {
-      message("Error: ", e$message)
-      NA
-    }
-  )
+    stop(
+      glue::glue(
+        "The harmonization workflow requires .csv files (it is not designed for processing .xlsx files).\n\n",
+        "The following data vintages in your data folder currently do NOT have .csv versions:\n",
+        "{missing_msg}\n\n",
+        "Please download the .csv versions from Secure Access Washington and add them to: {params$raw_data_folder}"
+      ),
+      call. = FALSE
+    )
+  }
 
   # Step 6: Return files tibble
   return(files)
