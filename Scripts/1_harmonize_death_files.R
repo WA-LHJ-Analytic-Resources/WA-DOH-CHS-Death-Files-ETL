@@ -1,12 +1,12 @@
 # 1_harmonize_death_files
 
 # Identify All Death Statistical File Vintages -----
-death_files <- identify_death_files(folder = params$raw_data_folder)
-
-death_stat_files <- death_files %>%
+death_stat_files <- identify_death_files(
+  folder = params$raw_data_folder,
+  death_file_type = "Death Statistical"
+) %>%
   # Filter to Finalized Death Statistical Files
   filter(
-    file_type == "Death Statistical",
     file_ext == "csv", # Only use .csv files (sometimes there are duplicates data vintages for a single year that are .xlsx and .csv)
     file_status == "Final" # Filter data vintages only (for now)
   ) %>%
