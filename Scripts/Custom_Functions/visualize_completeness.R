@@ -1,4 +1,56 @@
-# visualize_completeness.R
+#' Visualize Variable Completeness Across Years Using a Heatmap
+#'
+#' This function calculates the percent completeness of all variables in a
+#' dataset by year, applies optional completeness filtering, and visualizes the
+#' results using a ggplot2 heatmap. Optionally, the heatmap can be converted
+#' into an interactive Plotly widget for improved exploration.
+#'
+#' This tool is intended for auditing harmonized mortality datasets, allowing
+#' analysts to quickly identify variables that have low or inconsistent
+#' completeness trends across file years.
+#'
+#' @param df A data frame containing harmonized data, with one row per record
+#'   and a required `file_year` variable. All other variables are included in
+#'   completeness scoring.
+#' @param completeness_threshold Numeric between `0` and `1` specifying a lower
+#'   bound for completeness. Any variable whose completeness meets or exceeds
+#'   this threshold **for all years** is excluded from the visualization to
+#'   focus attention on low‑ or variable‑completeness fields. Defaults to `1`
+#'   (retain only variables with less than perfect completeness).
+#' @param plotly Logical; if `TRUE`, returns an interactive Plotly heatmap via
+#'   `plotly::ggplotly()`. If `FALSE`, returns a static ggplot2 object.
+#'
+#' @return
+#' A heatmap (`ggplot` or `plotly` object) showing percent completeness of each
+#' variable by `file_year`. Important attributes of the output include:
+#'
+#' * Variables are ordered logically (particularly `record_axis_code_*` fields).
+#' * Variables exceeding the completeness threshold across all years are removed.
+#' * Hover text includes variable name, year, and percent complete.
+#'
+#' @details
+#' ## Completeness calculation
+#' Completeness is defined as:
+#'
+#' * `pct_complete = mean(!is.na(x))`
+#'
+#' Because logical `TRUE == 1` and `FALSE == 0`, the mean gives percent
+#' completeness automatically.
+#'
+#' ## Variable filtering
+#' A helper function identifies variables whose completeness meets or exceeds a
+#' user-defined threshold for **all** years. These high-completeness variables
+#' are removed to emphasize incompleteness patterns.
+#'
+#' All `record_axis_code_*` fields are always retained.
+#'
+#' ## Heatmap structure
+#' The visualization uses:
+#' * `geom_tile()` for the heatmap
+#' * `scale_fill_viridis_c()` for perceptually uniform color mapping
+#' * Hover labels (when `plotly = TRUE`)
+#'
+#' @export
 
 visualize_completeness <- function(
   df,
@@ -81,7 +133,7 @@ visualize_completeness <- function(
     var_completeness_by_year_final %>%
       mutate(
         variable = factor(variable, levels = rev(sort(unique(variable)))),
-        pct_label = percent(pct_complete, accuracy = 0.1) # 0.711111 → "71.1%"
+        pct_label = scales::percent(pct_complete, accuracy = 0.1) # 0.711111 → "71.1%"
       ),
     aes(
       x = file_year,
