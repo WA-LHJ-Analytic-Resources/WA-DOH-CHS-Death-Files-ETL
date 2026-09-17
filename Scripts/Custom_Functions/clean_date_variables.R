@@ -1,5 +1,18 @@
 # clean_date_variables.R
 
+df <- harmonized_data_orig
+vars <- c(
+  "date_harmonized",
+  "date_of_birth",
+  "date_of_death",
+  "date_of_injury",
+  "date_received",
+  "disposition_date"
+)
+orders <- c("Ymd", "Y-m-d", "m/d/Y", "d%b%Y")
+tz <- "UTC"
+verbose <- TRUE
+
 clean_date_variables <- function(
   df,
   vars = c(
@@ -21,43 +34,101 @@ clean_date_variables <- function(
   df <- df %>%
     mutate(
       across(
-        all_of(vars),
-        ~ lubridate::parse_date_time(na_if(str_squish(.x), ""), orders, tz),
+        .cols = all_of(vars),
+        .fns = ~ lubridate::parse_date_time(
+          na_if(str_squish(.x), ""),
+          orders,
+          tz
+        ),
         .names = "{.col}_parsed"
       )
     )
 
-  # Step 2: Implement Date-specific Logic Checks
+  # Step 2: Remove Placeholder & Typo Values: If any date value is in the future (a lot of 9999 year values) or less than 1850, convert to NA
   df <- df %>%
     mutate(
-      ## date_of_death_parsed: IF calculated age is less than 120 THEN keep ELSE convert to DOB to NA (value not plausible)
-      age_calc = rads::calc_age(
+      across(
+        .cols = all_of(new_names),
+        .fns = ~ if_else(.x > lubridate::today(), as.Date(NA), .x)
+      ),
+      across(
+        .cols = all_of(new_names),
+        .fns = ~ if_else(lubridate::year(.x) <= 1850, as.Date(NA), .x)
+      )
+    )
+
+  # Step 3: Implement Variable-specific Logic Checks
+  df <- df %>%
+    # Establish file_year date range (temporary calculated columns)
+    mutate(
+      file_year_start = lubridate::ymd(paste0(file_year, "-01-01")),
+      file_year_end = lubridate::ymd(paste0(file_year, "-12-31"))
+    ) %>%
+    # (Y) Date of Death: Between the Start & End of the file_year date range
+    mutate(
+      date_of_death_parsed = if_else(
+        between(date_of_death_parsed, file_year_start, file_year_end),
+        date_of_death_parsed,
+        as.Date(NA)
+      )
+    ) %>%
+    # (Y) Date of Birth: Between a DOB value that makes individual's calculate age at death less than 120 - and End of the file_year date range.
+    mutate(
+      ## DOB 1: DOB cannot be after the date of death
+      date_of_birth_parsed = if_else(
+        date_of_birth_parsed <= date_of_death_parsed,
+        date_of_birth_parsed,
+        as.Date(NA)
+      ),
+      age_calculated = rads::calc_age(
         from = date_of_birth_parsed,
         to = date_of_death_parsed
       ),
+      ## DOB 2: Between a DOB value that makes individual's calculate age at death less than 120 - and End of the file_year date range.
       date_of_birth_parsed = if_else(
-        age_calc < 120,
+        age_calculated < 120,
         date_of_birth_parsed,
-        NA_Date_
-      ),
-
-      ## date_of_death_parsed: IF DOD year is greater than or equal to file year THEN keep ELSE convert DOD to NA (value not plausible)
-      date_of_death_parsed = if_else(
-        lubridate::year(date_of_death_parsed) >= as.integer(file_year),
-        date_of_death_parsed,
-        NA_Date_
-      ),
-
-      ## date_received_parsed: IF DR year is greater than or equal to file year THEN keep ELSE convert DR to NA (value not plausible)
-      date_received_parsed = if_else(
-        lubridate::year(date_received_parsed) >= as.integer(file_year),
-        date_received_parsed,
-        NA_Date_
+        as.Date(NA)
       )
     ) %>%
-    select(-age_calc) # remove temporary column
+    # (Y) Date of Injury: Between Date of Birth and Date of Death
+    mutate(
+      date_of_injury_parsed = case_when(
+        date_of_injury_parsed < (date_of_birth_parsed - months(9)) ~ as.Date(
+          NA
+        ), # Conservative logic check: Captures potential life threatening injuries occurring during pregnancies (allows injuries to be valid up to 9 months before DOB)
+        date_of_injury_parsed > date_of_death_parsed ~ as.Date(NA), # Removes injury dates that happen after DOD
+        TRUE ~ date_of_injury_parsed
+      )
+    ) %>%
+    # (Y) Date Received: Between Date of Death and within ~2 years of End of file_year date range. (Exploring the data for 2010-2024, the biggest date difference between date of death and date received was 592 days or 1.6 years)
+    mutate(
+      date_received_parsed = if_else(
+        between(
+          date_received_parsed,
+          date_of_death_parsed,
+          (file_year_end + years(2))
+        ),
+        date_received_parsed,
+        as.Date(NA)
+      )
+    ) %>%
+    # (Y) Disposition Date: Between date of death and within ~2 years of End of file_year date range
+    mutate(
+      disposition_date_parsed = if_else(
+        between(
+          disposition_date_parsed,
+          date_of_death_parsed,
+          (file_year_end + years(2))
+        ),
+        disposition_date_parsed,
+        as.Date(NA)
+      )
+    ) %>%
+    # Remove Calculation Columns
+    select(-age_calculated, -file_year_start, -file_year_end)
 
-  # Step 3: Generate Parsing Error Report
+  # Step 4: Generate Parsing Error Report
   parsing_error_examples <- purrr::map_dfr(
     vars,
     function(v) {
@@ -76,7 +147,7 @@ clean_date_variables <- function(
     }
   )
 
-  # Step 4: Drop Raw Date Variables, Rename Parsed Variables (to Raw Date Variable Names)
+  # Step 5: Drop Raw Date Variables, Rename Parsed Variables (to Raw Date Variable Names)
   df <- df %>%
     select(-all_of(vars)) %>% # Drop original raw date fields
     rename_with(
@@ -85,7 +156,7 @@ clean_date_variables <- function(
       all_of(new_names)
     )
 
-  # Step 5: Add parsing_error_examples as an attribute to output
+  # Step 6: Add parsing_error_examples as an attribute to output
   attr(df, "date_parsing_errors") <- parsing_error_examples
 
   return(df)
