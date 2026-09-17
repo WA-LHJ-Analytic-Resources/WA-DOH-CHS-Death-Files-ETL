@@ -1,4 +1,51 @@
-# clean_date_variables.R
+#' Clean and Validate Date Variables in a Data Frame
+#'
+#' This function parses, cleans, validates, and logically constrains a set of
+#' date variables within a data frame. It standardizes multiple date formats,
+#' removes placeholder or impossible values, applies variable-specific logic
+#' checks (e.g., DOB before DOD, realistic age constraints), and returns the
+#' cleaned data with date variables replaced by their parsed versions.
+#'
+#' Additionally, the function produces a parsing error report containing values
+#' that failed to parse and attaches this information as an attribute
+#' \code{"date_parsing_errors"} on the returned data frame.
+#'
+#' @param df A data frame containing raw date variables and related fields such
+#'   as \code{file_year}, \code{state_file_number}, etc.
+#' @param vars A character vector of raw date variable names to parse. Defaults
+#'   to six column names commonly used in mortality datasets.
+#' @param orders A character vector of date formats passed to
+#'   \code{lubridate::parse_date_time}. Defaults to standard YMD, Y-m-d,
+#'   m/d/Y, and d%b%Y formats.
+#' @param verbose Logical; if \code{TRUE}, prints additional diagnostic output.
+#'   Currently not used internally, included for future expansion.
+#'
+#' @return A cleaned data frame with:
+#'   \itemize{
+#'     \item Raw date variables removed.
+#'     \item Parsed versions renamed to the original variable names.
+#'     \item Parsed values validated against dataset-specific logical constraints.
+#'     \item An attribute \code{"date_parsing_errors"} containing examples of
+#'           parsing failures (does not include examples of values converted to NA during date logic checks).
+#'   }
+#'
+#' @details
+#' The function performs the following major steps:
+#' \enumerate{
+#'   \item Verifies that all variables listed in \code{vars} exist in \code{df}.
+#'   \item Parses raw text date fields into standardized date objects.
+#'   \item Removes placeholder values (e.g., year 9999 or years <= 1850).
+#'   \item Performs logical validity checks specific to mortality datasets:
+#'     \itemize{
+#'       \item DOB must occur before DOD.
+#'       \item Age at death must be <120 years.
+#'       \item Injury dates must lie between birth and death (with a 9‑month prenatal buffer).
+#'       \item Received and disposition dates must occur after death and within 2 years of file_year.
+#'     }
+#'   \item Generates a structured report of unparsed date values.
+#'   \item Replaces raw date variables with cleaned parsed versions.
+#' }
+#' @export
 
 clean_date_variables <- function(
   df,
