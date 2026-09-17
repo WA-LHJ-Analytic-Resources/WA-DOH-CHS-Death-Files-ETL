@@ -36,7 +36,7 @@
 
 recode_variables <- function(
   df,
-  year, 
+  year,
   cw,
   verbose = TRUE,
   timed = FALSE
@@ -53,7 +53,10 @@ recode_variables <- function(
   cw <- cw %>% filter(file_year == year)
 
   # Step 1: Identify variables to recode from the crosswalk
-  recode_vars <- cw %>% filter(file_year == year) %>% pull(variable) %>% unique()
+  recode_vars <- cw %>%
+    filter(file_year == year) %>%
+    pull(variable) %>%
+    unique()
 
   # Step 2: Loop through the provided data frame and recode each variable (based on the provided variable_recode_cw)
   for (var in recode_vars) {
@@ -79,13 +82,13 @@ recode_variables <- function(
     # 2.4: Build a readable message of the pairs (from_code --> to_code) being recoded for each variable in the var_recode_cw
     if (verbose == TRUE) {
       pairs_txt <- lu_pairs %>%
-          transmute(line = glue::glue("   - {from_code} → {to_code}")) %>%
-          pull(line) %>%
-          paste(collapse = "\n")
+        transmute(line = glue::glue("   - {from_code} → {to_code}")) %>%
+        pull(line) %>%
+        paste(collapse = "\n")
 
-        message(glue::glue(
-          "Recoding variable '{var}' with {nrow(lu_pairs)} mappings:\n{pairs_txt}\n"
-        ))
+      message(glue::glue(
+        "Recoding variable '{var}' with {nrow(lu_pairs)} mappings:\n{pairs_txt}\n"
+      ))
     }
 
     # 2.5: Perform recoding of variable codes (using tidy-eval with join_by())
@@ -102,5 +105,6 @@ recode_variables <- function(
     tictoc::toc()
   }
 
+  # Return recoded data frame -----
   return(df_recoded)
 }
