@@ -144,5 +144,5 @@ clean_data_types <- function(
   attr(df, "data_type_conversions") <- audit
 
   # Step 5: Return df -----
-  df
+  return(df)
 }

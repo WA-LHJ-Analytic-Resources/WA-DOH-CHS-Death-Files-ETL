@@ -79,5 +79,5 @@ apply_variable_labels <- function(df, df_schema) {
   attr(df, "factor_audit") <- factor_audit
 
   # Step 4: Return df (with factor variables)
-  df
+  return(df)
 }
