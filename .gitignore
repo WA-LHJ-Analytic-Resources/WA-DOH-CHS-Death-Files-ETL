@@ -54,4 +54,4 @@ rsconnect/
 *.xlsx 
 
 ## Exceptions
-!Resources/Crosswalks and Schemas.xlsx
+!Resources/Admin/Crosswalks and Schemas.xlsx
