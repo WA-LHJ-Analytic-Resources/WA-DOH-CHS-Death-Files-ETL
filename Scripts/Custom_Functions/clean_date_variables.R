@@ -1,18 +1,5 @@
 # clean_date_variables.R
 
-df <- harmonized_data_orig
-vars <- c(
-  "date_harmonized",
-  "date_of_birth",
-  "date_of_death",
-  "date_of_injury",
-  "date_received",
-  "disposition_date"
-)
-orders <- c("Ymd", "Y-m-d", "m/d/Y", "d%b%Y")
-tz <- "UTC"
-verbose <- TRUE
-
 clean_date_variables <- function(
   df,
   vars = c(
@@ -24,9 +11,16 @@ clean_date_variables <- function(
     "disposition_date"
   ),
   orders = c("Ymd", "Y-m-d", "m/d/Y", "d%b%Y"),
-  tz = "UTC", # Does not matter as all input variables are dates only (no times)
   verbose = FALSE
 ) {
+  # Stop if any specified vars do not exist in df
+  missing_vars <- setdiff(vars, names(df))
+  if (length(missing_vars) > 0) {
+    stop(glue::glue(
+      "The following variables listed in `vars` were not found in the provided data frame: {paste(missing_vars, collapse = ', ')}"
+    ))
+  }
+
   # Step 0: Create parsed variable names
   new_names <- paste0(vars, "_parsed")
 
@@ -38,7 +32,7 @@ clean_date_variables <- function(
         .fns = ~ lubridate::parse_date_time(
           na_if(str_squish(.x), ""),
           orders,
-          tz
+          tz = "UTC"
         ),
         .names = "{.col}_parsed"
       )
