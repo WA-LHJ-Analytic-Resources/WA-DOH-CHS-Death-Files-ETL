@@ -53,6 +53,7 @@ writexl::write_xlsx(
   missing_variable_summary,
   path = here(
     "Resources",
+    "Admin",
     "Review",
     "Missing Variables Referenced in Rename Crosswalk.xlsx"
   )
@@ -63,6 +64,7 @@ writexl::write_xlsx(
   flagged_variable_recode_summary,
   path = here(
     "Resources",
+    "Admin",
     "Review",
     "Flagged Variable Recoding Operations.xlsx"
   )
