@@ -24,7 +24,7 @@ harmonized_data <- harmonized_data %>%
     remove_inputs = FALSE # TRUE = Removes all record_axis_code variables as they have all been condensed into all_cod_code
   )
 
-# Convert Harmonized Data to Final Data Types ------
+# Clean Date & Time Variables ------
 
 ## Clean Date Variables
 harmonized_data <- clean_date_variables(df = harmonized_data)
@@ -34,48 +34,64 @@ audits$date_parse_errors <- attr(harmonized_data, "date_parsing_errors")
 harmonized_data <- clean_time_variables(df = harmonized_data)
 audits$time_parse_errors <- attr(harmonized_data, "time_parsing_errors")
 
-## Load in Final Harmonized Data Schema
-schema_data_types <- readr::read_csv(
-  file = here("Resources", "Schemas", "schema_data_types.csv"),
-  show_col_types = FALSE
-) %>%
-  select(-notes, -flag)
+# Convert Variables to Final Data Types (Specified by Harmonized Data Schema) -----
 
-## Implement Data Type Conversions
+## Convert all variables to proper data types
 harmonized_data <- clean_data_types(
   df = harmonized_data,
-  df_schema = schema_data_types
-) # If there's a mismatch in variables (df vs df_schema have more), a warning message will indicate what variables are differing (and their data types will remain the same)
+  df_schema = params$harmonized_data_schema
+) # If there's a mismatch in variables (in df vs df_schema), a warning message will indicate what variables are differing (and their data types will remain the same)
 
 ## Audit how data types were converted
-audits$data_type_conversions <- attr(harmonized_data, "schema_audit")
+audits$data_type_conversions <- attr(harmonized_data, "data_type_conversions")
 
 # (Optional) Apply Labels to Factor Variables ------
 if (params$apply_variable_labels == TRUE) {
-  ## Load in DF Factor Schema
-  schema_factors <- readr::read_csv(
-    file = here("Resources", "Schemas", "schema_factors.csv"),
-    show_col_types = FALSE
-  ) %>%
-    mutate(order = as.integer(order)) %>%
-    select(variable, level, label, order, ordered, data_type)
-
   harmonized_data <- apply_variable_labels(
     df = harmonized_data,
-    dict_df = schema_factors
+    df_schema = params$harmonized_data_schema
   )
 
   ## Audit how the factor labels were applied
-  audits$factor_labels <- attr(harmonized_data, "factor_audit")
+  audits$factor_conversion <- attr(harmonized_data, "factor_audit")
 }
 
-# Adjust string variable case -----
+# Final Cleaning of Variables (Predominantly Strings) -----
 
 harmonized_data <- harmonized_data %>%
+  ## Convert All Caps to Title Case
   mutate(across(
     .cols = c(occupation, industry, informant_relationship),
     .fns = ~ str_to_title(.x)
-  )) # All caps to Title Case
+  )) %>%
+  ## Ensure Zip Codes follow 5-digit formatting
+  mutate(across(
+    .cols = c(death_zip_code, injury_zip_code, residence_zip_code),
+    .fns = ~ if_else(str_detect(.x, "^[0-9]{5}$"), .x, NA) # if ZIP is not following 5 digit format, convert to NA
+  )) %>%
+  ## Convert Unknown Placeholder Values to NA (Note: This may not capture all placeholder values, but aiming to convert the most frequently occurring ones)
+  mutate(
+    across(
+      .cols = c(industry, occupation),
+      .fns = ~ case_when(
+        .x %in% c("-", "--", "---", "------", ".", "?") ~ NA_character_,
+        str_detect(
+          .x,
+          regex("Not Applicable", ignore_case = TRUE)
+        ) ~ NA_character_,
+        str_detect(.x, regex("Unknown", ignore_case = TRUE)) ~ NA_character_,
+        TRUE ~ .x
+      )
+    ),
+    injury_place = case_when(
+      injury_place %in% c("-", "?") ~ NA,
+      injury_place %in% c("NONE", "UNKNOWN", "NOT APPLICABLE") ~ NA,
+      TRUE ~ injury_place
+    ),
+    residence_length = if_else(residence_length == "999", NA, residence_length), # Could be possible based on residence_length_type but unlikely
+    age = if_else(age_type == "Unknown" & age == 999, NA, age),
+    age_years = if_else(age_years > 120, NA, age_years) # Convert age_years over 120 to NA
+  )
 
 # Reorder Harmonized Data Variables -----
 
@@ -164,7 +180,7 @@ rads::death_validate_data(harmonized_data, check_multicause = TRUE)
 
 # Save Clean Harmonized Data -----
 
-## Parquet File
+## Save Harmonized Data (as a .parquet file)
 arrow::write_parquet(
   harmonized_data,
   sink = here(
@@ -173,18 +189,19 @@ arrow::write_parquet(
   )
 )
 
-## Create & Write Data Dictionary - Harmonized Data
-data_dictionary <- create_data_dictionary(
-  df = harmonized_data,
-  vars_no_val = c("source_file"), # Dont show example values for these provided variable names.
-  vars_no_val_limit = 30 # Only show example values for variables with <= 30 distinct values (avoids unique IDs/high cardinal vars)
+## Create a Dictionary for the Harmonized Data
+data_dictionary <- rads::create_dictionary(
+  ph.data = harmonized_data,
+  source = "harmonized_data",
+  max_unique_values = 30,
+  truncation_threshold = 15
 )
 
+## Save the Harmonized Data Dictionary
 writexl::write_xlsx(
   x = data_dictionary,
   path = here::here(
     "Resources",
-    "Schemas",
-    "Data Dictionary - Harmonized Data.xlsx"
+    "Data Dictionary.xlsx"
   )
 )

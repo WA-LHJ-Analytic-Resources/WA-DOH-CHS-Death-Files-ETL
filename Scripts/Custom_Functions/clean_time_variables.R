@@ -1,4 +1,59 @@
-# clean_time_variables.R
+#' Clean and Normalize Time Variables in a Mortality Data Frame
+#'
+#' This function standardizes, validates, reconstructs, and parses time-related
+#' variables commonly found in mortality datasets. It supports harmonizing
+#' time-of-death and time-of-injury variables that may be inconsistently encoded
+#' as character strings, hour/minute components, or placeholder codes (e.g.,
+#' "2400", "9999").
+#'
+#' The function performs several cleaning steps including punctuation removal,
+#' validation of hour/minute ranges, zero-padding, reconstruction of full times
+#' from component fields, placeholder normalization, and conversion into
+#' proper `hms` time objects using `readr::parse_time()`.
+#'
+#' A structured parsing error report is attached to the output as an attribute
+#' named `"time_parsing_errors"`.
+#'
+#' @param df A data frame containing time-of-death and time-of-injury variables,
+#'   including full-format time strings and hour/minute component fields.
+#' @param verbose Logical indicating whether warnings from `parse_time()` should
+#'   be shown (`TRUE`) or suppressed (`FALSE`). Defaults to `FALSE`.
+#'
+#' @return
+#' A data frame with fully cleaned and parsed time variables. Raw component
+#' fields (`*_hour`, `*_minutes`) and intermediate fields (e.g.,
+#' `*_primary`) are removed, and final parsed times are returned under:
+#'
+#' * `time_of_death`
+#' * `time_of_injury`
+#'
+#' The returned data frame also includes:
+#'
+#' * `time_parsing_errors`: a tibble listing rows where original values failed
+#'   to parse into valid time objects.
+#'
+#' @details
+#' The function executes the following operations sequentially:
+#'
+#' \enumerate{
+#'   \item Remove punctuation from all time-related fields.
+#'   \item Validate hour (00–23) and minute (00–59) components.
+#'   \item Zero-pad hours and minutes to width = 2.
+#'   \item Construct unified time fields (`*_primary`) from hour/minute components.
+#'   \item Coalesce primary times with existing full-format times.
+#'   \item Normalize placeholder timestamps:
+#'       \itemize{
+#'         \item `"2400"` → `"0000"`
+#'         \item `"9999"` → `NA`
+#'       }
+#'   \item Parse times with `readr::parse_time()`, conditionally suppressing warnings.
+#'   \item Construct a parsing error report that includes original values,
+#'         primary values, hour/minute components, and failed parsed results.
+#'   \item Remove intermediate fields and rename final parsed variables to
+#'         `time_of_death` and `time_of_injury`.
+#' }
+#'
+#' @export
 
 clean_time_variables <- function(df, verbose = FALSE) {
   # Helper function to conditionally suppress warnings during time parsing
@@ -33,7 +88,7 @@ clean_time_variables <- function(df, verbose = FALSE) {
           time_of_death_hour,
           time_of_injury_hour
         ),
-        ~ ifelse(as.numeric(.x) >= 24, NA_character_, .x)
+        ~ if_else(as.numeric(.x) >= 24, NA_character_, .x)
       ),
       ## Minute Validation: Ensure minute values are 00-59
       across(
@@ -41,7 +96,7 @@ clean_time_variables <- function(df, verbose = FALSE) {
           time_of_death_minutes,
           time_of_injury_minutes
         ),
-        ~ ifelse(as.numeric(.x) >= 60, NA_character_, .x)
+        ~ if_else(as.numeric(.x) >= 60, NA_character_, .x)
       )
     )
 
@@ -103,11 +158,11 @@ clean_time_variables <- function(df, verbose = FALSE) {
     mutate(
       across(
         .cols = c(time_of_death, time_of_injury),
-        ~ ifelse(.x == "2400", "0000", .x)
+        ~ if_else(.x == "2400", "0000", .x)
       ),
       across(
         .cols = c(time_of_death, time_of_injury),
-        ~ ifelse(.x == "9999", NA, .x)
+        ~ if_else(.x == "9999", NA, .x)
       )
     )
 

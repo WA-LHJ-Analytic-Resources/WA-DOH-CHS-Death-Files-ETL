@@ -1,19 +1,19 @@
 # 1_harmonize_death_files
 
 # Identify All Death Statistical File Vintages -----
-death_files <- identify_death_files(folder = params$raw_data_folder)
-
-death_stat_files <- death_files %>%
+death_stat_files <- identify_death_files(
+  folder = params$raw_data_folder,
+  death_file_type = "Death Statistical"
+) %>%
   # Filter to Finalized Death Statistical Files
   filter(
-    file_type == "Death Statistical",
+    file_ext == "csv", # Only use .csv files (sometimes there are duplicates data vintages for a single year that are .xlsx and .csv)
     file_status == "Final" # Filter data vintages only (for now)
   ) %>%
   # Add Vintage Label tag
   mutate(vintage_label = glue("{system}_{file_year}")) %>%
   # Move Vintage Label to 1st position
   relocate(vintage_label, .before = everything())
-
 
 # Harmonization Process ----
 
@@ -22,28 +22,28 @@ tictoc::tic("Harmonize all death data vintages")
 ## Step 0: Initiate Data Storage Lists
 harmonized_list <- list()
 
-## Load & Recode Each Data Vintage
+## Step 1: Load Variable Rename & Recode Crosswalks
+var_rename_crosswalk <- params$variable_rename_cw %>%
+  pivot_longer(
+    cols = matches("^\\d{4}$"), # matches columns named as "2010","2011",…
+    names_to = "file_year",
+    values_to = "from_name"
+  ) %>%
+  mutate(file_year = as.integer(file_year)) %>%
+  select(file_year, from_name, to_name, notes)
+
+var_recode_crosswalk <- params$variable_recode_cw %>%
+  select(file_year, variable, from_code, from_label, to_code, to_label)
+
+## Step 2: Load, Rename, and Recode Each Data Vintage
+
 for (file_yr in death_stat_files$file_year) {
-  tictoc::tic((glue("Processing the data vintage for: {file_yr}"))) # Start data vintage level timer
+  tictoc::tic(glue("Processing the data vintage for {file_yr}"))
 
-  ### Step 1a: Load in Variable Rename Crosswalk
-  var_rename_crosswalk <- load_crosswalk(file_year = file_yr, type = "rename")
-
-  ### Step 1b: Identify Available & Missing Variables in the Data Vintage
-  available_vars <- var_rename_crosswalk %>%
-    filter(missing == FALSE) %>%
-    pull(from_name)
-  missing_vars <- var_rename_crosswalk %>%
-    filter(missing == TRUE) %>%
-    pull(from_name)
-
-  ### Step 2: Load in Variable Recode Crosswalk
-  var_recode_crosswalk <- load_crosswalk(file_year = file_yr, type = "recode")
-
-  ### Step 3a: Identify death statistical file vintage to be loaded
+  ### Step 2a: Identify death statistical file vintage to be loaded
   data_vintage <- death_stat_files %>% filter(file_year == file_yr)
 
-  ### Step 3b: Extact vintage metadata
+  ### Step 2b: Extact vintage metadata
   provenance <- tibble(
     vintage_label = data_vintage$vintage_label,
     file_year = data_vintage$file_year,
@@ -52,33 +52,14 @@ for (file_yr in death_stat_files$file_year) {
     date_harmonized = as.character(lubridate::today())
   )
 
-  ### Step 4: Load in Data Vintage (Perform 1-Data Type Harmonization)
-  harmonized_list[[as.character(file_yr)]] <- load_data_vintage(
-    file_location = data_vintage$file_location,
-    available_vars = available_vars,
-    missing_vars = missing_vars
-  )
-
-  ### Step 5: Rename Variables (Perform 2-Schema Harmonization)
-  harmonized_list[[as.character(file_yr)]] <- rename_variables(
-    df = harmonized_list[[as.character(file_yr)]],
-    var_rename_cw = var_rename_crosswalk
-  )
-
-  ### Step 6: Recode Coded Values (Perform 3-Value Harmonization)
-  harmonized_list[[as.character(file_yr)]] <- recode_variables(
-    df = harmonized_list[[as.character(file_yr)]],
-    var_recode_cw = var_recode_crosswalk,
-    verbose = FALSE,
-    timed = FALSE
-  )
-
-  ### Step 7: Add Vintage Metadata
-  harmonized_list[[as.character(file_yr)]] <- harmonized_list[[as.character(
-    file_yr
-  )]] %>%
+  ### Step 2c: Load in Data Vintage (Perform 1-Data Type & 2-Schema Harmonization)
+  harmonized_list[[as.character(file_yr)]] <- process_year(
+    year = file_yr,
+    cw = var_rename_crosswalk,
+    file_path = data_vintage$file_location
+  ) %>%
     bind_cols(provenance) %>%
-    dplyr::relocate(
+    relocate(
       vintage_label,
       source_file,
       date_harmonized,
@@ -87,22 +68,32 @@ for (file_yr in death_stat_files$file_year) {
       .before = everything()
     ) # Move these variables to the front.
 
-  tictoc::toc() # End data vintage-level timer
+  ### Step 2d: Recode Variables
+  harmonized_list[[as.character(file_yr)]] <- harmonized_list[[as.character(
+    file_yr
+  )]] %>%
+    recode_variables(
+      df = .,
+      year = file_yr,
+      cw = var_recode_crosswalk,
+      verbose = FALSE
+    ) # Change verbose to TRUE (if you want to see variable recoding implemented per data vintage)
+
+  tictoc::toc()
 }
 
-## Step 7: Append all data vintages together
+## Step 3: Append all data vintages together
 harmonized_data <- bind_rows(harmonized_list)
 
 tictoc::toc()
 
 # Clean up -----
+
 rm(
-  available_vars,
-  missing_vars,
+  file_yr,
+  harmonized_list,
   data_vintage,
   provenance,
-  var_rename_crosswalk,
   var_recode_crosswalk,
-  file_yr,
-  harmonized_list
+  var_rename_crosswalk
 )

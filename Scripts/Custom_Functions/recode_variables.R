@@ -27,7 +27,8 @@
 #' - If no pairs exist for a variable (empty mapping), the function will message (if \code{verbose = TRUE}) and skip it.
 #'
 #' @param df A data frame or tibble containing the variables to be recoded.
-#' @param var_recode_cw  A data frame or tibble containing the variable code crosswalk (including from_code and to_code columns).
+#' @param year  An integer specifying the data vintage being recoded.
+#' @param cw  A data frame or tibble containing the variable recode crosswalk (including from_code and to_code columns).
 #' @param verbose Logical; if \code{TRUE}, prints informative messages about which variables and code pairs are being recoded. Default: \code{TRUE}.
 #' @param timed Logical; if \code{TRUE}, prints timing information per variable and total runtime. Default: \code{FALSE}.
 #'
@@ -35,7 +36,8 @@
 
 recode_variables <- function(
   df,
-  var_recode_cw = var_recode_crosswalk,
+  year,
+  cw,
   verbose = TRUE,
   timed = FALSE
 ) {
@@ -44,11 +46,17 @@ recode_variables <- function(
     tictoc::tic("Variable Recoding Process")
   }
 
-  # Step 0: Initialize a df_recoded output data frame
+  # Step 0a: Initialize a df_recoded output data frame
   df_recoded <- df
 
+  # Step 0b: Filter crosswalk to specific data vintage year
+  cw <- cw %>% filter(file_year == year)
+
   # Step 1: Identify variables to recode from the crosswalk
-  recode_vars <- var_recode_cw %>% pull(variable) %>% unique()
+  recode_vars <- cw %>%
+    filter(file_year == year) %>%
+    pull(variable) %>%
+    unique()
 
   # Step 2: Loop through the provided data frame and recode each variable (based on the provided variable_recode_cw)
   for (var in recode_vars) {
@@ -59,7 +67,7 @@ recode_variables <- function(
     }
 
     # 2.2: Unique mapping look-up pairs (lu-pairs) for this variable
-    lu_pairs <- var_recode_cw %>%
+    lu_pairs <- cw %>%
       dplyr::filter(variable == var) %>%
       dplyr::distinct(from_code, to_code)
 
@@ -74,15 +82,13 @@ recode_variables <- function(
     # 2.4: Build a readable message of the pairs (from_code --> to_code) being recoded for each variable in the var_recode_cw
     if (verbose == TRUE) {
       pairs_txt <- lu_pairs %>%
-        dplyr::mutate(
-          from_code = as.character(.data$from_code),
-          to_code = as.character(.data$to_code)
-        ) %>%
-        dplyr::transmute(pair = glue::glue("{from_code} -> {to_code}")) %>%
-        dplyr::pull(pair) %>%
-        paste(collapse = "; ")
+        transmute(line = glue::glue("   - {from_code} → {to_code}")) %>%
+        pull(line) %>%
+        paste(collapse = "\n")
 
-      message(glue::glue("Recoding {var}: {pairs_txt}"))
+      message(glue::glue(
+        "Recoding variable '{var}' with {nrow(lu_pairs)} mappings:\n{pairs_txt}\n"
+      ))
     }
 
     # 2.5: Perform recoding of variable codes (using tidy-eval with join_by())
@@ -99,5 +105,6 @@ recode_variables <- function(
     tictoc::toc()
   }
 
+  # Return recoded data frame -----
   return(df_recoded)
 }

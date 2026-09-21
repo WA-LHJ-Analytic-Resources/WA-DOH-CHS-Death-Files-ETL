@@ -1,7 +1,0 @@
-﻿file_year,variable,from_code,from_label,to_code,to_label,notes,review_flag
-2016,hispanic_cuban,H,Hispanic,Y,Yes,,FALSE
-2016,hispanic_mexican,H,Hispanic,Y,Yes,,FALSE
-2016,hispanic_other,H,Hispanic,Y,Yes,,FALSE
-2016,hispanic_puerto_rican,H,Hispanic,Y,Yes,,FALSE
-2016,injury_at_work,X,,U,Unknown,,TRUE
-2016,tobacco,C,,U,Unknown,,TRUE

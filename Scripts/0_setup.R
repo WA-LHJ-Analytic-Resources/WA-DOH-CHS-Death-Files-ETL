@@ -1,6 +1,6 @@
 # 0_setup.R
 
-# Define Filepaths (.REnviron file) -----
+# Define Filepaths (.Renviron file) -----
 ## Resource URL: https://rstats.wtf/r-startup.html#renviron
 ## Note(s):
 # a) Add RAW_DEATH_FILES_FOLDER (the filepath where all raw WA DOH CHS Death files are stored after being downloaded from Secure Access Washington)
@@ -25,10 +25,13 @@ pacman::p_load(
   glue,
   here,
   plotly,
+  purrr,
   rads,
   readr,
+  readxl,
   scales,
   tictoc,
+  tidyr,
   tidyverse,
   writexl
 )
@@ -51,11 +54,38 @@ params$output_folder <- Sys.getenv("HARMONIZED_DEATH_FILE_FOLDER") # Note: Shoul
 ## Add Variable Labels (Convert Coded Variables to Factors)
 params$apply_variable_labels <- TRUE
 
-## Define Crosswalk Filepaths
-params$cw_folder <- here::here("Resources", "Crosswalks")
-params$code_sets_folder <- here::here("Resources", "Code Sets")
+
+# Load Crosswalks & Harmonized Data Schema -----
+params$crosswalk_filepath <- here::here(
+  "Resources",
+  "Admin",
+  "Crosswalks and Schemas.xlsx"
+)
+
+params$variable_rename_cw <- readxl::read_excel(
+  path = params$crosswalk_filepath,
+  sheet = "rename_variables"
+)
+params$variable_recode_cw <- readxl::read_excel(
+  path = params$crosswalk_filepath,
+  sheet = "recode_variables"
+)
+params$harmonized_data_schema <- readxl::read_excel(
+  path = params$crosswalk_filepath,
+  sheet = "harmonized_data_schema"
+) %>%
+  mutate(factor_order = as.integer(factor_order)) %>%
+  select(
+    variable,
+    data_type,
+    factor_is_ordered,
+    factor_value,
+    factor_label,
+    factor_order
+  )
 
 # Load Code Sets -----
+params$code_sets_folder <- here::here("Resources", "Code Sets")
 
 # fmt: skip
 ## Code Sets

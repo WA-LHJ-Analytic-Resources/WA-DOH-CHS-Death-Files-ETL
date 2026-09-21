@@ -1,7 +1,0 @@
-﻿file_year,variable,from_code,from_label,to_code,to_label,notes,review_flag
-2017,age_type,6,,9,Unknown,Not in data dictionary,TRUE
-2017,hispanic_cuban,H,Hispanic,Y,Yes,,FALSE
-2017,hispanic_mexican,H,Hispanic,Y,Yes,,FALSE
-2017,hispanic_other,H,Hispanic,Y,Yes,,FALSE
-2017,hispanic_puerto_rican,H,Hispanic,Y,Yes,,FALSE
-2017,tobacco,C,,U,Unknown,Not in data dictionary,TRUE
