@@ -87,7 +87,7 @@ identify_death_files <- function(
       str_detect(file_name, "Lit") ~ "Cause of Death Literals",
       str_detect(file_name, "Names") ~ "Death Names",
       str_detect(file_name, "Stat") ~ "Death Statistical",
-      str_detect(file_name, "Stat") ~ "Death Geographic",
+      str_detect(file_name, "Geo") ~ "Death Geographic",
       TRUE ~ NA
     ),
     file_location = paths, # full path,
