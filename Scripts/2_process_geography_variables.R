@@ -55,26 +55,10 @@ harmonized_data <- harmonized_data %>%
 
 # 3) Translate FIPS Codes to Literals -----
 
-## 3a) county_label_pairs specifies each FIPS code & Literal variable pairing, along with the year_threshold (that indicates what years to use WA Codes to fill in missing Literal values)
-## Additional details: Backfill residence_county & injury_county columns (for 2010-2015, which are missing) using FIPS codes.
+## Use params$code_sets$wa_fips_literal_pair to translate FIPS Codes (before year_threshold) to fill in literals for residence_county & injury_county columns for 2010-2015
 
-county_label_pairs <- list(
-  list(
-    fips_col = "residence_county_fips",
-    literal_col = "residence_county",
-    year_threshold = 2016
-  ),
-  list(
-    fips_col = "injury_county_fips",
-    literal_col = "injury_county",
-    year_threshold = 2016
-  )
-)
-
-## 3b) Use county_label_pairs & params$code_sets$wa_county_code_to_fips to translate FIPS Codes (before year_threshold)
-## to fill in missing Literal Values (for residence_county & injury_county)
-
-harmonized_data <- county_label_pairs %>%
+harmonized_data <- params$code_sets$wa_fips_literal_pair %>%
+  pmap(list) |>
   reduce(
     function(data, pair) {
       county_fips_to_literals(
