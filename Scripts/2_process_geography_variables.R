@@ -16,27 +16,7 @@ harmonized_data <- harmonized_data %>%
 
 # 2) Translate WA Codes to FIPS Codes (to fill in missing FIPS) -----
 
-## 2a) county_code_pairs specifies each WA Code & FIPS code variable pairing, along with the year_threshold (that indicates what years to use WA Codes to fill in missing FIPS codes)
-county_code_pairs <- list(
-  list(
-    wa_col = "death_county_wa_code",
-    fips_col = "death_county_fips",
-    year_threshold = 2022
-  ),
-  list(
-    wa_col = "residence_county_wa_code",
-    fips_col = "residence_county_fips",
-    year_threshold = 2016
-  ),
-  list(
-    wa_col = "injury_county_wa_code",
-    fips_col = "injury_county_fips",
-    year_threshold = 2022
-  )
-)
-
-## 2b) Use county_code_pairs & params$code_sets$wa_county_code_to_fips to translate WA Codes (before year_threshold)
-## to fill in missing FIPS codes (for death_county_fips, residence_county_fips, and injury_county_fips)
+## 2a) Use params$code_sets$county_code_pairs & params$code_sets$wa_county_code_to_fips to translate WA Codes into fips codes (before year_threshold) to fill in missing FIPS codes (for death_county_fips, residence_county_fips, and injury_county_fips). County_code_pairs specifies each WA Code & FIPS code variable pairing, along with the year_threshold (that indicates what years to use WA Codes to fill in missing FIPS codes)
 
 harmonized_data <- county_code_pairs %>%
   reduce(
@@ -51,7 +31,7 @@ harmonized_data <- county_code_pairs %>%
     .init = harmonized_data
   )
 
-## 2c) Convert translated WA Codes --> FIPS Codes with a value of "00" to NA
+## 2b) Convert translated WA Codes --> FIPS Codes with a value of "00" to NA
 ## Additional details: '00' WA Code values = "Out of State or Unknown" (impossible to distinguish) --> Convert to NA
 
 harmonized_data <- harmonized_data %>%
