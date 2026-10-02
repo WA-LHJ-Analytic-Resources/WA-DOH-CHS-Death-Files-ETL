@@ -1,0 +1,3 @@
+fips_col,literal_col,year_threshold
+residence_county_fips,residence_county,2016
+injury_county_fips,injury_county,2016

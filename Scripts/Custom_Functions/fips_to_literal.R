@@ -9,7 +9,8 @@ county_fips_to_literals <- function(
     left_join(
       params$code_sets$wa_county_code_to_fips %>%
         select(county_fips_code, county_fips_label),
-      by = setNames("county_fips_code", fips_col)
+      by = setNames("county_fips_code", fips_col),
+      relationship = "many-to-one" #safe guard against duplicate key being added to wa_county_code_to_fips as row duplication would occur
     ) %>%
     mutate(
       !!literal_col := case_when(

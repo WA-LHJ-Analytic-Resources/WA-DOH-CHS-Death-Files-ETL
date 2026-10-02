@@ -1,0 +1,4 @@
+wa_col,fips_col,year_threshold
+death_county_wa_code,death_county_fips,2022
+residence_county_wa_code,residence_county_fips,2016
+injury_county_wa_code,injury_county_fips,2022

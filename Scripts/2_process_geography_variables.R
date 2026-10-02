@@ -1,7 +1,7 @@
 # 2_process_geography_variables.R
 
 # 1) Clean WA Codes (Zero Pad) ----
-
+# make sure WA county codes start with a 0 if they are a single digit number (i.e. 1 -> 01)
 harmonized_data <- harmonized_data %>%
   mutate(across(
     c(residence_county_wa_code, death_county_wa_code, injury_county_wa_code),
@@ -13,33 +13,15 @@ harmonized_data <- harmonized_data %>%
     )
   ))
 
+# 2) Translate WA County Codes to FIPS County Codes (to fill in missing FIPS County Codes) -----
 
-# 2) Translate WA Codes to FIPS Codes (to fill in missing FIPS) -----
+## 2a) Use params$code_sets$wa_fips_column_pairs & params$code_sets$wa_county_code_to_fips to translate WA Codes into fips codes (for years before year_threshold) to fill in missing FIPS codes (for death_county_fips, residence_county_fips, and injury_county_fips). wa_fips_column_pairs specifies each WA Code & FIPS code variable pairing, along with the year_threshold (that indicates what years to use WA Codes to fill in missing FIPS codes)
 
-## 2a) county_code_pairs specifies each WA Code & FIPS code variable pairing, along with the year_threshold (that indicates what years to use WA Codes to fill in missing FIPS codes)
-county_code_pairs <- list(
-  list(
-    wa_col = "death_county_wa_code",
-    fips_col = "death_county_fips",
-    year_threshold = 2022
-  ),
-  list(
-    wa_col = "residence_county_wa_code",
-    fips_col = "residence_county_fips",
-    year_threshold = 2016
-  ),
-  list(
-    wa_col = "injury_county_wa_code",
-    fips_col = "injury_county_fips",
-    year_threshold = 2022
-  )
-)
-
-## 2b) Use county_code_pairs & params$code_sets$wa_county_code_to_fips to translate WA Codes (before year_threshold)
-## to fill in missing FIPS codes (for death_county_fips, residence_county_fips, and injury_county_fips)
-
-harmonized_data <- county_code_pairs %>%
-  reduce(
+# Convert each row of the county code pairs table into a list element
+# Apply county_wa_code_to_fips() once per element, passing each result into the next cycle (starting from harmonized_data) until function has been ran with all list elements
+harmonized_data <- params$code_sets$wa_fips_column_pairs %>%
+  purrr::pmap(list) %>%
+  purrr::reduce(
     function(data, pair) {
       county_wa_code_to_fips(
         data,
@@ -51,7 +33,7 @@ harmonized_data <- county_code_pairs %>%
     .init = harmonized_data
   )
 
-## 2c) Convert translated WA Codes --> FIPS Codes with a value of "00" to NA
+## 2b) Convert translated FIPS Codes with a value of "00" to NA
 ## Additional details: '00' WA Code values = "Out of State or Unknown" (impossible to distinguish) --> Convert to NA
 
 harmonized_data <- harmonized_data %>%
@@ -73,26 +55,10 @@ harmonized_data <- harmonized_data %>%
 
 # 3) Translate FIPS Codes to Literals -----
 
-## 3a) county_label_pairs specifies each FIPS code & Literal variable pairing, along with the year_threshold (that indicates what years to use WA Codes to fill in missing Literal values)
-## Additional details: Backfill residence_county & injury_county columns (for 2010-2015, which are missing) using FIPS codes.
+## Use params$code_sets$wa_fips_literal_pair to translate FIPS Codes into County literals (before year_threshold) to fill in missing County literals for residence_county & injury_county columns for 2010-2015
 
-county_label_pairs <- list(
-  list(
-    fips_col = "residence_county_fips",
-    literal_col = "residence_county",
-    year_threshold = 2016
-  ),
-  list(
-    fips_col = "injury_county_fips",
-    literal_col = "injury_county",
-    year_threshold = 2016
-  )
-)
-
-## 3b) Use county_label_pairs & params$code_sets$wa_county_code_to_fips to translate FIPS Codes (before year_threshold)
-## to fill in missing Literal Values (for residence_county & injury_county)
-
-harmonized_data <- county_label_pairs %>%
+harmonized_data <- params$code_sets$wa_fips_literal_pair %>%
+  pmap(list) |>
   reduce(
     function(data, pair) {
       county_fips_to_literals(
@@ -105,11 +71,11 @@ harmonized_data <- county_label_pairs %>%
     .init = harmonized_data
   )
 
-# 4) Clean Death FIPS Variables -----
+# 4) Clean Death County FIPS Variables -----
 
 ## 4a) Adjust death_county_fips number padding
-## Additional details: In 2022-2023 this column had many different number sequences padding the front of the 3-character county FIPS code. A
-## Additionally, county FIPS code were sometimes entered with no number padding but with missing zeros. Examples: "009" is input as "9" or "019" as "19"
+## Additional details: In 2022-2023 this column had many different number sequences padding the front of the 3-character county FIPS code.
+## Additionally, County FIPS code were sometimes entered with no number padding but with missing zeros. Examples: "009" is input as "9" or "019" is input as "19"
 
 harmonized_data <- harmonized_data %>%
   mutate(
@@ -125,7 +91,7 @@ harmonized_data <- harmonized_data %>%
   )
 
 ## 4b) Harmonize death_state coding
-# Additional details: During the 2010-2015 "48" (used for Washington), 2016-onwards "WASHINGTON" is used. Convert "48" --> "WASHINGTON"
+# Additional details: 2010-2015 file years "48" was used for Washington, 2016-onwards "WASHINGTON" is used. Convert "48" --> "WASHINGTON"
 
 harmonized_data <- harmonized_data %>%
   mutate(
@@ -135,10 +101,10 @@ harmonized_data <- harmonized_data %>%
     )
   )
 
-# 5) Clean Residence FIPS Variables -----
+# 5) Clean Residence County FIPS Variables -----
 
 ## 5a) Set Out of State values for FIPS Residence County to "00" for years 2016 onwards
-## Additional details: Pre 2016 Crosswalked FIPS Residence County codes do not include Out of State codes.
+## Additional details: 2010 - 2015 Crosswalked FIPS Residence County codes do not include Out of State codes.
 ## For 2016-2023, the data did include OOS codes, but they used 5-character FIPS codes with leading state 2 digit prefixes.
 ## For 2024 and onwards, FIPS codes were reduced to 3-character codes. These are not unique when Out of State values are present.
 
@@ -198,7 +164,7 @@ harmonized_data <- harmonized_data %>%
   )
 
 
-# 6) Clean Injury FIPS Variables -----
+# 6) Clean Injury County FIPS Variable -----
 
 ## 6a) Reformat Injury County FIPS column padding and missingness
 ## Additional details: Out of state injuries will be assigned value "00" because 3-character FIPS codes are not unique with Out of State values present in column.
