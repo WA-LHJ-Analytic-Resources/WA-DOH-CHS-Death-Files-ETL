@@ -1,11 +1,10 @@
 # 1_harmonize_death_files
 
 # Identify All Death Statistical File Vintages -----
-death_stat_files <- identify_death_files(
-  folder = params$raw_data_folder,
-  death_file_type = "Death Statistical"
+death_files <- identify_death_files(
+  folder = params$raw_data_folder
 ) %>%
-  # Filter to Finalized Death Statistical Files
+  # Filter to Finalized Death Files
   filter(
     file_ext == "csv", # Only use .csv files (sometimes there are duplicates data vintages for a single year that are .xlsx and .csv)
     file_status == "Final" # Filter data vintages only (for now)
@@ -22,26 +21,13 @@ tictoc::tic("Harmonize all death data vintages")
 ## Step 0: Initiate Data Storage Lists
 harmonized_list <- list()
 
-## Step 1: Load Variable Rename & Recode Crosswalks
-var_rename_crosswalk <- params$variable_rename_cw %>%
-  pivot_longer(
-    cols = matches("^\\d{4}$"), # matches columns named as "2010","2011",…
-    names_to = "file_year",
-    values_to = "from_name"
-  ) %>%
-  mutate(file_year = as.integer(file_year)) %>%
-  select(file_year, from_name, to_name, notes)
+## Step 1: Load, Rename, and Recode Each Data Vintage
 
-var_recode_crosswalk <- params$variable_recode_cw %>%
-  select(file_year, variable, from_code, from_label, to_code, to_label)
-
-## Step 2: Load, Rename, and Recode Each Data Vintage
-
-for (file_yr in death_stat_files$file_year) {
+for (file_yr in death_files$file_year) {
   tictoc::tic(glue("Processing the data vintage for {file_yr}"))
 
   ### Step 2a: Identify death statistical file vintage to be loaded
-  data_vintage <- death_stat_files %>% filter(file_year == file_yr)
+  data_vintage <- death_files %>% filter(file_year == file_yr)
 
   ### Step 2b: Extact vintage metadata
   provenance <- tibble(
