@@ -104,6 +104,7 @@ rm(
   df_stat,
   df_literals,
   df_names,
+  df_combined,
   harmonized_list,
   data_vintage,
   provenance
