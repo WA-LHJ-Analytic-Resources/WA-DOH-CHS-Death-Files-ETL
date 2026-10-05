@@ -11,14 +11,6 @@
 #'
 #' @param folder Character path to the folder containing death certificate
 #'   files. This should typically correspond to your project's raw data folder.
-#' @param death_file_type Character string specifying which type of death files
-#'   to return. Options include:
-#'   \itemize{
-#'     \item `"Death Statistical"` (default)
-#'     \item `"Death Names"`
-#'     \item `"Cause of Death Literals"`
-#'     \item `"Death Geographic"`
-#'   }
 #'
 #' @return
 #' A tibble containing metadata for all files matching the requested
@@ -65,8 +57,7 @@
 #' @export
 
 identify_death_files <- function(
-  folder,
-  death_file_type = "Death Statistical"
+  folder
 ) {
   # Step 0: Fix 2012 Death Statistical File Naming Convention
   if (file_exists(here::here(folder, "DeathStat2012.csv"))) {
@@ -100,11 +91,7 @@ identify_death_files <- function(
       file_ext = path_ext(file_name)
     )
 
-  # Step 3: Subset to Specific Type of Death Files (default = Death Statistical)
-  files <- files %>%
-    filter(file_type == death_file_type)
-
-  # Step 4: Add File Year & File Status to "files" tibble
+  # Step 3: Add File Year & File Status to "files" tibble
   files <- files %>%
     mutate(
       ## Create file_year via detecting 4 digit strings within the file_name (that start with "20"), convert it to numeric
@@ -115,11 +102,12 @@ identify_death_files <- function(
         file_name_no_ext,
         pattern = "DeathLit|DeathNames|DeathStat"
       ),
-      file_status = if_else(
-        str_detect(file_name_no_ext_stem, "^F"),
-        "Final",
-        "Preliminary"
-      ),
+      file_status = case_when(
+        !is.na(file_type) & str_detect(file_name_no_ext_stem, "^F") ~ "Final",
+        !is.na(file_type) &
+          !str_detect(file_name_no_ext_stem, "^F") ~ "Preliminary",
+        TRUE ~ NA
+      )
     ) %>%
     # Add WA DOH System Tag
     mutate(system = if_else(file_year <= 2015, "BEDROCK", 'WHALES')) %>%
@@ -135,10 +123,11 @@ identify_death_files <- function(
       file_modified_date_time
     ) %>%
     # Arrange by File Type & File Year
-    arrange(file_type, file_year)
+    arrange(file_year, file_type)
 
   ## Step 5 (Error Check): Identify if any Data Vintages do not have a .csv version in the data folder
   years_missing_csv <- files %>%
+    filter(!is.na(file_type)) %>% # Removes harmonized death data files from consideration
     group_by(file_type, file_year) %>%
     summarise(has_csv = any(file_ext == "csv"), .groups = "drop") %>%
     filter(has_csv == FALSE)
