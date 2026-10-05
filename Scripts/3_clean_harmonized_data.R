@@ -59,9 +59,16 @@ if (params$apply_variable_labels == TRUE) {
 # Final Cleaning of Variables (Predominantly Strings) -----
 
 harmonized_data <- harmonized_data %>%
-  ## Convert All Caps to Title Case
+  ## Convert All Caps String Variables to Title Case
   mutate(across(
-    .cols = c(occupation, industry, informant_relationship),
+    .cols = c(
+      occupation,
+      industry,
+      informant_relationship,
+      contains("cod_text"),
+      contains("name"),
+      injury_description
+    ),
     .fns = ~ str_to_title(.x)
   )) %>%
   ## Ensure Zip Codes follow 5-digit formatting
@@ -103,10 +110,11 @@ harmonized_data <- harmonized_data %>%
     vintage_label,
     source_system,
     file_year,
-    source_file,
     # Unique Identifiers
     state_file_number,
     local_file_number,
+    contains("name"), # Names
+    social_security_number,
     # Dates & Times
     date_of_birth,
     date_of_injury,
@@ -120,11 +128,13 @@ harmonized_data <- harmonized_data %>%
     underlying_cod_code,
     all_cod_code,
     starts_with("record_axis_code"), # Comment out if we do not want all record_axis_code_# variables!
+    contains("cod_text"), # literal narrative
     manner,
     disposition,
     # Injury
     injury_acme_place,
     injury_at_work,
+    injury_description, # literal
     # Geography
     starts_with("birthplace_country"),
     starts_with("birthplace_state_fips_code"),
@@ -193,6 +203,19 @@ arrow::write_parquet(
 data_dictionary <- rads::create_dictionary(
   ph.data = harmonized_data,
   source = "harmonized_data",
+  suppress = c(
+    "social_security_number",
+    "name_first",
+    "name_middle",
+    "name_last",
+    "name_suffix",
+    "cod_text_1",
+    "cod_text_2",
+    "cod_text_3",
+    "cod_text_4",
+    "cod_text_other",
+    "injury_description"
+  ),
   max_unique_values = 30,
   truncation_threshold = 15
 )
