@@ -62,7 +62,7 @@ for (file_yr in unique(death_files$file_year)) {
       pull(file_location)
   )
 
-  ### Step 1.4: Join All Files Together (for a Single Year)
+  ### Step 1.4: Join Statistical/Literals/Names Files Together (for a Single Year)
   df_combined <- df_stat %>%
     left_join(., df_literals, by = join_by(state_file_number)) %>%
     left_join(., df_names, by = join_by(state_file_number))
