@@ -1,6 +1,6 @@
 # 1_harmonize_death_files
 
-# Identify All Death Statistical File Vintages -----
+# Identify All Death (Statistical, Literals, and Names) File Vintages -----
 death_files <- identify_death_files(
   folder = params$raw_data_folder
 ) %>%
