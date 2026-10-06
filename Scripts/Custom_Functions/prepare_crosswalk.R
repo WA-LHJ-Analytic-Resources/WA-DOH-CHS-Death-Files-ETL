@@ -20,7 +20,15 @@ prepare_crosswalk <- function(
       select(file_year, from_name, to_name, notes)
   } else if (cw_type == "Variable Recoding") {
     cw_formatted <- cw %>%
-      select(file_year, variable, from_code, from_label, to_code, to_label)
+      select(
+        file_year,
+        variable,
+        from_code,
+        from_label,
+        to_code,
+        to_label,
+        review_flag
+      )
   }
 
   return(cw_formatted)
