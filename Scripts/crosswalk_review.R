@@ -1,43 +1,49 @@
 # crosswalk_review.R
 
-# Missing Variables (via Variable Rename Crosswalk) -----
+# Missing Variables (via Variable Rename Crosswalks) -----
 
-## Load in Variable Rename Crosswalk
-var_rename_crosswalk <- params$variable_rename_cw %>%
-  pivot_longer(
-    cols = matches("^\\d{4}$"), # matches columns named as "2010","2011",…
-    names_to = "file_year",
-    values_to = "from_name"
-  ) %>%
-  mutate(file_year = as.integer(file_year)) %>%
-  select(file_year, from_name, to_name)
+statistical_missing <- params$variable_rename_cw_statistical %>%
+  select(file_year, from_name, to_name) %>%
+  mutate(missing = is.na(from_name), file_type = "Death Statistical")
 
-## Identify Missing Variables
-var_rename_crosswalk <- var_rename_crosswalk %>%
-  mutate(missing = is.na(from_name))
+literals_missing <- params$variable_rename_cw_literals %>%
+  select(file_year, from_name, to_name) %>%
+  mutate(missing = is.na(from_name), file_type = "Cause of Death Literals")
+
+names_missing <- params$variable_rename_cw_names %>%
+  select(file_year, from_name, to_name) %>%
+  mutate(missing = is.na(from_name), file_type = "Death Names")
+
+combined_missing <- bind_rows(
+  statistical_missing,
+  literals_missing,
+  names_missing
+)
 
 ## Create Missing Summary by Variable
-missing_variable_summary <- var_rename_crosswalk %>%
+missing_variable_summary <- combined_missing %>%
   filter(missing == TRUE) %>%
   arrange(to_name, file_year) %>%
-  group_by(to_name) %>%
+  group_by(file_type, to_name) %>%
   mutate(missing_years = paste0(file_year, collapse = ",")) %>%
   ungroup() %>%
-  distinct(to_name, missing_years)
+  distinct(file_type, to_name, missing_years)
 
 
 # Flagged Recoing Variables (via Variable Recode Crosswalk) -----
 
 ## Load in Variable Recode Crosswalk
-var_recode_crosswalk <- params$variable_recode_cw
+var_recode_crosswalk <- params$variable_recode_cw_statistical %>%
+  mutate(file_type = "Death Statistical")
 
 ## Create Missing Summary by Variable
 flagged_variable_recode_summary <- var_recode_crosswalk %>%
   filter(review_flag == TRUE) %>%
-  group_by(variable, from_code, to_code) %>%
+  group_by(file_type, variable, from_code, to_code) %>%
   mutate(applicable_years = paste0(file_year, collapse = ",")) %>%
   ungroup() %>%
   distinct(
+    file_type,
     variable,
     from_code,
     from_label,
@@ -46,26 +52,17 @@ flagged_variable_recode_summary <- var_recode_crosswalk %>%
     applicable_years
   )
 
-# Save Summaries -----
+# Save Review Summaries -----
 
-## Missing Variables
+# Name the sheets by naming the list elements
 writexl::write_xlsx(
-  missing_variable_summary,
+  list(
+    "1_Missing_Variable_Summary" = missing_variable_summary,
+    "2_Recoding_Variable_Review" = flagged_variable_recode_summary
+  ),
   path = here(
     "Resources",
     "Admin",
-    "Review",
-    "Missing Variables Referenced in Rename Crosswalk.xlsx"
-  )
-)
-
-## Flagged Recoding
-writexl::write_xlsx(
-  flagged_variable_recode_summary,
-  path = here(
-    "Resources",
-    "Admin",
-    "Review",
-    "Flagged Variable Recoding Operations.xlsx"
+    "Admin_Review.xlsx"
   )
 )
