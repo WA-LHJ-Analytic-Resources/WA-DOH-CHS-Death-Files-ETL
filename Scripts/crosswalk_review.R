@@ -14,6 +14,7 @@ names_missing <- params$variable_rename_cw_names %>%
   select(file_year, from_name, to_name) %>%
   mutate(missing = is.na(from_name), file_type = "Death Names")
 
+## Bind All Missing Variable Summaries together
 combined_missing <- bind_rows(
   statistical_missing,
   literals_missing,
