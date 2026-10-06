@@ -11,6 +11,7 @@
 #'
 #' @param folder Character path to the folder containing death certificate
 #'   files. This should typically correspond to your project's raw data folder.
+#'   identify_death_files() looks recursively through all of folder's subfolders.
 #'
 #' @return
 #' A tibble containing metadata for all files matching the requested
@@ -68,7 +69,7 @@ identify_death_files <- function(
   }
 
   # Step 1: List files recursively under the folder
-  paths <- list.files(folder, recursive = FALSE, full.names = TRUE)
+  paths <- list.files(folder, recursive = TRUE, full.names = TRUE)
 
   # Step 2: Build the 'files' tibble
   files <- tibble(
