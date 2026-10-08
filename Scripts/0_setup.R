@@ -30,6 +30,7 @@ pacman::p_load(
   readr,
   readxl,
   scales,
+  stringi,
   tictoc,
   tidyr,
   tidyverse,
@@ -62,14 +63,29 @@ params$crosswalk_filepath <- here::here(
   "Crosswalks and Schemas.xlsx"
 )
 
-params$variable_rename_cw <- readxl::read_excel(
-  path = params$crosswalk_filepath,
-  sheet = "rename_variables"
+## Variable Renaming Crosswalks
+params$variable_rename_cw_statistical <- prepare_crosswalk(
+  cw_sheet = "rename_variables_statistical",
+  cw_type = "Variable Renaming"
 )
-params$variable_recode_cw <- readxl::read_excel(
-  path = params$crosswalk_filepath,
-  sheet = "recode_variables"
+
+params$variable_rename_cw_literals <- prepare_crosswalk(
+  cw_sheet = "rename_variables_literals",
+  cw_type = "Variable Renaming"
 )
+
+params$variable_rename_cw_names <- prepare_crosswalk(
+  cw_sheet = "rename_variables_names",
+  cw_type = "Variable Renaming"
+)
+
+## Variable Recoding Crosswalk
+params$variable_recode_cw_statistical <- prepare_crosswalk(
+  cw_sheet = "recode_variables_statistical",
+  cw_type = "Variable Recoding"
+)
+
+## Final Data Schema
 params$harmonized_data_schema <- readxl::read_excel(
   path = params$crosswalk_filepath,
   sheet = "harmonized_data_schema"

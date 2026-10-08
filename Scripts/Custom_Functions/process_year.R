@@ -72,12 +72,16 @@ process_year <- function(year, cw, file_path) {
     pull(from_name) %>%
     unique()
 
-  # Read the CSV for this year; set all columns as character -----
-  df <- read_csv(
-    file = file_path,
-    col_select = all_of(source_vars), # Only load source_vars. all_of() will throw an error if there's a mismatch (helpful for identifying potential bugs)
-    col_types = cols(.default = col_character()), # force all vars to character
-    show_col_types = FALSE
+  # Read the CSV for this year; set all columns as character (Suppress Warnings/Messages) -----
+  df <- suppressWarnings(
+    suppressMessages(
+      read_csv(
+        file = file_path,
+        col_select = all_of(source_vars),
+        col_types = cols(.default = col_character()),
+        show_col_types = FALSE
+      )
+    )
   )
 
   # Normalize missing values & trim whitespace -----
