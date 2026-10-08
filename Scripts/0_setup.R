@@ -30,6 +30,7 @@ pacman::p_load(
   readr,
   readxl,
   scales,
+  stringi,
   tictoc,
   tidyr,
   tidyverse,
