@@ -22,7 +22,6 @@ tictoc::tic("Harmonize all death data vintages")
 harmonized_list <- list()
 
 ## Step 1: Load, Rename, and Recode Each Data Vintage
-
 for (file_yr in unique(death_files$file_year)) {
   tictoc::tic(glue("Processing the data vintage for {file_yr}"))
 
@@ -30,7 +29,7 @@ for (file_yr in unique(death_files$file_year)) {
   data_vintage <- death_files %>% filter(file_year == file_yr)
 
   ### Step 1.2: Extact vintage metadata
-  provenance <- tibble(
+  metadata <- tibble(
     vintage_label = data_vintage$vintage_label,
     file_year = data_vintage$file_year,
     source_system = data_vintage$system,
@@ -67,9 +66,9 @@ for (file_yr in unique(death_files$file_year)) {
     left_join(., df_literals, by = join_by(state_file_number)) %>%
     left_join(., df_names, by = join_by(state_file_number))
 
-  ### Step 1.5: Load Single Year Combined Data into a List (append metadata/provenance)
+  ### Step 1.5: Load Single Year Combined Data into a List (append metadata)
   harmonized_list[[as.character(file_yr)]] <- df_combined %>%
-    bind_cols(provenance) %>%
+    bind_cols(metadata) %>%
     relocate(
       vintage_label,
       date_harmonized,
@@ -107,5 +106,5 @@ rm(
   df_combined,
   harmonized_list,
   data_vintage,
-  provenance
+  metadata
 )
