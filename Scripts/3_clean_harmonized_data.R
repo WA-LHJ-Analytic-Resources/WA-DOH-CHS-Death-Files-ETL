@@ -113,7 +113,7 @@ harmonized_data <- harmonized_data %>%
     # Unique Identifiers
     state_file_number,
     local_file_number,
-    contains("name"), # Names
+    contains("name_"), # Names
     social_security_number,
     # Dates & Times
     date_of_birth,
