@@ -99,7 +99,7 @@ clean_data_types <- function(
   purrr::pwalk(
     df_schema %>% select(variable, data_type),
     function(variable, data_type) {
-      ## Exract Variable Being Converted & Convert to Character
+      ## Extract Variable Being Converted & Convert to Character
       x <- df[[variable]]
       x_chr <- as.character(x)
 
@@ -117,12 +117,29 @@ clean_data_types <- function(
         # "date" = lubridate::as_date(x_chr), # date variables already properly processed via clean_date_variables()
         # "time" = lubridate::hm(x_chr),  # time variables already properly processed via clean_time_variables()
         "factor" = {
-          # Step 1: only coerce to factor; do not expand levels/labels yet
-          factor(x_chr)
-        },
-        "ordered" = {
-          # Step 1: coerce to ordered factor with observed order of appearance
-          factor(x_chr, ordered = TRUE)
+          ## Step 1: Pull the schema rows for this variable
+          schema_rows <- df_schema %>%
+            dplyr::filter(.data$variable == !!variable)
+
+          ## Step 2: Determine if the factor is ordered
+          fct_ordered <- unique(schema_rows$factor_is_ordered)[1]
+
+          ## Step 3: If factor is ordered, sort rows by schema_row$factor_order
+          if (isTRUE(fct_ordered)) {
+            schema_rows <- schema_rows %>% arrange(factor_order)
+          }
+
+          ## Step 4: Extract factor levels and labels
+          fct_levels <- schema_rows$factor_value
+          fct_labels <- schema_rows$factor_label
+
+          ## Step 5: Build factor variable
+          factor(
+            x_chr,
+            levels = fct_levels,
+            labels = fct_labels,
+            ordered = fct_ordered
+          )
         },
         {
           msg <- sprintf(
@@ -138,7 +155,10 @@ clean_data_types <- function(
 
   # Step 4: Audit Updated Data Types -----
   audit <- audit %>%
-    mutate(new_class = sapply(df, function(z) paste(class(z), collapse = "/")))
+    mutate(
+      new_class = sapply(df, function(z) paste(class(z), collapse = "/"))
+    ) %>%
+    arrange(variable)
 
   ## Add schema_audit as an attribute to output
   attr(df, "data_type_conversions") <- audit
