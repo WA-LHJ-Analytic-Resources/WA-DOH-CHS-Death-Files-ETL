@@ -97,7 +97,7 @@ clean_data_types <- function(
 
   # Step 3: Convert Data Types (using df_schema), column by column -----
   purrr::pwalk(
-    df_schema %>% select(variable, data_type),
+    df_schema %>% select(variable, data_type) %>% distinct(),
     function(variable, data_type) {
       ## Extract Variable Being Converted & Convert to Character
       x <- df[[variable]]
