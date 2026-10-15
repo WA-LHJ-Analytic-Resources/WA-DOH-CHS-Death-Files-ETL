@@ -1,55 +1,72 @@
 #' Clean and Standardize Data Types in a Data Frame Based on a Schema
 #'
 #' This function audits, validates, and coerces the data types of variables in a
-#' data frame using a schema data frame (`df_schema`). It checks for missing and
-#' extra variables, prints warnings, converts each variable to its designated
-#' type, and stores a before/after audit of data types as an attribute on the
-#' returned data frame.
+#' data frame (`df`) using a harmonized schema data frame (`df_schema`). It checks
+#' for missing or extra variables, converts each variable to its designated type,
+#' and records a before/after audit of all data types.
 #'
 #' @description
-#' The function enforces consistency between a dataset (`df`) and a harmonized
-#' schema (`df_schema`), ensuring that each variable is coerced to the correct
-#' data type. Any mismatches in variable presence (missing or extra columns) are
-#' flagged via warnings. Type coercion is handled through a controlled set of
-#' rules, including numeric, integer, logical, factor, ordered, and character
-#' types.
+#' The function enforces consistency between a dataset and an external schema by:
+#' (1) validating variable presence, (2) coercing variables to their specified
+#' data types, and (3) applying factor levels, labels, and ordering rules defined
+#' in the schema.
+#'
+#' The schema supports *long-form factor specifications*, where variables with
+#' multiple factor levels (e.g., age groups, sex, race) appear in multiple rows.
+#' Factor ordering is not controlled by the `data_type` column; instead,
+#' factor ordering is determined by `factor_is_ordered` and (optionally)
+#' `factor_order`.
 #'
 #' @param df A data frame whose variable types will be validated and coerced.
-#' @param df_schema A data frame containing two required columns:
-#'   \describe{
-#'     \item{variable}{Character name of the variable in `df`}
-#'     \item{data_type}{Expected data type (e.g., "character", "numeric",
-#'       "integer", "logical", "factor", "ordered")}
-#'   }
+#'
+#' @param df_schema A data frame defining the expected structure of `df`. At
+#' minimum, it must include:
+#' \describe{
+#'   \item{variable}{Name of the variable in `df`.}
+#'   \item{data_type}{Target data type ("character", "numeric", "integer",
+#'                    "logical", or "factor").}
+#' }
+#'
+#' For variables with `data_type == "factor"`, `df_schema` must contain *one row
+#' per factor level*, including:
+#' \describe{
+#'   \item{factor_value}{The raw value in `df` to be mapped to a factor level.}
+#'   \item{factor_label}{A human‑readable label assigned to that level.}
+#'   \item{factor_is_ordered}{Logical flag indicating whether the factor should
+#'                            be constructed as ordered.}
+#'   \item{factor_order}{Integer specifying the level order (only required when
+#'                       `factor_is_ordered == TRUE`).}
+#' }
 #'
 #' @return
-#' A data frame identical to `df` but with variables converted to types defined
-#' in `df_schema`. The returned data frame includes an attribute:
-#'
-#' * `data_type_conversions`: A tibble documenting the original and final class
-#'   of each variable.
+#' A data frame identical to `df` but with variables converted to the types
+#' declared in `df_schema`. An attribute `"data_type_conversions"` is attached,
+#' containing a tibble summarizing old and new classes for each variable.
 #'
 #' @details
-#' The function performs the following steps:
+#' The function executes the following steps:
 #'
 #' \enumerate{
-#'   \item Check for missing variables (in schema but not in `df`) and extra
-#'         variables (in `df` but not in schema). Issues are reported via
-#'         `warning()`.
+#'   \item Validate that all schema variables appear in `df` and warn about
+#'         missing or extra variables.
 #'
-#'   \item Audit the original data types for all variables in `df`.
+#'   \item Audit original data types for all variables in `df`.
 #'
-#'   \item Coerce each variable listed in `df_schema` to the specified type using:
-#'         \itemize{
-#'           \item Numeric and integer parsing via `readr::parse_double()` and
-#'                 `readr::parse_integer()`.
-#'           \item Logical coercion via `coerce_logical()` (user-defined).
-#'           \item Factor and ordered factor creation via `factor()`.
-#'           \item Character coercion via `as.character()`.
-#'           \item Date & time variables are not coereced in this function and are handled separately in clean_date_variables() and clean_time_variables().
-#'         }
+#'   \item Coerce each variable to its schema-defined type:
+#'     \itemize{
+#'       \item `numeric` / `integer`: Parsed via `readr::parse_double()` or
+#'             `readr::parse_integer()`.
+#'       \item `logical`: Coerced using a user-defined `coerce_logical()` helper.
+#'       \item `factor`: Levels, labels, and ordering are applied based on the
+#'             long-form factor specification in `df_schema`.
+#'             Ordered factors are sorted using `factor_order`; unordered
+#'             factors preserve the row order of `df_schema`.
+#'       \item `character`: Converted with `as.character()`.
+#'       \item Date/time fields are not processed here and should be handled
+#'             through separate functions (e.g., `clean_date_variables()`).
+#'     }
 #'
-#'   \item Re‑audit all variables and attach the audit to the output.
+#'   \item Re-audit all variable classes and attach the audit to the output.
 #'
 #'   \item Return the updated data frame.
 #' }
@@ -97,9 +114,9 @@ clean_data_types <- function(
 
   # Step 3: Convert Data Types (using df_schema), column by column -----
   purrr::pwalk(
-    df_schema %>% select(variable, data_type),
+    df_schema %>% select(variable, data_type) %>% distinct(),
     function(variable, data_type) {
-      ## Exract Variable Being Converted & Convert to Character
+      ## Extract Variable Being Converted & Convert to Character
       x <- df[[variable]]
       x_chr <- as.character(x)
 
@@ -117,12 +134,29 @@ clean_data_types <- function(
         # "date" = lubridate::as_date(x_chr), # date variables already properly processed via clean_date_variables()
         # "time" = lubridate::hm(x_chr),  # time variables already properly processed via clean_time_variables()
         "factor" = {
-          # Step 1: only coerce to factor; do not expand levels/labels yet
-          factor(x_chr)
-        },
-        "ordered" = {
-          # Step 1: coerce to ordered factor with observed order of appearance
-          factor(x_chr, ordered = TRUE)
+          ## Step 1: Pull the schema rows for this variable
+          schema_rows <- df_schema %>%
+            dplyr::filter(.data$variable == !!variable)
+
+          ## Step 2: Determine if the factor is ordered
+          fct_ordered <- unique(schema_rows$factor_is_ordered)[1]
+
+          ## Step 3: If factor is ordered, sort rows by schema_row$factor_order
+          if (isTRUE(fct_ordered)) {
+            schema_rows <- schema_rows %>% arrange(factor_order)
+          }
+
+          ## Step 4: Extract factor levels and labels
+          fct_levels <- schema_rows$factor_value
+          fct_labels <- schema_rows$factor_label
+
+          ## Step 5: Build factor variable
+          factor(
+            x_chr,
+            levels = fct_levels,
+            labels = fct_labels,
+            ordered = fct_ordered
+          )
         },
         {
           msg <- sprintf(
@@ -138,7 +172,10 @@ clean_data_types <- function(
 
   # Step 4: Audit Updated Data Types -----
   audit <- audit %>%
-    mutate(new_class = sapply(df, function(z) paste(class(z), collapse = "/")))
+    mutate(
+      new_class = sapply(df, function(z) paste(class(z), collapse = "/"))
+    ) %>%
+    arrange(variable)
 
   ## Add schema_audit as an attribute to output
   attr(df, "data_type_conversions") <- audit
