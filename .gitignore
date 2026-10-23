@@ -53,5 +53,14 @@ rsconnect/
 *.RData
 *.xlsx 
 
+# uvr internal files (contains R binaries, caches)
+.uvr/
+
+## renv internal files
+renv/library/
+renv/staging/
+renv/python/
+
 ## Exceptions
 !Resources/Admin/Crosswalks and Schemas.xlsx
+
