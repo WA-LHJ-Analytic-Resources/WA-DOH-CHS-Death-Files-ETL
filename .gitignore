@@ -52,6 +52,7 @@ rsconnect/
 # Define Project-Specific .gitignore here ----
 *.RData
 *.xlsx 
+*.html 
 
 # uvr internal files (contains R binaries, caches)
 .uvr/
