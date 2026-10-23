@@ -61,6 +61,10 @@ renv/library/
 renv/staging/
 renv/python/
 
+## .vscode files (contains local machine file paths to R binaries)
+.vscode/
+
+
 ## Exceptions
 !Resources/Admin/Crosswalks and Schemas.xlsx
 
