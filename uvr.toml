@@ -1,0 +1,23 @@
+[project]
+name = "WA-DOH-CHS-Death-Files-ETL"
+
+[dependencies]
+arrow = "*"
+fs = "*"
+ggplot2 = "*"
+glue = "*"
+here = "*"
+plotly = "*"
+purrr = "*"
+readr = "*"
+readxl = "*"
+scales = "*"
+stringi = "*"
+stringr = "*"
+tictoc = "*"
+tidyr = "*"
+tidyverse = "*"
+writexl = "*"
+
+[dependencies.rads]
+git = "PHSKC-APDE/rads"
