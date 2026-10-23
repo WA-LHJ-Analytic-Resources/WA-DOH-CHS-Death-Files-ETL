@@ -307,9 +307,15 @@ arrow::write_parquet(
 )
 
 ## Create a Dictionary for the Harmonized Data
+var_descriptions <- params$harmonized_data_schema %>%
+  mutate(source = "WA DOH CHS Death Certificate Files") %>%
+  distinct(source, varname = variable, desc = description)
+
+
 data_dictionary <- rads::create_dictionary(
   ph.data = harmonized_data,
-  source = "harmonized_data",
+  ph.ref = var_descriptions,
+  source = "WA DOH CHS Death Certificate Files",
   suppress = c(
     "social_security_number",
     "name_first",

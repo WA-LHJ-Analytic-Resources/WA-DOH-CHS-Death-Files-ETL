@@ -142,7 +142,9 @@ params$harmonized_data_schema <- readxl::read_excel(
     factor_is_ordered,
     factor_value,
     factor_label,
-    factor_order
+    factor_order,
+    description,
+    source_file_type
   )
 
 # Load Code Sets -----
