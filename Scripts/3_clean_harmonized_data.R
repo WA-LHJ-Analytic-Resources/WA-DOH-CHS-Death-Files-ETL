@@ -286,10 +286,23 @@ harmonized_data <- harmonized_data %>%
   )
 
 # Implement Variable Completeness Check -----
-visualize_completeness(
+var_completeness_plot <- visualize_completeness(
   df = harmonized_data,
-  completeness_threshold = 1, # change completeness_threshold to 0.95 (or other value) to subset to variables with lower incompleteness/higher variability
-  plotly = TRUE
+  completeness_threshold = 1 # change completeness_threshold to 0.95 (or other value) to subset to variables with lower incompleteness/higher variability
+)
+
+## View variable completeness
+var_completeness_plot
+
+## Save variable completeness plot
+htmlwidgets::saveWidget(
+  var_completeness_plot,
+  "Variable_Completeness_Plot.html",
+  selfcontained = TRUE
+)
+fs::file_move(
+  path = "Variable_Completeness_Plot.html",
+  new_path = "Resources/Variable_Completeness_Plot.html"
 )
 
 # Check rads R Package Death Functions Compatability -----
