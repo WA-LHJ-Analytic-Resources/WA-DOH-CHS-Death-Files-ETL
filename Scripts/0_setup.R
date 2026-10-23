@@ -1,43 +1,49 @@
 # 0_setup.R
+# This script assumes the environment was created by uvr and that all
+# required packages are already installed via `uvr::add()` + `uvr::sync()`.
 
-# Define Filepaths (.Renviron file) -----
-## Resource URL: https://rstats.wtf/r-startup.html#renviron
-## Note(s):
-# a) Add RAW_DEATH_FILES_FOLDER (the filepath where all raw WA DOH CHS Death files are stored after being downloaded from Secure Access Washington)
-# b) Add HARMONIZED_DEATH_FILE_FOLDER (The file path where the output harmonized death data file will be stored)
-# c) Restart the R session after creating .Renviron file for the first time.
+# 1. Load Environment Variables (from .Renviron) -----
 
-file.edit(".Renviron")
+# If user needs to create or edit .Renviron manually:
+# file.edit(".Renviron")
+# Restart session after editing.
 
-# R Packages & Custom Functions -----
+RAW_DATA_FOLDER <- Sys.getenv("RAW_DEATH_FILES_FOLDER")
+OUTPUT_FOLDER <- Sys.getenv("HARMONIZED_DEATH_FILE_FOLDER")
 
-## Install PHSKC RADs R Package
-## URL: https://github.com/PHSKC-APDE/rads
-## Note(s): You will need RTools installed to pull down and assemble an R package from GitHub (like rads): https://cran.r-project.org/bin/windows/Rtools/
+print(RAW_DATA_FOLDER)
+print(OUTPUT_FOLDER)
 
-# pak::pkg_install("PHSKC-APDE/rads")
+# 2. Load Required Packages (installed already by uvr) -----
 
-# Install/Load R Packages
-pacman::p_load(
-  arrow,
-  fs,
-  ggplot2,
-  glue,
-  here,
-  plotly,
-  purrr,
-  rads,
-  readr,
-  readxl,
-  scales,
-  stringi,
-  tictoc,
-  tidyr,
-  tidyverse,
-  writexl
-)
+library(arrow)
+library(conflicted)
+library(fs)
+library(ggplot2)
+library(glue)
+library(here)
+library(htmlwidgets)
+library(lubridate)
+library(plotly)
+library(purrr)
+library(rads) # installed via uvr::add("github::PHSKC-APDE/rads")
+library(readr)
+library(readxl)
+library(scales)
+library(stringi)
+library(stringr)
+library(tictoc)
+library(tidyr)
+library(tidyselect)
+library(tidyverse)
+library(writexl)
 
-# Load All Custom functions
+## Resolve any package conflicts
+conflicted::conflict_prefer("filter", "dplyr") # dplyr::filter() > plotly::filter()
+conflicted::conflict_prefer("lag", "dplyr") # dplyr::lag() > stats::lag()
+
+# 3. Load Custom Functions -----
+
 list.files(
   path = here::here("Scripts", "Custom_Functions"),
   pattern = "\\.R$",
@@ -46,16 +52,16 @@ list.files(
 ) %>%
   lapply(source)
 
-# Define Parameters -----
-params <- list()
-params$code_sets <- list() # to store 4_Code_Set_Expansion lookup tables
-params$raw_data_folder <- Sys.getenv("RAW_DEATH_FILES_FOLDER") # Note: Should match value set in .Renviron file, if not restart R and troubleshoot .Renviron
-params$output_folder <- Sys.getenv("HARMONIZED_DEATH_FILE_FOLDER") # Note: Should match value set in .Renviron file, if not restart R and troubleshoot .Renviron
+# 4. Define Project Parameters -----
 
-## Add Variable Labels (Convert Coded Variables to Factors)
+params <- list()
+
+params$code_sets <- list()
+params$raw_data_folder <- RAW_DATA_FOLDER
+params$output_folder <- OUTPUT_FOLDER
+
 params$apply_variable_labels <- TRUE
 
-## Define Age Grouping Levels/Cuts
 params$age_6g_levels <- c(0, 1, 15, 25, 45, 65)
 params$age_11g_levels <- c(0, 1, 5, 15, 25, 35, 45, 55, 65, 75, 85)
 params$age_20g_levels <- c(
@@ -80,35 +86,16 @@ params$age_20g_levels <- c(
   80,
   85
 )
-params$age_5yr_levels <- c(
-  0,
-  5,
-  10,
-  15,
-  20,
-  25,
-  30,
-  35,
-  40,
-  45,
-  50,
-  55,
-  60,
-  65,
-  70,
-  75,
-  80,
-  85
-)
+params$age_5yr_levels <- seq(0, 85, by = 5)
 
-# Load Crosswalks & Harmonized Data Schema -----
+# 5. Load Crosswalks & Harmonized Data Schema -----
+
 params$crosswalk_filepath <- here::here(
   "Resources",
   "Admin",
   "Crosswalks and Schemas.xlsx"
 )
 
-## Variable Renaming Crosswalks
 params$variable_rename_cw_statistical <- prepare_crosswalk(
   cw_sheet = "rename_variables_statistical",
   cw_type = "Variable Renaming"
@@ -124,13 +111,11 @@ params$variable_rename_cw_names <- prepare_crosswalk(
   cw_type = "Variable Renaming"
 )
 
-## Variable Recoding Crosswalk
 params$variable_recode_cw_statistical <- prepare_crosswalk(
   cw_sheet = "recode_variables_statistical",
   cw_type = "Variable Recoding"
 )
 
-## Final Data Schema
 params$harmonized_data_schema <- readxl::read_excel(
   path = params$crosswalk_filepath,
   sheet = "harmonized_data_schema"
@@ -147,17 +132,17 @@ params$harmonized_data_schema <- readxl::read_excel(
     source_file_type
   )
 
-# Load Code Sets -----
+# 6. Load Code Sets -----
+
 params$code_sets_folder <- here::here("Resources", "Code Sets")
 
-# fmt: skip
-## Code Sets
-
-for(set in list.files(here(params$code_sets_folder), full.names = TRUE)){
-  setname <- str_remove(basename(set), "_codes.csv") 
-  print(glue("Loading code sets for: {setname}"))
-
-  params$code_sets[[setname]] <- readr::read_csv(file = set, show_col_types = FALSE)
+for (set in list.files(params$code_sets_folder, full.names = TRUE)) {
+  setname <- stringr::str_remove(basename(set), "_codes.csv")
+  message(glue("Loading code sets for: {setname}"))
+  params$code_sets[[setname]] <- readr::read_csv(
+    file = set,
+    show_col_types = FALSE
+  )
 }
 
 rm(set, setname)
