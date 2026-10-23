@@ -55,6 +55,51 @@ params$output_folder <- Sys.getenv("HARMONIZED_DEATH_FILE_FOLDER") # Note: Shoul
 ## Add Variable Labels (Convert Coded Variables to Factors)
 params$apply_variable_labels <- TRUE
 
+## Define Age Grouping Levels/Cuts
+params$age_6g_levels <- c(0, 1, 15, 25, 45, 65)
+params$age_11g_levels <- c(0, 1, 5, 15, 25, 35, 45, 55, 65, 75, 85)
+params$age_20g_levels <- c(
+  0,
+  1,
+  5,
+  10,
+  15,
+  18,
+  20,
+  25,
+  30,
+  35,
+  40,
+  45,
+  50,
+  55,
+  60,
+  65,
+  70,
+  75,
+  80,
+  85
+)
+params$age_5yr_levels <- c(
+  0,
+  5,
+  10,
+  15,
+  20,
+  25,
+  30,
+  35,
+  40,
+  45,
+  50,
+  55,
+  60,
+  65,
+  70,
+  75,
+  80,
+  85
+)
 
 # Load Crosswalks & Harmonized Data Schema -----
 params$crosswalk_filepath <- here::here(
@@ -97,7 +142,9 @@ params$harmonized_data_schema <- readxl::read_excel(
     factor_is_ordered,
     factor_value,
     factor_label,
-    factor_order
+    factor_order,
+    description,
+    source_file_type
   )
 
 # Load Code Sets -----

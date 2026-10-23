@@ -24,6 +24,126 @@ harmonized_data <- harmonized_data %>%
     remove_inputs = FALSE # TRUE = Removes all record_axis_code variables as they have all been condensed into all_cod_code
   )
 
+# Clean Age Variables & Create Standard Age Bins -------
+harmonized_data <- harmonized_data %>%
+  # Clean age variable
+  mutate(age = if_else(age_type == 9 & age == 999, NA, age)) %>% # Convert age to NA (if age_type is 9/Unknown and age is 999)
+  # Clean age_years
+  mutate(
+    age_years = as.integer(age_years), # to integer
+    age_years = if_else(age_years > 120, NA, age_years) # age_years over 120 to NA
+  ) %>%
+  # Create Age Year Bins (age_6g, age_11g, age_20g, age_5yr)
+  mutate(
+    age_6g = rads::bin_age(age_years, cuts = params$age_6g_levels),
+    age_11g = rads::bin_age(
+      age_years,
+      cuts = params$age_11g_levels
+    ),
+    age_20g = rads::bin_age(
+      age_years,
+      cuts = params$age_20g_levels
+    ),
+    age_5yr = rads::bin_age(
+      age_years,
+      cuts = params$age_5yr_levels
+    )
+  )
+
+# Create Race-Ethnicity Groupings -------
+harmonized_data <- harmonized_data %>%
+  # Create hispanic
+  mutate(
+    hispanic = case_when(
+      hispanic_nchs_bridge == 0 ~ 0,
+      hispanic_nchs_bridge %in% c(1:5) ~ 1,
+      TRUE ~ NA
+    )
+  ) %>%
+  # Create race_ethnicity2
+  mutate(
+    race_ethnicity2 = case_when(
+      hispanic == 0 ~ "Not Hispanic",
+      hispanic == 1 ~ "Hispanic",
+      TRUE ~ NA
+    )
+  ) %>%
+  # Create race6
+  mutate(
+    race6 = case_when(
+      race_summary_code == 10 ~ "White Only",
+      race_summary_code == 11 ~ "Black Only",
+      race_summary_code == 12 ~ "American Indian/Alaska Native Only",
+      race_summary_code == 13 ~ "Asian Only",
+      race_summary_code == 14 ~ "Native Hawaiian and Pacific Islander Only",
+      race_summary_code %in% c(99, NA) ~ NA,
+      TRUE ~ "Multi Race"
+    )
+  ) %>%
+  # Create race_ethnicity7
+  mutate(
+    race_ethnicity7 = case_when(
+      ## Step 1: Classify by Hispanic/Latine Identity
+      hispanic == 1 ~ "Hispanic as Race",
+      ## Step 2: Classify by race6
+      hispanic %in% c(0, NA) & race6 == "White Only" ~ "White Only-NH",
+      hispanic %in% c(0, NA) & race6 == "Black Only" ~ "Black Only-NH",
+      hispanic %in%
+        c(0, NA) &
+        race6 ==
+          "American Indian/Alaska Native Only" ~ "American Indian/Alaska Native Only-NH",
+      hispanic %in% c(0, NA) & race6 == "Asian Only" ~ "Asian Only-NH",
+      hispanic %in%
+        c(0, NA) &
+        race6 ==
+          "Native Hawaiian and Pacific Islander Only" ~ "Native Hawaiian and Pacific Islander Only-NH",
+      hispanic %in% c(0, NA) & race6 == "Multi Race" ~ "Multi-Race-NH",
+      TRUE ~ NA
+    )
+  ) %>%
+  # Create race_asian & race_nhpi (based on more-specific subgroupings) %>%
+  mutate(
+    race_asian = if_else(
+      if_any(
+        c(
+          race_asian_indian,
+          race_chinese,
+          race_filipino,
+          race_japanese,
+          race_korean,
+          race_other_asian,
+          race_vietnamese
+        ),
+        ~ .x == "Y"
+      ),
+      "Y",
+      "N"
+    ),
+    race_nhpi = if_else(
+      if_any(
+        c(
+          race_hawaiian,
+          race_samoan,
+          race_guamanian_or_chamorro,
+          race_other_pacific_islander
+        ),
+        ~ .x == "Y"
+      ),
+      "Y",
+      "N"
+    )
+  ) %>%
+  # Create race_code (5-digit SADE Race Codes for AOIC: White|Black|AIAN|Asian|NHPI)
+  mutate(
+    race_code = str_c(
+      if_else(race_white == "Y", "1", "0"),
+      if_else(race_black == "Y", "1", "0"),
+      if_else(race_amer_indian_alaskan == "Y", "1", "0"),
+      if_else(race_asian == "Y", "1", "0"),
+      if_else(race_nhpi == "Y", "1", "0")
+    )
+  )
+
 # Clean Date & Time Variables ------
 
 ## Clean Date Variables
@@ -34,7 +154,7 @@ audits$date_parse_errors <- attr(harmonized_data, "date_parsing_errors")
 harmonized_data <- clean_time_variables(df = harmonized_data)
 audits$time_parse_errors <- attr(harmonized_data, "time_parsing_errors")
 
-# Convert Variables to Final Data Types (Specified by Harmonized Data Schema) -----
+# Convert Variables to Final Data Types (Specified by Harmonized Data Schema) & Apply Factor Labels -----
 
 ## Convert all variables to proper data types
 harmonized_data <- clean_data_types(
@@ -44,17 +164,6 @@ harmonized_data <- clean_data_types(
 
 ## Audit how data types were converted
 audits$data_type_conversions <- attr(harmonized_data, "data_type_conversions")
-
-# (Optional) Apply Labels to Factor Variables ------
-if (params$apply_variable_labels == TRUE) {
-  harmonized_data <- apply_variable_labels(
-    df = harmonized_data,
-    df_schema = params$harmonized_data_schema
-  )
-
-  ## Audit how the factor labels were applied
-  audits$factor_conversion <- attr(harmonized_data, "factor_audit")
-}
 
 # Final Cleaning of Variables (Predominantly Strings) -----
 
@@ -95,9 +204,7 @@ harmonized_data <- harmonized_data %>%
       injury_place %in% c("NONE", "UNKNOWN", "NOT APPLICABLE") ~ NA,
       TRUE ~ injury_place
     ),
-    residence_length = if_else(residence_length == "999", NA, residence_length), # Could be possible based on residence_length_type but unlikely
-    age = if_else(age_type == "Unknown" & age == 999, NA, age),
-    age_years = if_else(age_years > 120, NA, age_years) # Convert age_years over 120 to NA
+    residence_length = if_else(residence_length == "999", NA, residence_length) # Could be possible based on residence_length_type but unlikely
   )
 
 # Reorder Harmonized Data Variables -----
@@ -159,7 +266,7 @@ harmonized_data <- harmonized_data %>%
     death_zip_code,
     place_of_death_type,
     # Demographics
-    starts_with("age"),
+    contains("age"),
     sex,
     marital_status,
     pregnancy,
@@ -168,7 +275,7 @@ harmonized_data <- harmonized_data %>%
     industry,
     starts_with("occupation"),
     tobacco,
-    starts_with("hispanic"),
+    contains("hispanic"),
     contains("race"),
     # Operations
     death_facility,
@@ -200,9 +307,15 @@ arrow::write_parquet(
 )
 
 ## Create a Dictionary for the Harmonized Data
+var_descriptions <- params$harmonized_data_schema %>%
+  mutate(source = "WA DOH CHS Death Certificate Files") %>%
+  distinct(source, varname = variable, desc = description)
+
+
 data_dictionary <- rads::create_dictionary(
   ph.data = harmonized_data,
-  source = "harmonized_data",
+  ph.ref = var_descriptions,
+  source = "WA DOH CHS Death Certificate Files",
   suppress = c(
     "social_security_number",
     "name_first",
