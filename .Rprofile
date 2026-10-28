@@ -29,10 +29,11 @@ local({
         sprintf(
           paste0(
             "This project's renv.lock expects R %s, but you are running R %s. If you do not this version installed do the following\n",
-            "Steps:\n",
+            "Option 1: Install R version from cran manually and switch to it in your IDE session \n",
+            "Option 2: Manage R versions with rig\n",
             "  1. Open PowerShell window at the project folder, start rig in user mode: rig system user-mode\n",
-            "  2. Run to install matching R version: rig add renv.lock\n",
-            "  3. Confirm the install with: rig list\n",
+            "  2. Run to install R version matching what is listed in renv locker file: rig add renv.lock\n",
+            "  3. Confirm you see the install with: rig list\n",
             "  4. Select that R version in Positron (Interpreter: Select Interpreter Session)\n",
             "  5. Restart R, then run renv::restore()\n",
             "  6. If a package requires Rtools for building, you can install it with no admin access in a user mode session of rig with: rig add rtools"
