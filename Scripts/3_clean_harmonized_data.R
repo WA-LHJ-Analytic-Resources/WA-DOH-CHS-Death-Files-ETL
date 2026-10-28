@@ -12,17 +12,29 @@ harmonized_data <- harmonized_data %>%
       .fns = ~ rads::death_icd10_clean(icdcol = .x)
     )
   ) %>%
-  # Create Combined COD Code Variable
+  # Create all_cod_code Variable (underlying_cod_code + all record_axis_code_(1-20))
   combine_code_columns(
     df = .,
     input_vars = c(
       underlying_cod_code,
-      matches("^record_axis_code_(?:[2-9]|1[0-9]|20)$") # Function also removes record_axis_code_1 (as it is redundant with underlying_cod_code)
+      matches("^record_axis_code_(?:[1-9]|1[0-9]|20)$")
     ),
     delimiter = ";",
-    output_var = "all_cod_code",
-    remove_inputs = FALSE # TRUE = Removes all record_axis_code variables as they have all been condensed into all_cod_code
+    output_var = "all_cod_code"
+  ) %>%
+  # Create all_contributing_cod_code Variable (record_axis_code_(2-20))
+  combine_code_columns(
+    df = .,
+    input_vars = c(
+      matches("^record_axis_code_(?:[2-9]|1[0-9]|20)$") #
+    ),
+    delimiter = ";",
+    output_var = "all_contributing_cod_code"
   )
+
+# Create ICD-10 Condition Flags -----
+harmonized_data <- harmonized_data %>%
+  create_condition_flags(df = .)
 
 # Clean Age Variables & Create Standard Age Bins -------
 harmonized_data <- harmonized_data %>%
