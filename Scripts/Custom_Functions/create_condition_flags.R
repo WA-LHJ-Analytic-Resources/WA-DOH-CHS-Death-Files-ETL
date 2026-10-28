@@ -288,5 +288,7 @@ create_condition_flags <- function(df) {
         1,
         0
       )
-    )
+    ) %>%
+    # Convert all condition flag_ variables to integers
+    mutate(across(.cols = starts_with("flag_"), .fns = ~ as.integer(.x)))
 }
