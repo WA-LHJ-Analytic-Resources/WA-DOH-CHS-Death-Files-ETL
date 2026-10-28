@@ -42,47 +42,47 @@ create_condition_flags <- function(df) {
 
   icd10_patterns <- list(
     # Drug overdose (all)
-    all_drug = "^(X4[0-4]|X6[0-4]|X85|Y1[0-4]).*",
+    all_drug = "^(X4[0-4]|X6[0-4]|X85|Y1[0-4])", #  X40-X44, X60-X64, X85, Y10-Y14
 
     # Drug-specific
-    opioids = "T40[0-4]",
-    heroin = "T401",
-    natural_semisynthetic = "T402",
-    methadone = "T403",
-    synthetic_opioid = "T404",
-    cocaine = "T405",
-    prescription_opioid = "T40[2-4]",
-    psychostimulant = "T436",
+    opioids = "T40[0-4]", # T40.0–T40.4
+    heroin = "T401", # T40.1
+    natural_semisynthetic_opioid = "T402", # T40.2
+    methadone = "T403", # T40.3
+    synthetic_opioid = "T404", # T40.4
+    cocaine = "T405", # T40.5
+    prescription_opioid = "T40[2-4]", # T40.2-T40.4
+    psychostimulant = "T436", # T43.6
 
     # Suicide
-    suicide_all = "^(U03|X6[0-9]|X7[0-9]|X8[0-4]|Y870)",
-    suicide_firearm = "^(X7[2-4])",
-    suicide_asphyxia = "^(X70)",
-    suicide_poisoning = "^(X6[0-9])",
-    suicide_other = "^(U03|X6[0-9]|X71|X7[5-9]|X8[0-4]|Y870)",
+    suicide_all = "^(U03|X6[0-9]|X7[0-9]|X8[0-4]|Y870)", # U03, X60-X84, or Y87.0
+    suicide_firearm = "^(X7[2-4])", #  X72-X74
+    suicide_asphyxia = "X70", # X70
+    suicide_poisoning = "^(X6[0-9])", # X60-X69
+    suicide_other = "^(U03|X6[0-9]|X71|X7[5-9]|X8[0-4]|Y870)", # U03, X60-69, X71, X75-84, Y87.0
 
     # Firearm
-    firearm_all = "^(W3[2-4]|X7[2-4]|X9[3-5]|Y2[2-4]|Y350)",
-    firearm_unintentional = "^(W3[2-4])",
-    firearm_homicide = "^(X9[3-5])",
-    firearm_undetermined = "^(Y2[2-4])",
-    firearm_suicide = "^(X7[2-4])",
-    firearm_legal = "^(Y350)",
+    firearm_all = "^(W3[2-4]|X7[2-4]|X9[3-5]|Y2[2-4]|Y350)", # W32-W34, X72-X74, X93-X95, Y22-Y24, Y35.0
+    firearm_unintentional = "^(W3[2-4])", # W32-W34
+    firearm_homicide = "^(X9[3-5])", # X93-X95
+    firearm_undetermined = "^(Y2[2-4])", # Y22-Y24
+    firearm_suicide = "^(X7[2-4])", # X72-X74
+    firearm_legal = "Y350", # Y35.0
 
     # Other indicators
-    malignant_neoplasm = "^C[0-9].*",
-    heart_disease = "^(I0[0-9]|I11|I13|I2[0-9]|I3[0-9]|I4[0-9]|I5[0-1])",
-    alzheimers = "^(G30)",
-    unintentional_injury = "^(V0[1-9]|V[1-9][0-9]|X[0-5][0-9]|Y8[5-6])",
-    chronic_lower_resp = "^J4.*",
-    cerebrovascular = "^(I6[0-9])",
-    diabetes = "^(E1[0-4])",
-    chronic_liver = "^(K70|K7[3-4])",
-    influenza_pneumonia = "^(J09|J1[0-8])",
-    parkinsons = "^(G2[0-1])",
-    essential_hypertension = "^(I10|I12|I15)",
-    pneumonitis = "^(J69)",
-    homicide = "^(U0[1-2]|X8[5-9]|X9[0-9]|Y0[0-9]|Y871)"
+    malignant_neoplasm = "^C[0-9].*", # C00-C9
+    heart_disease = "^(I0[0-9]|I11|I13|I2[0-9]|I3[0-9]|I4[0-9]|I5[0-1])", # I00-I09, I11, I13, I20-I51
+    alzheimers = "G30", # G30
+    unintentional_injury = "^(V0[1-9]|V[1-9][0-9]|X[0-5][0-9]|Y8[5-6])", # V01-X59, Y85-Y86
+    chronic_lower_respiratory = "^J4.*", # J40-J4
+    cerebrovascular_disease = "^(I6[0-9])", # I60-I69
+    diabetes = "^(E1[0-4])", # E10-E14
+    chronic_liver_disease = "^(K70|K7[3-4])", # K70, K73-K74
+    influenza_pneumonia = "^(J09|J1[0-8])", # J09-J18
+    parkinsons = "^(G2[0-1])", #  G20-G21
+    essential_hypertension = "^(I10|I12|I15)", # I10, I12, I15
+    pneumonitis = "J69", # J69
+    homicide = "^(U0[1-2]|X8[5-9]|X9[0-9]|Y0[0-9]|Y871)" # U01-U02, X85-Y09, Y87.1
   )
 
   # Create ICD-10 Condition Flag Variables ------
@@ -115,7 +115,7 @@ create_condition_flags <- function(df) {
         flag_all_drug == 1 &
           str_detect(
             all_contributing_cod_code,
-            icd10_patterns$natural_semisynthetic
+            icd10_patterns$natural_semisynthetic_opioid
           ),
         1,
         0
@@ -244,12 +244,15 @@ create_condition_flags <- function(df) {
         0
       ),
       flag_chronic_lower_respiratory = if_else(
-        str_detect(underlying_cod_code, icd10_patterns$chronic_lower_resp),
+        str_detect(
+          underlying_cod_code,
+          icd10_patterns$chronic_lower_respiratory
+        ),
         1,
         0
       ),
       flag_cerebrovascular_disease = if_else(
-        str_detect(underlying_cod_code, icd10_patterns$cerebrovascular),
+        str_detect(underlying_cod_code, icd10_patterns$chronic_liver_disease),
         1,
         0
       ),
@@ -259,7 +262,7 @@ create_condition_flags <- function(df) {
         0
       ),
       flag_chronic_liver_disease = if_else(
-        str_detect(underlying_cod_code, icd10_patterns$chronic_liver),
+        str_detect(underlying_cod_code, icd10_patterns$chronic_liver_disease),
         1,
         0
       ),
