@@ -294,7 +294,9 @@ harmonized_data <- harmonized_data %>%
     informant_relationship,
     autopsy,
     certifier_designation,
-    me_coroner_referred
+    me_coroner_referred,
+    # Disease/Injury Flags
+    starts_with("flag_")
   )
 
 # Implement Variable Completeness Check -----
