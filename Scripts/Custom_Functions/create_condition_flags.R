@@ -100,19 +100,19 @@ create_condition_flags <- function(df) {
     # Add Drug-Specific Overdose Flags (Includes Underlying & Contributing Cause of Death ICD-10) -----
     mutate(
       flag_opioids = if_else(
-        flag_all_drug == 1 &
+        flag_all_drugs == 1 &
           str_detect(all_contributing_cod_code, icd10_patterns$opioids),
         1,
         0
       ),
       flag_heroin = if_else(
-        flag_all_drug == 1 &
+        flag_all_drugs == 1 &
           str_detect(all_contributing_cod_code, icd10_patterns$heroin),
         1,
         0
       ),
       flag_natural_semisynthetic_opioid = if_else(
-        flag_all_drug == 1 &
+        flag_all_drugs == 1 &
           str_detect(
             all_contributing_cod_code,
             icd10_patterns$natural_semisynthetic_opioid
@@ -121,13 +121,13 @@ create_condition_flags <- function(df) {
         0
       ),
       flag_methadone = if_else(
-        flag_all_drug == 1 &
+        flag_all_drugs == 1 &
           str_detect(all_contributing_cod_code, icd10_patterns$methadone),
         1,
         0
       ),
       flag_synthetic_opioid = if_else(
-        flag_all_drug == 1 &
+        flag_all_drugs == 1 &
           str_detect(
             all_contributing_cod_code,
             icd10_patterns$synthetic_opioid
@@ -136,13 +136,13 @@ create_condition_flags <- function(df) {
         0
       ),
       flag_cocaine = if_else(
-        flag_all_drug == 1 &
+        flag_all_drugs == 1 &
           str_detect(all_contributing_cod_code, icd10_patterns$cocaine),
         1,
         0
       ),
       flag_prescription_opioid = if_else(
-        flag_all_drug == 1 &
+        flag_all_drugs == 1 &
           str_detect(
             all_contributing_cod_code,
             icd10_patterns$prescription_opioid
@@ -151,7 +151,7 @@ create_condition_flags <- function(df) {
         0
       ),
       flag_psychostimulant = if_else(
-        flag_all_drug == 1 &
+        flag_all_drugs == 1 &
           str_detect(all_contributing_cod_code, icd10_patterns$psychostimulant),
         1,
         0
