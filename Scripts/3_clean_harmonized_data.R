@@ -297,7 +297,9 @@ harmonized_data <- harmonized_data %>%
     certifier_designation,
     me_coroner_referred,
     # Disease/Injury Flags
-    starts_with("flag_")
+    starts_with("flag_"),
+    # All other variables (in case anything is missed)
+    everything()
   )
 
 # Implement Variable Completeness Check -----
