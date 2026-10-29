@@ -90,7 +90,7 @@ create_condition_flags <- function(df) {
   df %>%
     # Add All Drug Overdose Flag (Includes Underlying Cause of Death ICD-10 Only)
     mutate(
-      flag_all_drug = if_else(
+      flag_all_drugs = if_else(
         str_detect(underlying_cod_code, icd10_patterns$all_drugs),
         1,
         0
