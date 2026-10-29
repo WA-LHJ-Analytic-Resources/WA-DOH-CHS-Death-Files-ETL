@@ -252,7 +252,7 @@ create_condition_flags <- function(df) {
         0
       ),
       flag_cerebrovascular_disease = if_else(
-        str_detect(underlying_cod_code, icd10_patterns$chronic_liver_disease),
+        str_detect(underlying_cod_code, icd10_patterns$cerebrovascular_disease),
         1,
         0
       ),
