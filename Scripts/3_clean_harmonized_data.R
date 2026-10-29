@@ -246,6 +246,7 @@ harmonized_data <- harmonized_data %>%
     # Cause of Death
     underlying_cod_code,
     all_cod_code,
+    all_contributing_cod_code,
     starts_with("record_axis_code"), # Comment out if we do not want all record_axis_code_# variables!
     contains("cod_text"), # literal narrative
     manner,
