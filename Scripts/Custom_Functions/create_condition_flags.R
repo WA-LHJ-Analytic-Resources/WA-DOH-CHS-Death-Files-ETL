@@ -41,10 +41,10 @@ create_condition_flags <- function(df) {
   ## Source: https://doh.wa.gov/sites/default/files/2024-10/422-162-DeathStatisticalDictionaryAndCrosswalks.xlsx
 
   icd10_patterns <- list(
-    # Drug overdose (all)
-    all_drug = "^(X4[0-4]|X6[0-4]|X85|Y1[0-4])", #  X40-X44, X60-X64, X85, Y10-Y14
+    # Drug overdose (all) (Underlying)
+    all_drugs = "^(X4[0-4]|X6[0-4]|X85|Y1[0-4])", #  X40-X44, X60-X64, X85, Y10-Y14
 
-    # Drug-specific
+    # Drug-specific (Underlying & Contributing COD)
     opioids = "T40[0-4]", # T40.0–T40.4
     heroin = "T401", # T40.1
     natural_semisynthetic_opioid = "T402", # T40.2
@@ -54,14 +54,14 @@ create_condition_flags <- function(df) {
     prescription_opioid = "T40[2-4]", # T40.2-T40.4
     psychostimulant = "T436", # T43.6
 
-    # Suicide
+    # Suicide (Underlying)
     suicide_all = "^(U03|X6[0-9]|X7[0-9]|X8[0-4]|Y870)", # U03, X60-X84, or Y87.0
     suicide_firearm = "^(X7[2-4])", #  X72-X74
     suicide_asphyxia = "X70", # X70
     suicide_poisoning = "^(X6[0-9])", # X60-X69
     suicide_other = "^(U03|X6[0-9]|X71|X7[5-9]|X8[0-4]|Y870)", # U03, X60-69, X71, X75-84, Y87.0
 
-    # Firearm
+    # Firearm (Underlying)
     firearm_all = "^(W3[2-4]|X7[2-4]|X9[3-5]|Y2[2-4]|Y350)", # W32-W34, X72-X74, X93-X95, Y22-Y24, Y35.0
     firearm_unintentional = "^(W3[2-4])", # W32-W34
     firearm_homicide = "^(X9[3-5])", # X93-X95
@@ -69,11 +69,11 @@ create_condition_flags <- function(df) {
     firearm_suicide = "^(X7[2-4])", # X72-X74
     firearm_legal = "Y350", # Y35.0
 
-    # Other indicators
+    # Other indicators (Underlying)
     malignant_neoplasm = "^C[0-9].*", # C00-C9
     heart_disease = "^(I0[0-9]|I11|I13|I2[0-9]|I3[0-9]|I4[0-9]|I5[0-1])", # I00-I09, I11, I13, I20-I51
     alzheimers = "G30", # G30
-    unintentional_injury = "^(V0[1-9]|V[1-9][0-9]|X[0-5][0-9]|Y8[5-6])", # V01-X59, Y85-Y86
+    unintentional_injury = "^(V0[1-9]|V[1-9][0-9]|W[0-9][0-9]|X[0-5][0-9]|Y8[5-6])", # V01-X59, Y85-Y86
     chronic_lower_respiratory = "^J4.*", # J40-J4
     cerebrovascular_disease = "^(I6[0-9])", # I60-I69
     diabetes = "^(E1[0-4])", # E10-E14
@@ -91,7 +91,7 @@ create_condition_flags <- function(df) {
     # Add All Drug Overdose Flag (Includes Underlying Cause of Death ICD-10 Only)
     mutate(
       flag_all_drug = if_else(
-        str_detect(underlying_cod_code, icd10_patterns$all_drug),
+        str_detect(underlying_cod_code, icd10_patterns$all_drugs),
         1,
         0
       )
