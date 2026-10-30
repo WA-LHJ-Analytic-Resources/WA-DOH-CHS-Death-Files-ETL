@@ -52,6 +52,7 @@ rsconnect/
 # Define Project-Specific .gitignore here ----
 *.RData
 *.xlsx 
+*.html
 
 ## Exceptions
 !Resources/Admin/Crosswalks and Schemas.xlsx
