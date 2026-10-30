@@ -3,35 +3,45 @@
 0. Clone project repository to local computer
 1. Open up cloned project repository in Positron IDE
 2. Upon initialization of my R console (4.4.2), Positron will read renv.lock and throw a flag stating that I am not on the same R version as this project (good error - flags I need to use rig)
-3. (First Time Only) I need to install rig (user mode - to avoid needing admin permissions) to toggle seamlessly between R versions
+3. (First Time Only) Install `rig` in user mode (to avoid needing admin permissions for every action) to toggle seamlessly between R versions (and align with the `renv.lock`).
     3a. Go to a Powershell Window (either separately or in Positron's terminal)
-    3b. Install rig (user mode; https://rig.r-lib.org/install.html#method-1-user-install-no-admin-rights-needed) by entering the following into Powershell: irm https://r-lib.github.io/rig/install.ps1 | iex
-    3c. Ensure rig is in user mode (as opposed to admin mode) by entering the following into Powershell: rig system user-mode 
+    3b. Install rig (user mode) by entering the following into Powershell: `irm https://r-lib.github.io/rig/install.ps1 | iex`
+    3c. Ensure rig is in user mode (as opposed to admin mode) by entering the following into Powershell: `rig system user-mode`
         Notes: 
             - For the pilot, I was able to successfully skip this step and proceed in the workflow.
             - This operation actually requires admin permissions since `gsudo` (which can toggle software between user and system/admin installs is flagged requiring admin permissions)
-    3d. Align rig with the renv.lock file by entering the following into Powershell: rig add renv.lock
+    3d. Align rig with the renv.lock file by entering the following into Powershell: `rig add renv.lock`
         - This downloaded the new version of R (4.6.1) that was specified in renv.lock at the user level:
-        rig add renv.lock
-            ▶ Cleaning leftover registry entries
-            ▶ Downloading https://cran.rstudio.com/bin/windows/base/old/4.6.1/R-4.6.1-win.exe -> C:\Users\:\*****\\AppData\Local\Temp\rig\x86_64-R-4.6.1-win.exe
-            ▶ Installing C:\Users\*****\AppData\Local\Temp\rig\x86_64-R-4.6.1-win.exe
-            ▶ Installed R as '4.6.1'
-            ▶ Adding R-4.6.1 -> C:\Users\:\*****\\AppData\Roaming\rig\data\r\4.6.1
-            ▶ Installing pak for R 4.6.1 (if not installed yet)
-            > Installing package into 'C:/Users/:\*****\/AppData/Local/R/win-library/4.6'
-            > (as 'lib' is unspecified)
-            > trying URL 'https://r-lib.github.io/p/pak/stable/win.binary/mingw32/x86_64/bin/windows/contrib/4.6/../../../../../../../mingw32/x86_64/pak_0.11.1_R-4-6_x86_64-mingw32.zip'
-            > Content type 'application/x-zip-compressed' length 11329078 bytes (10.8 MB)
-            > ==================================================
-            > downloaded 10.8 MB
-            >
-4. Switch Positron IDE's R session (top right button) from 4.4.2 (original version) to 4.6.1 (new version), scroll down to User-level interpreters. If you do not see it then, close out Positron IDE and reload the IDE and project.
-5. Once on the correct R session version, run renv::restore() to load all the R package versions defined in renv.lock.
-6. (Optional) rig user-mode can also install relevant Rtools versions using the following commands in Powershell:
-    - rig system user-mode (likely can skip if it is still flagging for admin permissions)
-    - rig add rtools
-    ***If adding Rtools be sure to re-run renv::restore() at the end. 
+        ```
+            rig add renv.lock
+                ▶ Cleaning leftover registry entries
+                ▶ Downloading https://cran.rstudio.com/bin/windows/base/old/4.6.1/R-4.6.1-win.exe -> C:\Users\:\*****\\AppData\Local\Temp\rig\x86_64-R-4.6.1-win.exe
+                ▶ Installing C:\Users\*****\AppData\Local\Temp\rig\x86_64-R-4.6.1-win.exe
+                ▶ Installed R as '4.6.1'
+                ▶ Adding R-4.6.1 -> C:\Users\:\*****\\AppData\Roaming\rig\data\r\4.6.1
+                ▶ Installing pak for R 4.6.1 (if not installed yet)
+                > Installing package into 'C:/Users/:\*****\/AppData/Local/R/win-library/4.6'
+                > (as 'lib' is unspecified)
+                > trying URL 'https://r-lib.github.io/p/pak/stable/win.binary/mingw32/x86_64/bin/windows/contrib/4.6/../../../../../../../mingw32/x86_64/pak_0.11.1_R-4-6_x86_64-mingw32.zip'
+                > Content type 'application/x-zip-compressed' length 11329078 bytes (10.8 MB)
+                > ==================================================
+                > downloaded 10.8 MB
+                >
+        ```
+4. Switch Positron IDE's R session (top right button) from 4.4.2 (original version) to 4.6.1 (new version), scroll down to User-level interpreters. 
+    - If you do not see the relevant R interpreter version then, close out Positron IDE and reload the IDE and project.
+5. Once on the correct R session version, run `renv::restore()` to load all the R package versions defined in `renv.lock`.
+6. rig user-mode can also install relevant Rtools versions (this is important for `renv::restore()` to work for many of our R packages installed from GitHub) using the following commands in Powershell:
+    - `rig system user-mode` (likely can skip if it is still flagging for admin permissions)
+    - `rig add rtools`
+    - Note: If installing/adding R tools, be sure to re-run `renv::restore()` at the end. 
+
+
+# Rig Resources
+1. https://rig.r-lib.org/install.html#method-1-user-install-no-admin-rights-needed
+2. https://opensource.posit.co/blog/2026-10-09_rig-0-11-0-part-one/
+3. https://opensource.posit.co/blog/2026-10-12_rig-0-11-0-part-two/
+4. https://opensource.posit.co/blog/2026-10-15_rig-0-11-0-part-three/
 
 
 
