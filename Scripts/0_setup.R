@@ -1,53 +1,66 @@
 # 0_setup.R
 
+# Setup Reproducible R Environment -----
+## This project uses `rig` (R versions) & `renv` (R package versions) to maintain dependency stability over time and across collaborators.
+
+## Restored intended R environment
+# renv::restore()
+
+## Check the status of the R environment
+# renv::status()
+
 # Define Filepaths (.Renviron file) -----
 ## Resource URL: https://rstats.wtf/r-startup.html#renviron
-## Note(s):
 # a) Add RAW_DEATH_FILES_FOLDER (the filepath where all raw WA DOH CHS Death files are stored after being downloaded from Secure Access Washington)
 # b) Add HARMONIZED_DEATH_FILE_FOLDER (The file path where the output harmonized death data file will be stored)
 # c) Restart the R session after creating .Renviron file for the first time.
 
 file.edit(".Renviron")
 
-# R Packages & Custom Functions -----
+# Load Required R Packages -----
 
-## Install PHSKC RADs R Package
-## URL: https://github.com/PHSKC-APDE/rads
-## Note(s): You will need RTools installed to pull down and assemble an R package from GitHub (like rads): https://cran.r-project.org/bin/windows/Rtools/
-
-# pak::pkg_install("PHSKC-APDE/rads")
-
-# Install/Load R Packages
-pacman::p_load(
-  arrow,
-  fs,
-  ggplot2,
-  glue,
-  here,
-  plotly,
-  purrr,
-  rads,
-  readr,
-  readxl,
-  scales,
-  stringi,
-  tictoc,
-  tidyr,
-  tidyverse,
-  writexl
+required_pkgs <- c(
+  "arrow",
+  "fs",
+  "ggplot2",
+  "glue",
+  "here",
+  "plotly",
+  "purrr",
+  "rads",
+  "readr",
+  "readxl",
+  "scales",
+  "stringi",
+  "tictoc",
+  "tidyr",
+  "tidyverse",
+  "writexl"
 )
 
-# Load All Custom functions
-list.files(
+invisible(lapply(required_pkgs, library, character.only = TRUE))
+
+## Resolve any package conflicts
+conflicted::conflict_prefer("filter", "dplyr") # dplyr::filter() > plotly::filter()
+conflicted::conflict_prefer("lag", "dplyr") # dplyr::lag() > stats::lag()
+conflicted::conflict_prefer("duration", "lubridate") # lubridate::duration() > arrow::duration()
+
+# Load Custom Functions ----------------------------------------------------
+
+custom_fns <- list.files(
   path = here::here("Scripts", "Custom_Functions"),
   pattern = "\\.R$",
   full.names = TRUE,
   recursive = TRUE
-) %>%
-  lapply(source)
+)
+
+invisible(lapply(custom_fns, source))
+
 
 # Define Parameters -----
 params <- list()
+
+## Retrieve paths from the .Renviron file
 params$code_sets <- list() # to store 4_Code_Set_Expansion lookup tables
 params$raw_data_folder <- Sys.getenv("RAW_DEATH_FILES_FOLDER") # Note: Should match value set in .Renviron file, if not restart R and troubleshoot .Renviron
 params$output_folder <- Sys.getenv("HARMONIZED_DEATH_FILE_FOLDER") # Note: Should match value set in .Renviron file, if not restart R and troubleshoot .Renviron
