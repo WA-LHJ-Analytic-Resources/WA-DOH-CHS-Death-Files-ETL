@@ -1,4 +1,4 @@
-***STEPS***
+***Rig Installation Steps***
 
 0. Clone project repository to local computer
 1. Open up cloned project repository in Positron IDE
