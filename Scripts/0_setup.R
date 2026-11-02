@@ -32,6 +32,7 @@ required_pkgs <- c(
   "readxl",
   "scales",
   "stringi",
+  "stringr",
   "tictoc",
   "tidyr",
   "tidyverse",
