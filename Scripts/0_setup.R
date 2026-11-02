@@ -168,7 +168,7 @@ params$code_set_files <- list.files(
 )
 
 for (file in params$code_set_files) {
-  setname <- str_remove(basename(file), "_codes.csv")
+  setname <- stringr::str_remove(basename(file), "_codes.csv")
   print(glue("Loading code sets for: {setname}"))
 
   params$code_sets[[setname]] <-
