@@ -173,7 +173,7 @@ for (file in params$code_set_files) {
   params$code_sets[[setname]] <-
     read.csv(
       file = file,
-      stringsAsFactors = FALSE
+      colClasses = "character" # All columns are cast to character data type (avoids read.csv() assigning data types.)
     )
 }
 
