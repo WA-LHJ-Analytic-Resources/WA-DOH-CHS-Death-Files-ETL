@@ -161,16 +161,20 @@ params$harmonized_data_schema <- readxl::read_excel(
   )
 
 # Load Code Sets -----
-params$code_sets_folder <- here::here("Resources", "Code Sets")
+params$code_set_files <- list.files(
+  here(here::here("Resources", "Code Sets")),
+  full.names = TRUE
+)
 
-# fmt: skip
-## Code Sets
-
-for(set in list.files(here(params$code_sets_folder), full.names = TRUE)){
-  setname <- str_remove(basename(set), "_codes.csv") 
+for (file in params$code_set_files) {
+  setname <- str_remove(basename(file), "_codes.csv")
   print(glue("Loading code sets for: {setname}"))
 
-  params$code_sets[[setname]] <- readr::read_csv(file = set, show_col_types = FALSE)
+  params$code_sets[[setname]] <-
+    read.csv(
+      file = file,
+      stringsAsFactors = FALSE
+    )
 }
 
-rm(set, setname)
+rm(file, setname)
