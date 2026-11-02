@@ -311,8 +311,8 @@ var_descriptions <- params$harmonized_data_schema %>%
   mutate(source = "WA DOH CHS Death Certificate Files") %>%
   distinct(source, varname = variable, desc = description)
 
-
-data_dictionary <- rads::create_dictionary(
+## Save the Harmonized Data Dictionary
+rads::create_dictionary(
   ph.data = harmonized_data,
   ph.ref = var_descriptions,
   source = "WA DOH CHS Death Certificate Files",
@@ -331,13 +331,11 @@ data_dictionary <- rads::create_dictionary(
   ),
   max_unique_values = 30,
   truncation_threshold = 15
-)
-
-## Save the Harmonized Data Dictionary
-writexl::write_xlsx(
-  x = data_dictionary,
-  path = here::here(
-    "Resources",
-    "Data Dictionary.xlsx"
+) %>%
+  writexl::write_xlsx(
+    x = .,
+    path = here::here(
+      "Resources",
+      "Data Dictionary.xlsx"
+    )
   )
-)
