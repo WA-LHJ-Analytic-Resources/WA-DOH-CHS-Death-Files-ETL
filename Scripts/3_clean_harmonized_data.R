@@ -175,7 +175,6 @@ harmonized_data <- harmonized_data %>%
       industry,
       informant_relationship,
       contains("cod_text"),
-      contains("name"),
       injury_description
     ),
     .fns = ~ str_to_title(.x)
@@ -220,8 +219,6 @@ harmonized_data <- harmonized_data %>%
     # Unique Identifiers
     state_file_number,
     local_file_number,
-    contains("name_"), # Names
-    social_security_number,
     # Dates & Times
     date_of_birth,
     date_of_injury,
@@ -317,11 +314,6 @@ data_dictionary <- rads::create_dictionary(
   ph.ref = var_descriptions,
   source = "WA DOH CHS Death Certificate Files",
   suppress = c(
-    "social_security_number",
-    "name_first",
-    "name_middle",
-    "name_last",
-    "name_suffix",
     "cod_text_1",
     "cod_text_2",
     "cod_text_3",
