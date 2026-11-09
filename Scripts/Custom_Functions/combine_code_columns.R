@@ -16,8 +16,6 @@
 #'   combined column.
 #' @param delimiter A single character used to separate combined values.
 #'   Defaults to `";"`.
-#' @param remove_inputs Logical; if `TRUE`, the original input variables are
-#'   removed from the resulting data frame. Defaults to `FALSE`.
 #'
 #' @return
 #' A data frame with an additional column named `output_var` containing the
@@ -34,7 +32,6 @@
 #'         quasiquotation.
 #'   \item Concatenates all selected columns into a single string column while
 #'         removing `NA` values.
-#'   \item Optionally removes the input columns and `record_axis_code_1`.
 #' }
 #'
 #' @export
@@ -43,8 +40,7 @@ combine_code_columns <- function(
   df,
   input_vars,
   output_var,
-  delimiter = ";",
-  remove_inputs = FALSE
+  delimiter = ";"
 ) {
   # Step 0: Convert the output_var string to a symbol
   out_sym <- rlang::sym(output_var)
@@ -63,15 +59,13 @@ combine_code_columns <- function(
       !!!rlang::syms(selected_names), # columns to concatenate (spliced as symbols)
       sep = delimiter, # delimiter (e.g., ";")
       na.rm = TRUE, # drop NAs when concatenating
-      remove = remove_inputs # optionally remove the input columns
+      remove = FALSE
+    ) %>%
+    dplyr::mutate(
+      !!out_sym := !!rlang::sym(output_var) %>%
+        stringr::str_split(delimiter) %>%
+        purrr::map_chr(~ paste(unique(.x), collapse = delimiter))
     )
-
-  # Step 4 (Optional): Remove Input Variables
-  if (remove_inputs == TRUE) {
-    df_combined <- df_combined %>%
-      # Remove redundant record_axis_code_1 variable (same as underlying_cod_code)
-      select(-record_axis_code_1)
-  }
 
   # Step 5: Return the modified data frame/tibble
   return(df_combined)
