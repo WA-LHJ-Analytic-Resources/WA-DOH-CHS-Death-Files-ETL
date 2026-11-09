@@ -1,6 +1,6 @@
 # 1_harmonize_death_files
 
-# Identify All Death (Statistical, Literals, and Names) File Vintages -----
+# Identify All Death (Statistical & Literal) File Vintages -----
 death_files <- identify_death_files(
   folder = params$raw_data_folder
 ) %>%
@@ -9,6 +9,8 @@ death_files <- identify_death_files(
     file_ext == "csv", # Only use .csv files (sometimes there are duplicates data vintages for a single year that are .xlsx and .csv)
     file_status == "Final" # Filter data vintages only (for now)
   ) %>%
+  # Remove references to Death Names files
+  filter(file_type != "Death Names") %>%
   # Add Vintage Label tag
   mutate(vintage_label = glue("{system}_{file_year}")) %>%
   # Move Vintage Label to 1st position
@@ -38,7 +40,7 @@ for (file_yr in unique(death_files$file_year)) {
     # Take 3 rows (1 per file_type) --> 1 per file_year
     distinct()
 
-  ### Step 1.3: Load in Statistical, Literals, and Name Files (Perform 1-Data Type & 2-Schema Harmonization)
+  ### Step 1.3: Load in Statistical & Literals Files (Perform 1-Data Type & 2-Schema Harmonization)
   df_stat <- process_year(
     year = file_yr,
     cw = params$variable_rename_cw_statistical,
@@ -53,18 +55,10 @@ for (file_yr in unique(death_files$file_year)) {
       filter(file_type == "Cause of Death Literals") %>%
       pull(file_location)
   )
-  df_names <- process_year(
-    year = file_yr,
-    cw = params$variable_rename_cw_names,
-    file_path = data_vintage %>%
-      filter(file_type == "Death Names") %>%
-      pull(file_location)
-  )
 
-  ### Step 1.4: Join Statistical/Literals/Names Files Together (for a Single Year)
+  ### Step 1.4: Join Statistical & Literals Files Together (for a Single Year)
   df_combined <- df_stat %>%
-    left_join(., df_literals, by = join_by(state_file_number)) %>%
-    left_join(., df_names, by = join_by(state_file_number))
+    left_join(., df_literals, by = join_by(state_file_number))
 
   ### Step 1.5: Load Single Year Combined Data into a List (append metadata)
   harmonized_list[[as.character(file_yr)]] <- df_combined %>%
@@ -102,7 +96,6 @@ rm(
   file_yr,
   df_stat,
   df_literals,
-  df_names,
   df_combined,
   harmonized_list,
   data_vintage,

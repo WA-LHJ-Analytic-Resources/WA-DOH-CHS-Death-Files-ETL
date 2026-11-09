@@ -119,11 +119,6 @@ params$variable_rename_cw_literals <- prepare_crosswalk(
   cw_type = "Variable Renaming"
 )
 
-params$variable_rename_cw_names <- prepare_crosswalk(
-  cw_sheet = "rename_variables_names",
-  cw_type = "Variable Renaming"
-)
-
 ## Variable Recoding Crosswalk
 params$variable_recode_cw_statistical <- prepare_crosswalk(
   cw_sheet = "recode_variables_statistical",
