@@ -34,12 +34,6 @@
 #'
 #' @return The input \code{df} with specified variables recoded according to \code{var_recode_crosswalk}. Unlisted variables or codes remain untouched.
 
-df <- df_combined
-year <- file_yr
-cw <- params$variable_recode_cw_statistical
-verbose <- TRUE
-timed <- TRUE
-
 recode_variables <- function(
   df,
   year,
