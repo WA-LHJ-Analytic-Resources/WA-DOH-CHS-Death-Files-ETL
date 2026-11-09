@@ -9,16 +9,16 @@ WA local health jurisdictions (LHJs) are provided death certificate data by the 
 - Jeremy Whitehurst (Public Health-Seattle King County)
 
 ## Motivation
-The Washington Department of Health (WA DOH) Center for Health Statistics (CHS) provides annual certificate statistical files from 2010 to present in Secure Access Washington. Files from 2010 to 2015 were sourced from a legacy system known as Bedrock, whereas files from 2016 to present are sourced from the [Washington Health and Life Events System (WHALES)](https://doh.wa.gov/licenses-permits-and-certificates/vital-records/whales) system. Because of this system migration two sets of annual death files (Bedrock 2010-2015; WHALES 2016-2020) have differing data schemas and code-values sets, making it difficult to derive granular insights over extended time periods. 
+The Washington Department of Health (WA DOH) Center for Health Statistics (CHS) provides annual death certificate files from 2010 to present in Secure Access Washington. Files from 2010 to 2015 were sourced from a legacy system known as Bedrock, whereas files from 2016 to present are sourced from the [Washington Health and Life Events System (WHALES)](https://doh.wa.gov/licenses-permits-and-certificates/vital-records/whales) system. Because of this system migration two sets of annual death files (Bedrock 2010-2015; WHALES 2016-2020) have differing data schemas and code-values sets, making it difficult to derive granular insights over extended time periods. 
 
-This repository aims to address this problem, as well as streamline the use of annual death certificate statistical files for population health analyses by harmonizing multiple annual data vintages into a single, multi year data set (referred to as `harmonized_data`).
+This repository aims to address this problem, as well as streamline the use of annual death certificate files for population health analyses by harmonizing multiple annual data vintages into a single, multi year data set (referred to as `harmonized_data`).
 
 | **Year(s)** | **Source**                                        | **Notes**                                                                                                                           |
 | ----------- | ------------------------------------------------- |  ----------------------------------------------------------------------------------------------------------------------------------- |
 | 1980-2015   | BEDROCK                                  | Only 2010 to 2015 data vintages are available in Secure Access Washington                                                                                                                                    |
 | 2016+       | [Washington Health and Life Events System (WHALES)](https://doh.wa.gov/licenses-permits-and-certificates/vital-records/whales) | Bedrock to WHALES migration means that BEDROCK (2010-2015) data vintages must have variable names and coded values converted to align with WHALES (2016-Present) schema. |
 
-The multi-year data set (`harmonized_data`) focuses on harmonizing multiple years of **finalized** death certificate 1) **statistical**, 2) **literal**, and 3) **names** files.
+The multi-year data set (`harmonized_data`) focuses on harmonizing multiple years of **finalized** death certificate 1) **statistical** and 2) **literal** files.
 
 ## How to Use the Harmonized Data Set
 The multiple year harmonized data set (`harmonized_data`) will be saved as a [parquet](https://www.r-bloggers.com/2023/11/folks-cmon-use-parquet/) file. Parquet is a file format that is optimized for working with large data sets (it is fast and has great file size compression) and collaborating across multiple environments. Here's how you can load a parquet file using R:
