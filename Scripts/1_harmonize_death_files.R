@@ -23,6 +23,8 @@ tictoc::tic("Harmonize all death data vintages")
 ## Step 0: Initiate Data Storage Lists
 harmonized_list <- list()
 
+file_yr <- 2012
+
 ## Step 1: Load, Rename, and Recode Each Data Vintage
 for (file_yr in unique(death_files$file_year)) {
   tictoc::tic(glue("Processing the data vintage for {file_yr}"))
@@ -37,7 +39,7 @@ for (file_yr in unique(death_files$file_year)) {
     source_system = data_vintage$system,
     date_harmonized = as.character(lubridate::today())
   ) %>%
-    # Take 3 rows (1 per file_type) --> 1 per file_year
+    # Take 2 rows (1 per file_type) --> 1 per file_year
     distinct()
 
   ### Step 1.3: Load in Statistical & Literals Files (Perform 1-Data Type & 2-Schema Harmonization)
@@ -48,6 +50,7 @@ for (file_yr in unique(death_files$file_year)) {
       filter(file_type == "Death Statistical") %>%
       pull(file_location)
   )
+
   df_literals <- process_year(
     year = file_yr,
     cw = params$variable_rename_cw_literals,
@@ -60,21 +63,20 @@ for (file_yr in unique(death_files$file_year)) {
   df_combined <- df_stat %>%
     left_join(., df_literals, by = join_by(state_file_number))
 
-  ### Step 1.5: Load Single Year Combined Data into a List (append metadata)
-  harmonized_list[[as.character(file_yr)]] <- df_combined %>%
+  ### Step 1.5: Reorganize Variables in Combined Data Frame (df_combined)
+  df_combined <- df_combined %>%
     bind_cols(metadata) %>%
+    ## Move metadata variables to the front
     relocate(
       vintage_label,
       date_harmonized,
       source_system,
       file_year,
       .before = everything()
-    ) # Move metadata variables to the front.
+    )
 
   ### Step 1.6: Recode Variables
-  harmonized_list[[as.character(file_yr)]] <- harmonized_list[[as.character(
-    file_yr
-  )]] %>%
+  harmonized_list[[as.character(file_yr)]] <- df_combined %>%
     recode_variables(
       df = .,
       year = file_yr,

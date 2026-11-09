@@ -34,6 +34,12 @@
 #'
 #' @return The input \code{df} with specified variables recoded according to \code{var_recode_crosswalk}. Unlisted variables or codes remain untouched.
 
+df <- df_combined
+year <- file_yr
+cw <- params$variable_recode_cw_statistical
+verbose <- TRUE
+timed <- TRUE
+
 recode_variables <- function(
   df,
   year,
@@ -92,6 +98,8 @@ recode_variables <- function(
     }
 
     # 2.5: Perform recoding of variable codes (using tidy-eval with join_by())
+    n_before <- nrow(df_recoded)
+
     df_recoded <- df_recoded %>%
       dplyr::left_join(
         lu_pairs,
@@ -99,6 +107,17 @@ recode_variables <- function(
       ) %>%
       dplyr::mutate(!!rlang::sym(var) := coalesce(to_code, .data[[var]])) %>%
       dplyr::select(-to_code)
+
+    n_after <- nrow(df_recoded)
+
+    # 2.6: Perform a Row Count Comparison (to automatically check the join worked as intended)
+    if (n_after != n_before) {
+      rlang::abort(
+        glue::glue(
+          "Error occurred during recoding of {var}. Function's internal join unintentionally changed row count from {n_before} to {n_after}."
+        )
+      )
+    }
   }
 
   if (timed == TRUE) {
