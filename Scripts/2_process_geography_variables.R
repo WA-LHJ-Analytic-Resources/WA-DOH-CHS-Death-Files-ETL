@@ -15,12 +15,22 @@ harmonized_data <- harmonized_data %>%
 
 # 2) Translate WA County Codes to FIPS County Codes (to fill in missing FIPS County Codes) -----
 
-## 2a) Use params$code_sets$wa_fips_column_pairs & params$code_sets$wa_county_code_to_fips to translate WA Codes into fips codes (for years before year_threshold) to fill in missing FIPS codes (for death_county_fips, residence_county_fips, and injury_county_fips). wa_fips_column_pairs specifies each WA Code & FIPS code variable pairing, along with the year_threshold (that indicates what years to use WA Codes to fill in missing FIPS codes)
+## 2a) Converts WA Codes to FIPS codes (for death_county_fips, residence_county_fips, and injury_county_fips).
 
-# Convert each row of the county code pairs table into a list element
-# Apply county_wa_code_to_fips() once per element, passing each result into the next cycle (starting from harmonized_data) until function has been ran with all list elements
+## Inputs:
+# params$code_sets$wa_fips_column_pairs - Details WA Code & FIPS Code variable pairings, and years to apply WA to FIPS Code tranisition (via year_threshold)
+# params$code_sets$wa_county_code_to_fips - Translates WA Code to FIPS Code values
+
+## Process:
+# 1) Convert each WA-FIPS code variable pair into a list element (list = all the pairings)
+# 2) Iterate through each list element (WA-FIPS code variable pairing), applying county_wa_code_to_fips() custom function to the harmonized data.
+## 2a) pair$wa_col = WA Code variable
+## 2b) pair$fips_col = FIPS Code variable
+## 2c) pair$year_threshold = Year value (file_year's BEFORE this value need WA Code --> FIPS code conversion; file_year's AFTER this value do not.)
+
 harmonized_data <- params$code_sets$wa_fips_column_pairs %>%
   purrr::pmap(list) %>%
+  # Iterative through each list element, applying county_wa_code_to_fips() cumulatively (via purrr::reduce) to harmonized>_data
   purrr::reduce(
     function(data, pair) {
       county_wa_code_to_fips(
