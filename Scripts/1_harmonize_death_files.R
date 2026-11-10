@@ -23,8 +23,6 @@ tictoc::tic("Harmonize all death data vintages")
 ## Step 0: Initiate Data Storage Lists
 harmonized_list <- list()
 
-file_yr <- 2012
-
 ## Step 1: Load, Rename, and Recode Each Data Vintage
 for (file_yr in unique(death_files$file_year)) {
   tictoc::tic(glue("Processing the data vintage for {file_yr}"))
