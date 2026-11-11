@@ -4,10 +4,10 @@
 ## This project uses `rig` (R versions) & `renv` (R package versions) to maintain dependency stability over time and across collaborators.
 
 ## Restored intended R environment
-# renv::restore()
+renv::restore()
 
 ## Check the status of the R environment
-# renv::status()
+renv::status()
 
 # Define Filepaths (.Renviron file) -----
 ## Resource URL: https://rstats.wtf/r-startup.html#renviron
@@ -21,10 +21,12 @@ file.edit(".Renviron")
 
 required_pkgs <- c(
   "arrow",
+  "dplyr",
   "fs",
   "ggplot2",
   "glue",
   "here",
+  "lubridate",
   "plotly",
   "purrr",
   "rads",
@@ -35,7 +37,6 @@ required_pkgs <- c(
   "stringr",
   "tictoc",
   "tidyr",
-  "tidyverse",
   "writexl"
 )
 
