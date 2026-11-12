@@ -1,4 +1,4 @@
-#' Fill FIPS county codes from WA county codes for older data
+#' Fill FIPS county codes from WA county codes for certain file years
 #'
 #' Looks up each value in `wa_col` against the WA county code to FIPS crosswalk
 #' (`params$code_sets$wa_county_code_to_fips`, loaded from CSV) and writes the
