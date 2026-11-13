@@ -1,8 +1,9 @@
 # 2_process_geography_variables.R
 
-# 1) Clean WA Codes (Zero Pad) ----
-# make sure WA county codes start with a 0 if they are a single digit number (i.e. 1 -> 01)
+# 1) Clean WA Codes ----
+
 harmonized_data <- harmonized_data %>%
+  # Zero Pad WA Codes (Ensure WA codes start with a 0 if they are a single digit number (i.e. 1 -> 01)
   mutate(across(
     c(residence_county_wa_code, death_county_wa_code, injury_county_wa_code),
     ~ str_pad(
@@ -11,6 +12,11 @@ harmonized_data <- harmonized_data %>%
       side = "left",
       pad = "0"
     )
+  )) %>%
+  # Convert WA Codes '99' to NA
+  mutate(across(
+    c(residence_county_wa_code, death_county_wa_code, injury_county_wa_code),
+    ~ if_else(.x == '99', NA, .x)
   ))
 
 # 2) Translate WA County Codes to FIPS County Codes (to fill in missing FIPS County Codes) -----
