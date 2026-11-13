@@ -32,6 +32,7 @@ required_pkgs <- c(
   "rads",
   "readr",
   "readxl",
+  "rlang",
   "scales",
   "stringi",
   "stringr",
