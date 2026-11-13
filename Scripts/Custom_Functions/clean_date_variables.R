@@ -167,7 +167,7 @@ clean_date_variables <- function(
         between(
           date_received_parsed,
           date_of_death_parsed,
-          (file_year_end + years(2))
+          (file_year_end + lubridate::years(2))
         ),
         date_received_parsed,
         as.Date(NA)
@@ -179,7 +179,7 @@ clean_date_variables <- function(
         between(
           disposition_date_parsed,
           date_of_death_parsed,
-          (file_year_end + years(2))
+          (file_year_end + lubridate::years(2))
         ),
         disposition_date_parsed,
         as.Date(NA)
