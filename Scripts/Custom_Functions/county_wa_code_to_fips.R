@@ -1,54 +1,76 @@
-#' Convert Washington County Codes to FIPS Codes
+#' Fill FIPS county codes from WA county codes for certain file years
 #'
-#' Replaces county FIPS codes using a lookup table based on Washington county
-#' codes for records before a specified year threshold. This function is useful
-#' when historical datasets contain Washington-specific county codes rather than
-#' standard county FIPS codes.
+#' Looks up each value in `wa_col` against the WA county code to FIPS crosswalk
+#' (`params$code_sets$wa_county_code_to_fips`, loaded from CSV) and writes the
+#' matching FIPS code into `fips_col`, but only for rows where `file_year` is
+#' earlier than `year_threshold`. Rows from `year_threshold` onward keep their
+#' existing `fips_col` value.
 #'
-#' The function joins the input data to the internal
-#' `wa_county_code_to_fips` crosswalk contained in
-#' `params$code_sets$wa_county_code_to_fips`, then conditionally updates the
-#' specified FIPS column when `file_year` is less than `year_threshold`.
+#' Handles one WA/FIPS column pair per call. It is applied to each pair listed
+#' in `params$code_sets$wa_fips_column_pairs` via `purrr::reduce()`.
 #'
-#' A `many-to-one` join relationship is enforced to guard against accidental
-#' duplication of rows if duplicate Washington county codes are introduced into
-#' the lookup table.
+#' @section Errors:
+#' Stops with an error if:
+#' * `file_year`, `wa_col`, or `fips_col` is missing from `data`
+#' * the join changes the number of rows
+#' * any row with `file_year < year_threshold` has a non-missing `wa_col` value
+#'   that is not found in the crosswalk
 #'
-#' @param data A data frame or tibble containing Washington county codes,
-#'   a FIPS code column, and a `file_year` variable.
-#' @param wa_col A character string specifying the column in `data` containing
-#'   Washington county codes used to join to the lookup table.
-#' @param fips_col A character string specifying the column in `data` that
-#'   contains county FIPS codes and will be conditionally updated.
-#' @param year_threshold A numeric or integer year. For records where
-#'   `file_year < year_threshold`, the FIPS code will be replaced using the
-#'   Washington county code crosswalk.
+#' @param data A data frame with a `file_year` column and both `wa_col` and
+#'   `fips_col` columns. `fips_col` must already exist.
+#' @param wa_col String. Name of the column containing WA county codes.
+#' @param fips_col String. Name of the column to fill with FIPS county codes.
+#' @param year_threshold Numeric. Rows with `file_year` below this value get
+#'   their FIPS code from the crosswalk.
 #'
-#' @return
-#' A data frame of the same class and number of rows as `data`, with the
-#' specified FIPS column updated for records before `year_threshold`.
-#'
-#' @details
-#' The function expects a lookup table named
-#' `params$code_sets$wa_county_code_to_fips` containing the variables:
-#' \describe{
-#'   \item{county_wa_code}{Washington county code}
-#'   \item{county_fips_code}{Corresponding county FIPS code}
-#' }
-#'
-#' The input dataset must contain a variable named `file_year`, which is used
-#' to determine whether the FIPS code should be updated.
-#'
-#' @export
-
+#' @return `data` with `fips_col` populated from the crosswalk for rows before
+#'   `year_threshold`. No columns are added or removed.
 county_wa_code_to_fips <- function(data, wa_col, fips_col, year_threshold) {
-  data %>%
+  crosswalk <- params$code_sets$wa_county_code_to_fips
+
+  # Input checks
+  missing_cols <- setdiff(c("file_year", wa_col, fips_col), names(data))
+  if (length(missing_cols) > 0) {
+    rlang::abort(glue::glue(
+      "county_wa_code_to_fips(): `data` is missing column(s): {paste(missing_cols, collapse = ', ')}"
+    ))
+  }
+
+  # Row count before join
+  n_before <- nrow(data)
+
+  # Left join
+  result <- data %>%
     left_join(
-      params$code_sets$wa_county_code_to_fips %>%
-        select(county_wa_code, county_fips_code),
+      crosswalk %>% select(county_wa_code, county_fips_code),
       by = setNames("county_wa_code", wa_col),
-      relationship = "many-to-one" #safe guard against duplicate key being added to wa_county_code_to_fips as row duplication would occur
-    ) %>%
+      relationship = "many-to-one"
+    )
+
+  # Row count check after join
+  if (nrow(result) != n_before) {
+    rlang::abort(glue::glue(
+      "county_wa_code_to_fips(): join changed row count for {wa_col} from {n_before} to {nrow(result)}."
+    ))
+  }
+
+  # Unmatched codes: rows that should convert but found no crosswalk match
+  unmatched <- result %>%
+    filter(
+      file_year < year_threshold,
+      !is.na(.data[[wa_col]]),
+      is.na(county_fips_code)
+    )
+
+  if (nrow(unmatched) > 0) {
+    rlang::abort(glue::glue(
+      "county_wa_code_to_fips(): {nrow(unmatched)} row(s) in {wa_col} have no FIPS match. ",
+      "Unmatched codes: {paste(unique(unmatched[[wa_col]]), collapse = ', ')}"
+    ))
+  }
+
+  # Fill in user specified fips column
+  result %>%
     mutate(
       !!fips_col := case_when(
         file_year < year_threshold ~ county_fips_code,

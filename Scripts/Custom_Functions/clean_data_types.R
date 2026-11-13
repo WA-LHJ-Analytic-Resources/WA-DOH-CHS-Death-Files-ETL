@@ -63,7 +63,7 @@
 #'             factors preserve the row order of `df_schema`.
 #'       \item `character`: Converted with `as.character()`.
 #'       \item Date/time fields are not processed here and should be handled
-#'             through separate functions (e.g., `clean_date_variables()`).
+#'             through separate functions (e.g., `clean_date_variables()`, `clean_time_variables()`).
 #'     }
 #'
 #'   \item Re-audit all variable classes and attach the audit to the output.
@@ -84,102 +84,168 @@ clean_data_types <- function(
   # Step 1b: Check for extra variables in df (not referenced in df_schema) -----
   df_extra_vars <- setdiff(names(df), schema_vars)
 
-  # Step 1c: Print warning messages indicating missing/extra variables in df
+  # Step 1c: (Data Quality Check) Print error messages indicating missing/extra variables in df
 
   ## Missing Variables Message
   if (length(df_missing_vars) > 0) {
-    missing_vars_message <- paste(
-      "The provided df has missing variables that were specified in the harmonized_data_schema:",
-      paste(df_missing_vars, collapse = ", ")
+    rlang::abort(
+      glue::glue(
+        "The provided df is missing variable(s) required by df_schema: {paste(df_missing_vars, collapse = ', ')}."
+      )
     )
-
-    warning(missing_vars_message)
   }
 
-  ## Missing Variables Message
+  ## Extra Variables Message
   if (length(df_extra_vars) > 0) {
-    extra_vars_message <- paste(
-      "The provided df has extra variables that WERE NOT specified in the harmonized_data_schema:",
-      paste(df_extra_vars, collapse = ", ")
+    rlang::abort(
+      glue::glue(
+        "The provided df has extra variables that WERE NOT specified in df_schema: {paste(df_extra_vars, collapse = ', ')}."
+      )
     )
-
-    warning(extra_vars_message)
   }
 
   # Step 2: Audit Original Data Types -----
-  audit <- tibble(
+  audit <- tibble::tibble(
     variable = names(df),
-    class = sapply(df, function(z) paste(class(z), collapse = "/"))
+    class = purrr::map_chr(
+      df,
+      ~ paste(class(.x), collapse = "/")
+    )
   )
 
-  # Step 3: Convert Data Types (using df_schema), column by column -----
-  purrr::pwalk(
-    df_schema %>% select(variable, data_type) %>% distinct(),
-    function(variable, data_type) {
-      ## Extract Variable Being Converted & Convert to Character
-      x <- df[[variable]]
-      x_chr <- as.character(x)
+  # Step 3: Convert Data Types (using df_schema), iterating over each variable -----
 
-      ## Convert Variable's data type based on df_schema$type value for the Variable
-      df[[variable]] <<- switch(
-        data_type,
-        "character" = as.character(x),
-        "numeric" = suppressWarnings(readr::parse_double(
-          x_chr
-        )),
-        "integer" = suppressWarnings(readr::parse_integer(
-          x_chr
-        )),
-        "logical" = coerce_logical(x),
-        # "date" = lubridate::as_date(x_chr), # date variables already properly processed via clean_date_variables()
-        # "time" = lubridate::hm(x_chr),  # time variables already properly processed via clean_time_variables()
-        "factor" = {
-          ## Step 1: Pull the schema rows for this variable
-          schema_rows <- df_schema %>%
-            dplyr::filter(.data$variable == !!variable)
+  ## 3a: Create iteration data frame
+  schema_types <- df_schema %>% distinct(variable, data_type)
 
-          ## Step 2: Determine if the factor is ordered
-          fct_ordered <- unique(schema_rows$factor_is_ordered)[1]
+  ## 3b: Iterate data conversion over each variable
+  for (var in unique(schema_types$variable)) {
+    ### Extract Variable Specific Names & Data Types
+    variable <- schema_types %>% filter(variable == var) %>% pull(variable)
+    data_type <- schema_types %>% filter(variable == var) %>% pull(data_type)
 
-          ## Step 3: If factor is ordered, sort rows by schema_row$factor_order
-          if (isTRUE(fct_ordered)) {
-            schema_rows <- schema_rows %>% arrange(factor_order)
+    ### Extract Variable Values (As-Is & As a Character)
+    var_values_raw <- df %>% pull(!!var)
+    var_values_chr <- as.character(var_values_raw)
+
+    ### Implement Conversion (based on target data type; data_type)
+    df[[variable]] <- switch(
+      data_type,
+      "character" = as.character(var_values_raw),
+      "numeric" = suppressWarnings(readr::parse_double(
+        var_values_chr
+      )),
+      "integer" = suppressWarnings(readr::parse_integer(
+        var_values_chr
+      )),
+      "logical" = coerce_logical(var_values_raw),
+      "date" = var_values_raw, # date variables already properly processed via clean_date_variables()
+      "time" = var_values_raw, # time variables already properly processed via clean_time_variables()
+      "factor" = {
+        ### Step F.1: Subset rows in data frame schema to create variable-specific schema
+        var_schema <- df_schema %>%
+          filter(variable == !!variable)
+
+        ### Step F.2a: Determine if the factor is ordered
+        fct_ordered <- unique(var_schema$factor_is_ordered)[1]
+
+        ### Step F.2b: If factor is ordered, sort rows by schema_row$factor_order
+        if (isTRUE(fct_ordered)) {
+          #### (Data Quality Check) Are any factor_order values for the variable NA?
+          if (any(is.na(var_schema$factor_order))) {
+            rlang::abort(
+              glue::glue(
+                "Variable '{variable}' is an ordered factor but contains missing factor_order values."
+              )
+            )
           }
 
-          ## Step 4: Extract factor levels and labels
-          fct_levels <- schema_rows$factor_value
-          fct_labels <- schema_rows$factor_label
+          #### (Data Quality Check) Are any factor_order values duplicated?
+          duplicate_orders <- var_schema %>%
+            count(factor_order) %>%
+            filter(n > 1)
 
-          ## Step 5: Build factor variable
-          factor(
-            x_chr,
-            levels = fct_levels,
-            labels = fct_labels,
-            ordered = fct_ordered
-          )
-        },
-        {
-          msg <- sprintf(
-            "Unknown type '%s' for variable '%s'; leaving as-is.",
-            data_type,
-            variable
-          )
-          x
+          if (nrow(duplicate_orders) > 0) {
+            rlang::abort(
+              glue::glue(
+                "Variable '{variable}' contains duplicate factor_order values: {paste(duplicate_orders$factor_order, collapse = ', ')}."
+              )
+            )
+          }
+
+          #### Sort variable-specific schema (var_schema) by factor_order
+          var_schema <- var_schema %>% arrange(factor_order)
         }
-      )
-    }
-  )
+
+        ### Step F.3: (Data Quality Check) Ensure no duplicate entries (in final, harmonized data schema; df_schema) for factor levels-labels pairing. If more than 2+ levels mapped to 1 label, it should be addressed in recode_values()
+        duplicate_fct_mappings <- var_schema %>%
+          distinct(factor_value, factor_label) %>%
+          count(factor_value) %>%
+          filter(n > 1) # A single factor_value should never map to multiple factor_label's
+
+        if (nrow(duplicate_fct_mappings) > 0) {
+          rlang::abort(
+            glue::glue(
+              "Variable '{variable}' contains factor_value(s) mapped to multiple factor_label values: {paste(duplicate_fct_mappings$factor_value, collapse = ', ')}."
+            )
+          )
+        }
+
+        ### Step F.4: Extract unique, non-NA observed values/levels (from data frame)
+        observed_levels <- unique(stats::na.omit(var_values_chr))
+
+        ### Step F.5: Extract expected values/levels & corresponding labels (from the final, harmonized data schema; df_schema)
+        expected_levels <- var_schema$factor_value # Should be unique (no duplicates) if pass Step #3 DQ Check
+        expected_labels <- var_schema$factor_label
+
+        ### Step F.6a: (Data Quality Check) Identify values present in the data but absent from the final, harmonized data schema (df_schema)
+        unexpected_values <- setdiff(
+          observed_levels,
+          expected_levels
+        )
+
+        ### Step F.6b: Stop/Error Message for Unexpected Values
+        if (length(unexpected_values) > 0) {
+          rlang::abort(
+            glue::glue(
+              "Factor validation failed for variable '{variable}'. Found value(s) not defined in df_schema$factor_value: {paste(sort(unexpected_values), collapse = ', ')}."
+            )
+          )
+        }
+
+        ## Step F.7: Build factor variable
+        factor(
+          var_values_chr,
+          levels = expected_levels,
+          labels = expected_labels,
+          ordered = fct_ordered
+        )
+      },
+
+      ## Step F.8: (Data Quality Check) Stop the function if an unknown data-type was specified in df_schema
+      {
+        rlang::abort(
+          glue::glue(
+            "Unknown data_type '{data_type}' specified in df_schema for variable '{variable}'."
+          )
+        )
+      }
+    )
+  }
 
   # Step 4: Audit Updated Data Types -----
   audit <- audit %>%
     mutate(
-      new_class = sapply(df, function(z) paste(class(z), collapse = "/"))
+      new_class = purrr::map_chr(
+        df,
+        ~ paste(class(.x), collapse = "/")
+      )
     ) %>%
     arrange(variable)
 
-  ## Add schema_audit as an attribute to output
+  # Step 5: Add audit as an attribute to output -----
   attr(df, "data_type_conversions") <- audit
 
-  # Step 5: Return df -----
+  # Step 6: Return df -----
   return(df)
 }
