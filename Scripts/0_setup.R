@@ -1,7 +1,7 @@
 # 0_setup.R
 
 # Setup Reproducible R Environment -----
-## This project uses `rig` (R versions) & `renv` (R package versions) to maintain dependency stability over time and across collaborators.
+## This project uses `renv` (R package versions) to maintain dependency stability over time and across collaborators.
 
 ## Restored intended R environment
 renv::restore()
