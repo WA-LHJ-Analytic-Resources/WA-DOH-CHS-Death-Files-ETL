@@ -68,7 +68,7 @@ harmonized_data <- harmonized_data %>%
 ## Use params$code_sets$wa_fips_literal_pair to translate FIPS Codes into County literals (before year_threshold) to fill in missing County literals for residence_county & injury_county columns for 2010-2015
 
 harmonized_data <- params$code_sets$wa_fips_literal_pair %>%
-  pmap(list) |>
+  pmap(list) %>%
   reduce(
     function(data, pair) {
       county_fips_to_literals(
