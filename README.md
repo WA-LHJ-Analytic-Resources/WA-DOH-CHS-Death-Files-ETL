@@ -61,5 +61,5 @@ End users will only need to run this R code 1 time per data refresh cycle. The w
 ## Workflow Diagram
 ![](./Resources/WA-DOH-CHS-Death-Files-ETL-Workflow-Diagram.png)
 
-# Updating the Harmonized Data Set
-The admins of this repository  will seek to update this repository annual to ensure `harmonized_data` includes the most recently published annual death files released. Instructions to add new data vintages or new variables to `harmonized_data` is available in the `README` excel sheet of `Resources/Crosswalks and Schemas.xlsx`
+# (Admin) Updating the Harmonized Data Set
+The admins of this repository  will seek to update this repository annual to ensure `harmonized_data` includes the most recently published annual death files released. Instructions to add new data vintages or new variables to `harmonized_data` is available in the `README` excel sheet of `Resources/Crosswalks and Schemas.xlsx` as well as in a brief tutorial available [here](https://snoco.sharepoint.com/:v:/r/teams/SHD-Epidemiology/Shared%20Documents/Informatics/Workgroups/WA%20LHJ%20Analytics/WA-DOH-CHS-Death-Files-ETL/How%20to%20Add%20New%20Annual%20Data%20to%20Harmonized,%20Multi-Year%20Death%20Data%20File.webm?d=wc47a924456ec4181ae3c5915dcf1e77a&csf=1&web=1&e=iaSDvg&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D).
