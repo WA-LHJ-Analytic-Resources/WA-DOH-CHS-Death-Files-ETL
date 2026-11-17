@@ -30,7 +30,7 @@ harmonized_data <- arrow::read_parquet("INSERT_FOLDER/harmonized_data.parquet")
 ```
 
 ## Resources
-1. [Washington State Death Data 2023 - Data Users Guide](https://doh.wa.gov/sites/default/files/2026-10/422-155-WADeathDataUsersGuide.pdf)
+1. [Washington State Death Data 2025 - Data Users Guide](https://doh.wa.gov/sites/default/files/2026-10/422-155-WADeathDataUsersGuide.pdf)
 
 # Workflow
 End users will only need to run this R code 1 time per data refresh cycle. The workflow will output a `harmonized_data` file that their teams can re-use (without needing to re-run this code). **Note:** Upon release of a new batch of annual death files, project admins will need to **lightly edit** the R code to incorporate the new year's data into `harmonized_data` (see Updating the Harmonized Data Set subsection for more details). 
