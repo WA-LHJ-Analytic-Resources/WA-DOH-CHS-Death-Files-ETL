@@ -30,7 +30,7 @@ harmonized_data <- arrow::read_parquet("INSERT_FOLDER/harmonized_data.parquet")
 ```
 
 ## Resources
-1. [Washington State Death Data 2023 - Data Users Guide](https://doh.wa.gov/sites/default/files/2024-10/422-155-WADeathFileDataUsersGuide2023_1.pdf)
+1. [Washington State Death Data 2025 - Data Users Guide](https://doh.wa.gov/sites/default/files/2026-10/422-155-WADeathDataUsersGuide.pdf)
 
 # Workflow
 End users will only need to run this R code 1 time per data refresh cycle. The workflow will output a `harmonized_data` file that their teams can re-use (without needing to re-run this code). **Note:** Upon release of a new batch of annual death files, project admins will need to **lightly edit** the R code to incorporate the new year's data into `harmonized_data` (see Updating the Harmonized Data Set subsection for more details). 
@@ -61,5 +61,5 @@ End users will only need to run this R code 1 time per data refresh cycle. The w
 ## Workflow Diagram
 ![](./Resources/WA-DOH-CHS-Death-Files-ETL-Workflow-Diagram.png)
 
-# Updating the Harmonized Data Set
-The admins of this repository  will seek to update this repository annual to ensure `harmonized_data` includes the most recently published annual death files released. Instructions to add new data vintages or new variables to `harmonized_data` is available in the `README` excel sheet of `Resources/Crosswalks and Schemas.xlsx`
+# (Admin) Updating the Harmonized Data Set
+The admins of this repository  will seek to update this repository annual to ensure `harmonized_data` includes the most recently published annual death files released. Instructions to add new data vintages or new variables to `harmonized_data` is available in the `README` excel sheet of `Resources/Crosswalks and Schemas.xlsx` as well as in a brief tutorial available [here](https://snoco.sharepoint.com/:v:/r/teams/SHD-Epidemiology/Shared%20Documents/Informatics/Workgroups/WA%20LHJ%20Analytics/WA-DOH-CHS-Death-Files-ETL/How%20to%20Add%20New%20Annual%20Data%20to%20Harmonized,%20Multi-Year%20Death%20Data%20File.webm?d=wc47a924456ec4181ae3c5915dcf1e77a&csf=1&web=1&e=iaSDvg&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifX0%3D).
